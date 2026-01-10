@@ -1,4 +1,4 @@
-package com.itirafapp.android.ui.theme
+package com.itirafapp.android.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
