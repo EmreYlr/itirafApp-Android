@@ -4,16 +4,21 @@ import com.itirafapp.android.util.TokenManager
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
+import javax.inject.Named
 
 class AuthInterceptor @Inject constructor(
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    @param:Named("ClientKey") private val clientKey: String
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = tokenManager.getAccessToken()
-        val requestBuilder = chain.request().newBuilder()
+        val originalRequest = chain.request()
+        val requestBuilder = originalRequest.newBuilder()
 
-        token?.let {
-            requestBuilder.addHeader("Authorization", "Bearer $it")
+        requestBuilder.addHeader("Content-Type", "application/json")
+        requestBuilder.addHeader("x-client-key", clientKey)
+
+        tokenManager.getAccessToken()?.let { token ->
+            requestBuilder.addHeader("Authorization", "Bearer $token")
         }
 
         return chain.proceed(requestBuilder.build())
