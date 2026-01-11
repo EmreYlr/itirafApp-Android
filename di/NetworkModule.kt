@@ -1,5 +1,6 @@
 package com.itirafapp.android.di
 
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,9 +14,11 @@ import javax.inject.Singleton
 import com.itirafapp.android.BuildConfig
 import com.itirafapp.android.data.remote.AuthInterceptor
 import com.itirafapp.android.data.remote.AuthService
+import com.itirafapp.android.data.remote.NetworkLoggerInterceptor
 import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.util.TokenManager
+import com.itirafapp.android.util.UserManager
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -25,10 +28,12 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
-        loggingInterceptor: HttpLoggingInterceptor
+        loggingInterceptor: HttpLoggingInterceptor,
+        networkLoggerInterceptor: NetworkLoggerInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
+            .addInterceptor(networkLoggerInterceptor) // Our custom logger
             .addInterceptor(loggingInterceptor)
             .build()
     }
@@ -72,8 +77,13 @@ object NetworkModule {
     @Singleton
     fun provideAuthRepository(
         api: AuthService,
-        tokenManager: TokenManager
+        tokenManager: TokenManager,
+        userManager: UserManager
     ): AuthRepository {
-        return AuthRepositoryImpl(api, tokenManager)
+        return AuthRepositoryImpl(api, tokenManager, userManager)
     }
+
+    @Provides
+    @Singleton
+    fun provideGson(): Gson = Gson()
 }
