@@ -31,8 +31,6 @@ class AuthRepositoryImpl @Inject constructor(
 
             val response = api.loginAnonymous(AnonymousLoginRequest(email))
             tokenManager.saveTokens(response.accessToken, response.refreshToken)
-
-            Unit
         }
     }
 }

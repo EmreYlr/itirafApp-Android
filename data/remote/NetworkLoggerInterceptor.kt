@@ -5,7 +5,6 @@ import com.itirafapp.android.util.APIError
 import com.google.gson.Gson
 import okhttp3.Interceptor
 import okhttp3.Response
-import java.nio.charset.Charset
 import javax.inject.Inject
 
 class NetworkLoggerInterceptor @Inject constructor(
@@ -28,7 +27,7 @@ class NetworkLoggerInterceptor @Inject constructor(
                 
                 val apiError = try {
                     gson.fromJson(content, APIError::class.java)
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
 
