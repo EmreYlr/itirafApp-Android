@@ -20,7 +20,7 @@ class NetworkLoggerInterceptor @Inject constructor(
             val response = chain.proceed(request)
             
             if (response.isSuccessful) {
-                Log.d("itirafApp_Network", "✅ [SUCCESS] [$method] $path")
+                Log.d("itirafApp_Network", "✅ [SUCCESS] [$method] $path  [Status]: ${response.code}")
             } else {
                 val responseBody = response.peekBody(Long.MAX_VALUE)
                 val content = responseBody.string()
@@ -34,12 +34,12 @@ class NetworkLoggerInterceptor @Inject constructor(
                 if (apiError != null) {
                     Log.e(
                         "itirafApp_Network",
-                        "❌ [API_ERROR] [$method] $path - Code: ${response.code} -> ${apiError.message}"
+                        "❌ [API_ERROR] [$method] $path - Status: ${response.code} -> ${apiError.message}"
                     )
                 } else {
                     Log.e(
                         "itirafApp_Network",
-                        "❌ [HTTP_ERROR] [$method] $path - Code: ${response.code} -> $content"
+                        "❌ [HTTP_ERROR] [$method] $path - Status: ${response.code} -> $content"
                     )
                 }
             }

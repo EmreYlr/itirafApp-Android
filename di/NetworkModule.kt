@@ -15,6 +15,7 @@ import com.itirafapp.android.BuildConfig
 import com.itirafapp.android.data.remote.AuthInterceptor
 import com.itirafapp.android.data.remote.AuthService
 import com.itirafapp.android.data.remote.NetworkLoggerInterceptor
+import com.itirafapp.android.data.remote.UserService
 import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.util.TokenManager
@@ -33,7 +34,7 @@ object NetworkModule {
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(networkLoggerInterceptor) // Our custom logger
+            .addInterceptor(networkLoggerInterceptor)
             .addInterceptor(loggingInterceptor)
             .build()
     }
@@ -75,12 +76,19 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideUserService(retrofit: Retrofit): UserService {
+        return retrofit.create(UserService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthRepository(
         api: AuthService,
+        userApi: UserService,
         tokenManager: TokenManager,
         userManager: UserManager
     ): AuthRepository {
-        return AuthRepositoryImpl(api, tokenManager, userManager)
+        return AuthRepositoryImpl(api,userApi ,tokenManager, userManager)
     }
 
     @Provides
