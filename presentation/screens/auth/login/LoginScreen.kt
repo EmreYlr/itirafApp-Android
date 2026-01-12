@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
+import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun LoginScreen(
@@ -20,7 +20,7 @@ fun LoginScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary),
+            .background(ItirafTheme.colors.brandPrimary),
         contentAlignment = Alignment.Center
     ) {
         Text(text = "Login Screen", color = MaterialTheme.colorScheme.onPrimary)
