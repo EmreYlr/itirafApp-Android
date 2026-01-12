@@ -1,4 +1,4 @@
-package com.itirafapp.android.domain.use_case
+package com.itirafapp.android.domain.usecase
 
 import com.itirafapp.android.data.remote.dto.RegisterRequest
 import com.itirafapp.android.domain.repository.AuthRepository

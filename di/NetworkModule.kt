@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Named
 import javax.inject.Singleton
 import com.itirafapp.android.BuildConfig
+import com.itirafapp.android.data.remote.AuthGuardInterceptor
 import com.itirafapp.android.data.remote.AuthInterceptor
 import com.itirafapp.android.data.remote.AuthService
 import com.itirafapp.android.data.remote.NetworkLoggerInterceptor
@@ -29,10 +30,12 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
+        authGuardInterceptor: AuthGuardInterceptor,
         loggingInterceptor: HttpLoggingInterceptor,
         networkLoggerInterceptor: NetworkLoggerInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(authGuardInterceptor)
             .addInterceptor(authInterceptor)
             .addInterceptor(networkLoggerInterceptor)
             .addInterceptor(loggingInterceptor)

@@ -13,21 +13,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.itirafapp.android.presentation.screens.SplashViewModel
+import com.itirafapp.android.presentation.navigation.RootNavigation
+import com.itirafapp.android.presentation.screens.auth.login.LoginScreen
+import com.itirafapp.android.presentation.screens.splash.SplashViewModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val splashViewModel: SplashViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { ItirafAppTheme {}
-            enableEdgeToEdge()
-            val loginResult = splashViewModel.loginResult
-
-            LaunchedEffect(loginResult) {
+        setContent {
+            ItirafAppTheme {
+                enableEdgeToEdge()
+                RootNavigation()
             }
         }
     }

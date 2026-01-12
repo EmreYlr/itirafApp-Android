@@ -1,8 +1,8 @@
-package com.itirafapp.android.presentation.screens
+package com.itirafapp.android.presentation.screens.splash
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itirafapp.android.domain.use_case.LoginAnonymousUseCase
+import com.itirafapp.android.domain.usecase.LoginAnonymousUseCase
 import com.itirafapp.android.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
