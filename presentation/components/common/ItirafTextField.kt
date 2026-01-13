@@ -28,17 +28,19 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 
 @Composable
-fun CommonTextField(
+fun ItirafTextField(
     value: String,
     onValueChange: (String) -> Unit,
     hint: String,
     modifier: Modifier = Modifier,
     isPassword: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
     onAction: KeyboardActions = KeyboardActions.Default
@@ -52,20 +54,34 @@ fun CommonTextField(
             .fillMaxWidth()
             .height(60.dp)
             .background(color = ItirafTheme.colors.backgroundApp),
-        label = { Text(text = hint, color = ItirafTheme.colors.textPrimary) },
-        shape = RoundedCornerShape(10.dp),
+        label = {
+            Text(
+                text = hint,
+                color = ItirafTheme.colors.textPrimary,
+                fontSize = 14.sp
+            )
+        },
+        shape = RoundedCornerShape(8.dp),
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
         keyboardActions = onAction,
         visualTransformation = if (isPassword && !passwordVisible) PasswordVisualTransformation() else VisualTransformation.None,
-        trailingIcon = if (isPassword) {
-            {
+
+        trailingIcon = {
+            if (isPassword) {
                 val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = image, contentDescription = null, tint = ItirafTheme.colors.textSecondary)
+                    Icon(
+                        imageVector = image,
+                        contentDescription = if (passwordVisible) "Şifreyi Gizle" else "Şifreyi Göster",
+                        tint = ItirafTheme.colors.textSecondary
+                    )
                 }
+            } else if (trailingIcon != null) {
+                trailingIcon()
             }
-        } else null,
+        },
+
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = ItirafTheme.colors.dividerColor,
@@ -82,7 +98,7 @@ fun CommonTextFieldPreview() {
     var text by remember { mutableStateOf("") }
 
     ItirafAppTheme {
-        CommonTextField(
+        ItirafTextField(
             value = text,
             onValueChange = { text = it },
             hint = "Örnek Metin Giriniz...",

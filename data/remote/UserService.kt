@@ -4,6 +4,6 @@ import com.itirafapp.android.data.remote.dto.UserResponse
 import retrofit2.http.GET
 
 interface UserService {
-    @GET("user/me")
+    @GET("users/me")
     suspend fun getMe(): UserResponse
 }

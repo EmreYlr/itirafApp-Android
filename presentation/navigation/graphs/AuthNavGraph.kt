@@ -15,7 +15,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
         // LOGIN
         composable(route = Screen.Login.route) {
             LoginScreen(
-                onNavigateToRegister = { navController.navigate(Screen.Register.route) },
+                onNavigateToRegister = {
+                    navController.navigate(Screen.Register.route)
+                },
                 onNavigateToHome = {
                     navController.navigate(Screen.MainGraph.route) {
                         popUpTo(Screen.AuthGraph.route) { inclusive = true }
