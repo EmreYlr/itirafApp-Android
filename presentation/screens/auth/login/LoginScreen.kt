@@ -87,7 +87,6 @@ fun LoginScreen(
             viewModel.onEvent(LoginEvent.LoginClicked)
         }
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
