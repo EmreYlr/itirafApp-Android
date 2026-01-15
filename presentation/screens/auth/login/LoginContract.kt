@@ -1,8 +1,5 @@
 package com.itirafapp.android.presentation.screens.auth.login
 
-import com.itirafapp.android.presentation.screens.auth.register.RegisterEvent
-import com.itirafapp.android.presentation.screens.auth.register.RegisterUiEvent
-
 data class LoginState(
     val email: String = "",
     val password: String = "",
@@ -14,6 +11,7 @@ sealed class LoginEvent {
     data class PasswordChanged(val password: String) : LoginEvent()
     object LoginClicked : LoginEvent()
     object RegisterClicked : LoginEvent()
+    object ForgotPasswordClicked : LoginEvent()
     object OpenPrivacyPolicy : LoginEvent()
     object OpenTermsOfUse : LoginEvent()
 }
@@ -21,6 +19,7 @@ sealed class LoginEvent {
 sealed class LoginUiEvent {
     object NavigateToHome : LoginUiEvent()
     object NavigateToRegister : LoginUiEvent()
+    object NavigateToForgotPassword : LoginUiEvent()
     object ShowPrivacyPolicyDialog : LoginUiEvent()
     object ShowTermsDialog : LoginUiEvent()
     data class ShowError(val message: String) : LoginUiEvent()

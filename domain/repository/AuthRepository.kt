@@ -4,6 +4,7 @@ import com.itirafapp.android.data.remote.auth.dto.AnonymousLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
+import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
 import com.itirafapp.android.util.Resource
 
 interface AuthRepository {
@@ -11,4 +12,5 @@ interface AuthRepository {
     suspend fun registerAnonymous(): Resource<AnonymousRegisterResponse>
     suspend fun loginUser(request: LoginRequest): Resource<Unit>
     suspend fun registerUser(request: RegisterRequest): Resource<Unit>
+    suspend fun resetPassword(request: ResetPasswordRequest): Resource<Unit>
 }

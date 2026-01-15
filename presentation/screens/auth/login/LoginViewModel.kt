@@ -46,6 +46,9 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.RegisterClicked -> {
                 sendUiEvent(LoginUiEvent.NavigateToRegister)
             }
+            is LoginEvent.ForgotPasswordClicked -> {
+                sendUiEvent(LoginUiEvent.NavigateToForgotPassword)
+            }
         }
     }
 

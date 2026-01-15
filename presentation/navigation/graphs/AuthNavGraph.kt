@@ -9,6 +9,7 @@ import androidx.navigation.compose.navigation
 import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.presentation.navigation.animatedComposable
 import com.itirafapp.android.presentation.screens.auth.login.LoginScreen
+import com.itirafapp.android.presentation.screens.auth.passwordreset.PasswordResetScreen
 import com.itirafapp.android.presentation.screens.auth.register.RegisterScreen
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
@@ -21,6 +22,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
             LoginScreen(
                 onNavigateToRegister = {
                     navController.navigate(Screen.Register.route)
+                },
+                onNavigateToPasswordReset = {
+                    navController.navigate(Screen.ForgotPassword.route)
                 },
                 onNavigateToHome = {
                     navController.navigate(Screen.MainGraph.route) {
@@ -41,7 +45,11 @@ fun NavGraphBuilder.authNavGraph(navController: NavController) {
 
         // FORGOT PASSWORD
         animatedComposable(route = Screen.ForgotPassword.route) {
-            // ForgotPasswordScreen...
+            PasswordResetScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

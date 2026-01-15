@@ -5,6 +5,7 @@ import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
 import com.itirafapp.android.data.remote.auth.dto.AuthResponse
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
+import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
 
@@ -26,4 +27,9 @@ interface AuthService {
     suspend fun loginUser(
         @Body request: LoginRequest
     ): AuthResponse
+
+    @POST("auth/forgot-password")
+    suspend fun resetPassword(
+        @Body request: ResetPasswordRequest
+    )
 }

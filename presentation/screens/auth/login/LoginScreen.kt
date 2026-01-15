@@ -1,5 +1,6 @@
 package com.itirafapp.android.presentation.screens.auth.login
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,6 +63,7 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit = {},
+    onNavigateToPasswordReset: () -> Unit = {},
     onNavigateToHome: () -> Unit = {},
     viewModel: LoginViewModel = hiltViewModel()
 ) {
@@ -79,6 +81,10 @@ fun LoginScreen(
 
                 is LoginUiEvent.NavigateToRegister -> {
                     onNavigateToRegister()
+                }
+
+                is LoginUiEvent.NavigateToForgotPassword -> {
+                    onNavigateToPasswordReset()
                 }
 
                 is LoginUiEvent.ShowPrivacyPolicyDialog -> {
@@ -100,6 +106,7 @@ fun LoginScreen(
         state = state,
         onEvent = viewModel::onEvent,
         onRegisterClick = { viewModel.onEvent(LoginEvent.RegisterClicked) },
+        onForgotPasswordClick = { viewModel.onEvent(LoginEvent.ForgotPasswordClicked) },
         onLoginClick = {
             focusManager.clearFocus()
             viewModel.onEvent(LoginEvent.LoginClicked)
@@ -113,7 +120,8 @@ fun LoginContent(
     state: LoginState,
     onEvent: (LoginEvent) -> Unit,
     onRegisterClick: () -> Unit,
-    onLoginClick: () -> Unit
+    onLoginClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -182,7 +190,11 @@ fun LoginContent(
                     Text(
                         text = stringResource(R.string.forgot_password),
                         color = ItirafTheme.colors.textSecondary,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .clickable {
+                                onForgotPasswordClick()
+                            }
                     )
                 }
             }

@@ -5,6 +5,7 @@ import com.itirafapp.android.data.remote.auth.dto.AnonymousLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
+import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.util.Resource
@@ -40,6 +41,12 @@ private val tokenManager: TokenManager
             val request = AnonymousLoginRequest(request.email)
             val response = api.loginAnonymous(request)
             tokenManager.saveTokens(response.accessToken, response.refreshToken)
+        }
+    }
+
+    override suspend fun resetPassword(request: ResetPasswordRequest): Resource<Unit> {
+        return safeApiCall {
+            api.resetPassword(request)
         }
     }
 }
