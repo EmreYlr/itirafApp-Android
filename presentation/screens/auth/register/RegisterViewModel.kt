@@ -35,6 +35,18 @@ class RegisterViewModel @Inject constructor(
             is RegisterEvent.PasswordChanged ->  {
                 state = state.copy(password = event.password)
             }
+            is RegisterEvent.PrivacyPolicyChanged -> {
+                state = state.copy(isPrivacyAccepted = event.isAccepted)
+            }
+            is RegisterEvent.TermsChanged -> {
+                state = state.copy(isTermsAccepted = event.isAccepted)
+            }
+            is RegisterEvent.OpenPrivacyPolicy -> {
+                sendUiEvent(RegisterUiEvent.ShowPrivacyPolicyDialog)
+            }
+            is RegisterEvent.OpenTermsOfUse -> {
+                sendUiEvent(RegisterUiEvent.ShowTermsDialog)
+            }
             is RegisterEvent.RegisterClicked -> {
                 register()
             }
@@ -47,6 +59,11 @@ class RegisterViewModel @Inject constructor(
     private fun register() {
         if (state.email.isBlank() || state.password.isBlank()) {
             sendUiEvent(RegisterUiEvent.ShowMessage("Lütfen tüm alanları doldurun"))
+            return
+        }
+
+        if (!state.isPrivacyAccepted || !state.isTermsAccepted) {
+            sendUiEvent(RegisterUiEvent.ShowMessage("Lütfen sözleşmeleri okuyup onaylayın."))
             return
         }
 

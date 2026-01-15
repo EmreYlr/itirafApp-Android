@@ -1,7 +1,6 @@
 package com.itirafapp.android.presentation.components.common
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,6 +38,7 @@ fun ItirafTextField(
     onValueChange: (String) -> Unit,
     hint: String,
     modifier: Modifier = Modifier,
+    placeholder: String = "",
     isPassword: Boolean = false,
     trailingIcon: @Composable (() -> Unit)? = null,
     keyboardType: KeyboardType = KeyboardType.Text,
@@ -52,8 +52,8 @@ fun ItirafTextField(
         onValueChange = onValueChange,
         modifier = modifier
             .fillMaxWidth()
-            .height(60.dp)
-            .background(color = ItirafTheme.colors.backgroundApp),
+            .height(60.dp),
+
         label = {
             Text(
                 text = hint,
@@ -61,6 +61,15 @@ fun ItirafTextField(
                 fontSize = 14.sp
             )
         },
+
+        placeholder = {
+            Text(
+                text = placeholder,
+                color = ItirafTheme.colors.textSecondary.copy(alpha = 0.5f),
+                fontSize = 14.sp
+            )
+        },
+
         shape = RoundedCornerShape(8.dp),
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
@@ -83,10 +92,10 @@ fun ItirafTextField(
         },
 
         colors = OutlinedTextFieldDefaults.colors(
-            focusedBorderColor = MaterialTheme.colorScheme.primary,
-            unfocusedBorderColor = ItirafTheme.colors.dividerColor,
             focusedContainerColor = ItirafTheme.colors.backgroundCard,
             unfocusedContainerColor = ItirafTheme.colors.backgroundCard,
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = ItirafTheme.colors.dividerColor,
         )
     )
 }

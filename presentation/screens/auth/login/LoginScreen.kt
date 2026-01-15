@@ -31,6 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -42,10 +44,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.common.ItirafButton
 import com.itirafapp.android.presentation.components.common.ItirafTextField
 import com.itirafapp.android.presentation.components.common.ItirafTopBar
+import com.itirafapp.android.presentation.screens.auth.components.LegalTextMultiLink
+import com.itirafapp.android.presentation.screens.auth.register.RegisterEvent
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -125,6 +130,7 @@ fun LoginContent(
                 onValueChange = { onEvent(LoginEvent.EmailChanged(it)) },
                 hint = stringResource(R.string.auth_field_email),
                 keyboardType = KeyboardType.Email,
+                placeholder = stringResource(R.string.auth_field_email_placeholder),
                 imeAction = ImeAction.Next,
                 trailingIcon = {
                     Icon(
@@ -142,6 +148,7 @@ fun LoginContent(
                 onValueChange = { onEvent(LoginEvent.PasswordChanged(it)) },
                 hint = stringResource(R.string.auth_field_password),
                 isPassword = true,
+                placeholder = "*********",
                 imeAction = ImeAction.Done,
                 onAction = KeyboardActions(
                     onDone = {
@@ -250,7 +257,7 @@ fun LoginContent(
                 borderColor = ItirafTheme.colors.textSecondary,
                 borderWidth = 0.7.dp
             )
-
+            
             Row(
                 modifier = Modifier
                     .padding(vertical = 16.dp)
@@ -273,6 +280,17 @@ fun LoginContent(
                         .clickable { onRegisterClick() }
                 )
             }
+
+
+
+            LegalTextMultiLink(
+                onTermsClick = {
+                    //onEvent(RegisterEvent.OpenTermsOfUse)
+                },
+                onPrivacyClick = {
+                    //onEvent(RegisterEvent.OpenPrivacyPolicy)
+                }
+            )
         }
     }
 }

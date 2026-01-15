@@ -1,14 +1,18 @@
 package com.itirafapp.android.presentation.screens.auth.register
 
 import android.widget.Toast
+import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mail
@@ -16,25 +20,40 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.common.ItirafButton
 import com.itirafapp.android.presentation.components.common.ItirafTextField
 import com.itirafapp.android.presentation.components.common.ItirafTopBar
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.Constants
+import com.itirafapp.android.util.openUrlSafe
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -45,12 +64,21 @@ fun RegisterScreen(
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val colorParams = ItirafTheme.colors.brandPrimary.toArgb()
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
                 is RegisterUiEvent.NavigateToLogin -> {
                     onNavigateBack()
+                }
+
+                is RegisterUiEvent.ShowTermsDialog -> {
+                    openUrlSafe(context, Constants.TERMS_URL, colorParams)
+                }
+
+                is RegisterUiEvent.ShowPrivacyPolicyDialog -> {
+                    openUrlSafe(context, Constants.PRIVACY_URL, colorParams)
                 }
 
                 is RegisterUiEvent.ShowMessage -> {
@@ -109,7 +137,7 @@ fun RegisterContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                "E-Posta ile kayıt ol",
+                stringResource(R.string.register_title),
                 style = MaterialTheme.typography.titleLarge,
                 color = ItirafTheme.colors.textPrimary,
                 modifier = Modifier.fillMaxWidth(),
@@ -117,7 +145,7 @@ fun RegisterContent(
             )
 
             Text(
-                "Hesap oluşturarak itiraflarınızı paylaşmaya hemen başlayabilirsiniz.",
+                stringResource(R.string.register_body),
                 style = MaterialTheme.typography.bodyMedium,
                 color = ItirafTheme.colors.textSecondary,
                 modifier = Modifier
@@ -133,6 +161,7 @@ fun RegisterContent(
                 onValueChange = { onEvent(RegisterEvent.EmailChanged(it)) },
                 hint = stringResource(R.string.auth_field_email),
                 keyboardType = KeyboardType.Email,
+                placeholder = stringResource(R.string.auth_field_email_placeholder),
                 imeAction = ImeAction.Next,
                 trailingIcon = {
                     Icon(
@@ -142,9 +171,180 @@ fun RegisterContent(
                     )
                 }
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            ItirafTextField(
+                value = state.password,
+                onValueChange = { onEvent(RegisterEvent.PasswordChanged(it)) },
+                hint = stringResource(R.string.auth_field_password),
+                isPassword = true,
+                placeholder = "*********",
+                imeAction = ImeAction.Done,
+                onAction = KeyboardActions(
+                    onDone = {
+                        focusManager.clearFocus()
+                        onLoginClick()
+                    }
+                )
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            val switchColors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = ItirafTheme.colors.brandPrimary,
+                uncheckedThumbColor = Color.White,
+                uncheckedTrackColor = ItirafTheme.colors.dividerColor,
+                uncheckedBorderColor = Color.Transparent
+            )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TermText(
+                    fullTextRes = R.string.accept_terms_mask,
+                    linkTextRes = R.string.privacy_policy_link,
+                    onLinkClick = {
+                        onEvent(RegisterEvent.OpenPrivacyPolicy)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                )
+
+                Switch(
+                    checked = state.isPrivacyAccepted,
+                    onCheckedChange = { isChecked ->
+                        onEvent(RegisterEvent.PrivacyPolicyChanged(isChecked))
+                    },
+                    colors = switchColors
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TermText(
+                    fullTextRes = R.string.accept_terms_mask,
+                    linkTextRes = R.string.terms_conditions_link,
+                    onLinkClick = {
+                        onEvent(RegisterEvent.OpenTermsOfUse)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 8.dp)
+                )
+
+                Switch(
+                    checked = state.isTermsAccepted,
+                    onCheckedChange = { isChecked ->
+                        onEvent(RegisterEvent.TermsChanged(isChecked))
+                    },
+                    colors = switchColors
+                )
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            ItirafButton(
+                text = stringResource(R.string.register),
+                isLoading = state.isLoading,
+
+                enabled = state.email.isNotBlank() &&
+                        state.password.isNotBlank() &&
+                        state.isPrivacyAccepted &&
+                        state.isTermsAccepted,
+
+                onClick = {
+                    focusManager.clearFocus()
+                    onRegisterClick()
+                }
+            )
+
+            Row(
+                modifier = Modifier
+                    .padding(vertical = 16.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.register_already_account),
+                    color = ItirafTheme.colors.textSecondary,
+                    fontSize = 14.sp
+                )
+                Text(
+                    text = stringResource(R.string.login),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                        .padding(start = 4.dp)
+                        .clickable { onLoginClick() }
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun TermText(
+    @StringRes fullTextRes: Int,
+    @StringRes linkTextRes: Int,
+    onLinkClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val fullPattern = stringResource(id = fullTextRes)
+    val linkText = stringResource(id = linkTextRes)
+
+    val finalString = fullPattern.format(linkText)
+
+    val startIndex = finalString.indexOf(linkText)
+    val endIndex = startIndex + linkText.length
+
+    val annotatedString = buildAnnotatedString {
+        if (startIndex > 0) {
+            append(finalString.substring(0, startIndex))
         }
 
+        val link = LinkAnnotation.Clickable(
+            tag = "terms_link",
+            styles = TextLinkStyles(
+                style = SpanStyle(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    textDecoration = TextDecoration.Underline
+                )
+            ),
+            linkInteractionListener = {
+                onLinkClick()
+            }
+        )
+
+        withLink(link) {
+            append(linkText)
+        }
+
+        if (endIndex < finalString.length) {
+            append(finalString.substring(endIndex))
+        }
     }
+
+    Text(
+        text = annotatedString,
+        modifier = modifier,
+        style = MaterialTheme.typography.bodyMedium.copy(
+            color = ItirafTheme.colors.textSecondary
+        )
+    )
 }
 
 @Preview(showBackground = true, name = "Light Mode")
