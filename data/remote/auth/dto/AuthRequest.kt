@@ -1,8 +1,4 @@
-package com.itirafapp.android.data.remote.dto
-
-data class AnonymousRegisterResponse(
-    val email: String
-)
+package com.itirafapp.android.data.remote.auth.dto
 
 data class AnonymousLoginRequest(
     val email: String

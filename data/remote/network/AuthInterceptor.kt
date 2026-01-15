@@ -1,4 +1,4 @@
-package com.itirafapp.android.data.remote
+package com.itirafapp.android.data.remote.network
 
 import com.itirafapp.android.util.TokenManager
 import okhttp3.Interceptor

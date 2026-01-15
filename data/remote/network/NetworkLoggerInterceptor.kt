@@ -1,4 +1,4 @@
-package com.itirafapp.android.data.remote
+package com.itirafapp.android.data.remote.network
 
 import android.util.Log
 import com.itirafapp.android.util.APIError

@@ -1,18 +1,17 @@
-package com.itirafapp.android.data.remote.dto
+package com.itirafapp.android.data.remote.user.dto
 
-import androidx.compose.ui.text.toUpperCase
 import com.google.gson.annotations.SerializedName
 import com.itirafapp.android.domain.model.Role
-import com.itirafapp.android.domain.model.User
-import java.util.Locale
 
 data class UserResponse(
     val id: String,
     val email: String,
     val username: String?,
-    @SerializedName("anonymous") val isAnonymous: Boolean,
-    @SerializedName("social_links") val socialLinks: List<SocialLinkResponse>?,
-    val roles: List<Role>
+    @SerializedName("anonymous")
+    val isAnonymous: Boolean,
+    @SerializedName("social_links")
+    val socialLinks: List<SocialLinkResponse>?,
+    val roles: List<RoleDto>
 )
 
 data class SocialLinkResponse(
@@ -22,4 +21,8 @@ data class SocialLinkResponse(
     val url: String,
     val verified: Boolean,
     val visible: Boolean
+)
+
+data class RoleDto(
+    val name: String // String olarak gelir, Enum'a mapper'da çevrilir
 )

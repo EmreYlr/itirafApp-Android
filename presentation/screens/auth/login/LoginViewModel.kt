@@ -5,12 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itirafapp.android.data.remote.dto.LoginRequest
-import com.itirafapp.android.domain.usecase.LoginUserUseCase
+import com.itirafapp.android.data.remote.auth.dto.LoginRequest
+import com.itirafapp.android.domain.usecase.auth.LoginUserUseCase
 import com.itirafapp.android.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
@@ -42,25 +44,29 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun login() {
-        viewModelScope.launch {
-            state = state.copy(isLoading = true)
+        if (state.email.isBlank() || state.password.isBlank()) {
+            sendUiEvent(LoginUiEvent.ShowError("Lütfen tüm alanları doldurun"))
+            return
+        }
 
-            val result = loginUserUseCase(
-                LoginRequest(email = state.email, password = state.password)
-            )
-
-            state = state.copy(isLoading = false)
+        loginUserUseCase(
+            LoginRequest(email = state.email, password = state.password)
+        ).onEach { result ->
 
             when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
                 is Resource.Success -> {
+                    state = state.copy(isLoading = false)
                     sendUiEvent(LoginUiEvent.NavigateToHome)
                 }
                 is Resource.Error -> {
-                    sendUiEvent(LoginUiEvent.ShowError(result.message ?: "Giriş başarısız"))
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(LoginUiEvent.ShowError(result.message ?: "Beklenmedik bir hata"))
                 }
-                else -> Unit
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     private fun sendUiEvent(event: LoginUiEvent) {

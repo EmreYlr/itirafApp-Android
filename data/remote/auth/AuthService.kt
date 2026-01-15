@@ -1,10 +1,10 @@
-package com.itirafapp.android.data.remote
+package com.itirafapp.android.data.remote.auth
 
-import com.itirafapp.android.data.remote.dto.AnonymousLoginRequest
-import com.itirafapp.android.data.remote.dto.AnonymousRegisterResponse
-import com.itirafapp.android.data.remote.dto.AuthResponse
-import com.itirafapp.android.data.remote.dto.LoginRequest
-import com.itirafapp.android.data.remote.dto.RegisterRequest
+import com.itirafapp.android.data.remote.auth.dto.AnonymousLoginRequest
+import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
+import com.itirafapp.android.data.remote.auth.dto.AuthResponse
+import com.itirafapp.android.data.remote.auth.dto.LoginRequest
+import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
 

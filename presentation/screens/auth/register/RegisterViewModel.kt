@@ -5,16 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itirafapp.android.data.remote.dto.LoginRequest
-import com.itirafapp.android.data.remote.dto.RegisterRequest
-import com.itirafapp.android.domain.usecase.LoginUserUseCase
-import com.itirafapp.android.domain.usecase.RegisterUserUseCase
-import com.itirafapp.android.presentation.navigation.Screen
-import com.itirafapp.android.presentation.screens.auth.login.LoginEvent
-import com.itirafapp.android.presentation.screens.auth.login.LoginUiEvent
+import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
+import com.itirafapp.android.domain.usecase.auth.RegisterUserUseCase
 import com.itirafapp.android.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,26 +45,30 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun register() {
-        viewModelScope.launch {
-            state = state.copy(isLoading = true)
+        if (state.email.isBlank() || state.password.isBlank()) {
+            sendUiEvent(RegisterUiEvent.ShowMessage("Lütfen tüm alanları doldurun"))
+            return
+        }
 
-            val result = registerUserUseCase(
-                RegisterRequest(email = state.email, password = state.password)
-            )
-
-            state = state.copy(isLoading = false)
+        registerUserUseCase(
+            RegisterRequest(email = state.email, password = state.password)
+        ).onEach { result ->
 
             when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
                 is Resource.Success -> {
-                    sendUiEvent(RegisterUiEvent.ShowMessage("Kayıt Başarılı"))
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(RegisterUiEvent.ShowMessage("Kayıt Başarılı! Giriş yapabilirsiniz."))
                     sendUiEvent(RegisterUiEvent.NavigateToLogin)
                 }
                 is Resource.Error -> {
+                    state = state.copy(isLoading = false)
                     sendUiEvent(RegisterUiEvent.ShowMessage(result.message ?: "Kayıt başarısız"))
                 }
-                else -> Unit
             }
-        }
+        }.launchIn(viewModelScope)
     }
 
     private fun sendUiEvent(event: RegisterUiEvent) {

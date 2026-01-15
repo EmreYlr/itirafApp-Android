@@ -1,7 +1,8 @@
-package com.itirafapp.android.data.remote
+package com.itirafapp.android.data.remote.network
 
 import com.itirafapp.android.util.SessionEventBus
 import com.itirafapp.android.util.UserManager
+import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -21,7 +22,7 @@ class AuthGuardInterceptor @Inject constructor(
 
             if (user == null || user.anonymous) {
 
-                kotlinx.coroutines.runBlocking {
+                runBlocking {
                     sessionEventBus.triggerLoginRequired()
                 }
 

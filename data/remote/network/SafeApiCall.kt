@@ -1,4 +1,4 @@
-package com.itirafapp.android.data.repository
+package com.itirafapp.android.data.remote.network
 
 import com.google.gson.Gson
 import com.itirafapp.android.util.APIError
