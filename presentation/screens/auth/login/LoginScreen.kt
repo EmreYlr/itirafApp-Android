@@ -30,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.modifier.modifierLocalOf
@@ -51,8 +52,11 @@ import com.itirafapp.android.presentation.components.common.ItirafTextField
 import com.itirafapp.android.presentation.components.common.ItirafTopBar
 import com.itirafapp.android.presentation.screens.auth.components.LegalTextMultiLink
 import com.itirafapp.android.presentation.screens.auth.register.RegisterEvent
+import com.itirafapp.android.presentation.screens.auth.register.RegisterUiEvent
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.Constants
+import com.itirafapp.android.util.openUrlSafe
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -64,6 +68,7 @@ fun LoginScreen(
     val state = viewModel.state
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val colorParams = ItirafTheme.colors.brandPrimary.toArgb()
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
@@ -74,6 +79,14 @@ fun LoginScreen(
 
                 is LoginUiEvent.NavigateToRegister -> {
                     onNavigateToRegister()
+                }
+
+                is LoginUiEvent.ShowPrivacyPolicyDialog -> {
+                    openUrlSafe(context, Constants.PRIVACY_URL, colorParams)
+                }
+
+                is LoginUiEvent.ShowTermsDialog -> {
+                    openUrlSafe(context, Constants.TERMS_URL, colorParams)
                 }
 
                 is LoginUiEvent.ShowError -> {
@@ -257,7 +270,7 @@ fun LoginContent(
                 borderColor = ItirafTheme.colors.textSecondary,
                 borderWidth = 0.7.dp
             )
-            
+
             Row(
                 modifier = Modifier
                     .padding(vertical = 16.dp)
@@ -281,15 +294,16 @@ fun LoginContent(
                 )
             }
 
-
+            Spacer(modifier = Modifier.weight(1f))
 
             LegalTextMultiLink(
                 onTermsClick = {
-                    //onEvent(RegisterEvent.OpenTermsOfUse)
+                    onEvent(LoginEvent.OpenTermsOfUse)
                 },
                 onPrivacyClick = {
-                    //onEvent(RegisterEvent.OpenPrivacyPolicy)
-                }
+                    onEvent(LoginEvent.OpenPrivacyPolicy)
+                },
+                modifier = Modifier.padding(bottom = 20.dp)
             )
         }
     }

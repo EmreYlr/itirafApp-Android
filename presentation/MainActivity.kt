@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.os.LocaleListCompat
 import com.itirafapp.android.presentation.navigation.RootNavigation
 import com.itirafapp.android.presentation.screens.auth.login.LoginScreen
 import com.itirafapp.android.presentation.screens.splash.SplashViewModel
@@ -24,6 +25,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //TODO: Debug için Türkçe yapıldı, release'da kaldırılacak
+        val locale = java.util.Locale("tr")
+        java.util.Locale.setDefault(locale)
+        val config = resources.configuration
+        config.setLocale(locale)
+        createConfigurationContext(config)
+        resources.updateConfiguration(config, resources.displayMetrics)
+
         setContent {
             ItirafAppTheme {
                 enableEdgeToEdge()

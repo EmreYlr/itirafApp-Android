@@ -202,7 +202,7 @@ fun RegisterContent(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                    .padding(vertical = 2.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TermText(
@@ -227,8 +227,7 @@ fun RegisterContent(
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TermText(
@@ -270,7 +269,7 @@ fun RegisterContent(
 
             Row(
                 modifier = Modifier
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 20.dp)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -294,7 +293,6 @@ fun RegisterContent(
     }
 }
 
-
 @Composable
 fun TermText(
     @StringRes fullTextRes: Int,
@@ -312,7 +310,7 @@ fun TermText(
 
     val annotatedString = buildAnnotatedString {
         if (startIndex > 0) {
-            append(finalString.substring(0, startIndex))
+            append(finalString.take(startIndex))
         }
 
         val link = LinkAnnotation.Clickable(

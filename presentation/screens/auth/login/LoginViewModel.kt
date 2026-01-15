@@ -34,6 +34,12 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.PasswordChanged -> {
                 state = state.copy(password = event.password)
             }
+            is LoginEvent.OpenPrivacyPolicy -> {
+                sendUiEvent(LoginUiEvent.ShowPrivacyPolicyDialog)
+            }
+            is LoginEvent.OpenTermsOfUse -> {
+                sendUiEvent(LoginUiEvent.ShowTermsDialog)
+            }
             is LoginEvent.LoginClicked -> {
                 login()
             }
