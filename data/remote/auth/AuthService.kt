@@ -7,6 +7,7 @@ import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.POST
 
 interface AuthService {
@@ -32,4 +33,7 @@ interface AuthService {
     suspend fun resetPassword(
         @Body request: ResetPasswordRequest
     )
+
+    @DELETE("auth/logout")
+    suspend fun logoutUser()
 }

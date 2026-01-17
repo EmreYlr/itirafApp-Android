@@ -46,7 +46,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.common.ItirafButton
 import com.itirafapp.android.presentation.components.common.ItirafTextField
-import com.itirafapp.android.presentation.components.common.ItirafTopBar
+import com.itirafapp.android.presentation.components.common.TopBar
 import com.itirafapp.android.presentation.screens.auth.components.LegalTextMultiLink
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -122,7 +122,7 @@ fun LoginContent(
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
         topBar = {
-            ItirafTopBar(
+            TopBar(
                 title = stringResource(R.string.login)
             )
         }

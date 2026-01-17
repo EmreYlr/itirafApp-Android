@@ -13,4 +13,5 @@ interface AuthRepository {
     suspend fun loginUser(request: LoginRequest): Resource<Unit>
     suspend fun registerUser(request: RegisterRequest): Resource<Unit>
     suspend fun resetPassword(request: ResetPasswordRequest): Resource<Unit>
+    suspend fun logoutUser(): Resource<Unit>
 }

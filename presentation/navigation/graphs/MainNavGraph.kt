@@ -14,6 +14,8 @@ import androidx.navigation.navArgument
 import com.itirafapp.android.presentation.components.common.BottomNavigation
 import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.presentation.screens.home.HomeScreen
+import com.itirafapp.android.presentation.screens.profile.ProfileScreen
+import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
 
 @Composable
 fun MainScreen(
@@ -55,6 +57,23 @@ fun MainScreen(
                         navController.navigate(Screen.Notifications.route)
                     }
                  )
+            }
+
+            // 5. PROFILE TAB
+            composable(Screen.Profile.route) {
+                ProfileScreen(
+                    onNavigateToSettings = {
+                        navController.navigate(Screen.Settings.route)
+                    }
+                )
+            }
+
+            composable(Screen.Settings.route) {
+                SettingsScreen(
+                    onNavigateToLogin = {
+                        onLogOut()
+                    }
+                )
             }
 
             composable(

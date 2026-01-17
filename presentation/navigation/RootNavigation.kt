@@ -68,7 +68,9 @@ fun RootNavigation(
         // MAIN APP
         composable(Screen.MainGraph.route) {
             MainScreen(onLogOut = {
-
+                navController.navigate(Screen.AuthGraph.route) {
+                    popUpTo(Screen.MainGraph.route) { inclusive = true }
+                }
             })
         }
 

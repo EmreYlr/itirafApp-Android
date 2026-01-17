@@ -49,4 +49,11 @@ class AuthRepositoryImpl @Inject constructor(
             api.resetPassword(request)
         }
     }
+
+    override suspend fun logoutUser(): Resource<Unit> {
+        return safeApiCall {
+            api.logoutUser()
+            tokenManager.deleteTokens()
+        }
+    }
 }

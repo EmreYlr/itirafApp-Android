@@ -19,7 +19,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ItirafTopBar(
+fun TopBar(
     title: String,
     canNavigateBack: Boolean = false,
     onNavigateBack: () -> Unit = {},

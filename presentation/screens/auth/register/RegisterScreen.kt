@@ -1,7 +1,6 @@
 package com.itirafapp.android.presentation.screens.auth.register
 
 import android.widget.Toast
-import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,16 +31,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.LinkAnnotation
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextLinkStyles
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,7 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.common.ItirafButton
 import com.itirafapp.android.presentation.components.common.ItirafTextField
-import com.itirafapp.android.presentation.components.common.ItirafTopBar
+import com.itirafapp.android.presentation.components.common.TopBar
 import com.itirafapp.android.presentation.screens.auth.components.TermText
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -115,7 +108,7 @@ fun RegisterContent(
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
         topBar = {
-            ItirafTopBar(
+            TopBar(
                 title = stringResource(R.string.register),
                 canNavigateBack = true,
                 onNavigateBack = {

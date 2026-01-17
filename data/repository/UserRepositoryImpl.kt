@@ -30,4 +30,8 @@ class UserRepositoryImpl @Inject constructor(
     override fun getLocalUser(): User? {
         return userManager.getUser()
     }
+
+    override fun clearUserData() {
+        userManager.deleteUser()
+    }
 }
