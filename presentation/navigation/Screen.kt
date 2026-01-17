@@ -26,4 +26,5 @@ sealed class Screen(val route: String) {
     object ItirafDetail : Screen("itiraf_detail/{postId}") {
         fun createRoute(postId: String) = "itiraf_detail/$postId"
     }
+    object Notifications : Screen("notifications_screen")
 }

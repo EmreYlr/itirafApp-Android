@@ -24,5 +24,5 @@ data class SocialLinkResponse(
 )
 
 data class RoleDto(
-    val name: String // String olarak gelir, Enum'a mapper'da çevrilir
+    val name: String
 )

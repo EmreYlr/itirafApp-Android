@@ -11,14 +11,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.itirafapp.android.presentation.components.common.BottomNavigation
 import com.itirafapp.android.presentation.navigation.Screen
+import com.itirafapp.android.presentation.screens.home.HomeScreen
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    onLogOut: () -> Unit
+) {
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
     val showBottomBar = currentRoute in listOf(
         Screen.Home.route,
         Screen.Channel.route,
@@ -30,24 +35,26 @@ fun MainScreen() {
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
-                //ItirafBottomNavigation(navController = navController)
+                BottomNavigation(navController = navController)
             }
         }
     ) { innerPadding ->
-        // Bottom Bar navigasyon yapısı
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
             route = Screen.MainGraph.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
             // 1. HOME TAB
             composable(Screen.Home.route) {
-                // HomeScreen(
-                //     onItirafClick = { postId ->
-                //         navController.navigate(Screen.ItirafDetail.createRoute(postId))
-                //     }
-                // )
+                 HomeScreen(
+                    onConfessionClick = { postId ->
+                        navController.navigate(Screen.ItirafDetail.createRoute(postId))
+                    },
+                    onNotificationClick = {
+                        navController.navigate(Screen.Notifications.route)
+                    }
+                 )
             }
 
             composable(

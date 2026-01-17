@@ -42,9 +42,11 @@ fun RootNavigation(
         )
     }
 
+    //val startDest = if (isLoggedIn) Screen.MainGraph.route else Screen.AuthGraph.route
+
     NavHost(
         navController = navController,
-        startDestination = Screen.AuthGraph.route //Todo: Splash yapınca Screen.Splash.route yap
+        startDestination = Screen.MainGraph.route //Todo: Splash yapınca Screen.Splash.route yap
     ) {
         // SPLASH (Başlangıç)
         composable(Screen.Splash.route) {
@@ -63,9 +65,11 @@ fun RootNavigation(
             navController.navigate(Screen.MainGraph.route) { popUpTo(Screen.Onboarding.route) { inclusive = true } }
         }
 
-        // MAIN APP (Bottom Bar olan ana yapı)
+        // MAIN APP
         composable(Screen.MainGraph.route) {
-            MainScreen() // Yukarıda tanımladığımız MainScreen
+            MainScreen(onLogOut = {
+
+            })
         }
 
         authNavGraph(navController)

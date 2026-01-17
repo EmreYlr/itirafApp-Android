@@ -25,11 +25,11 @@ fun openUrlSafe(context: Context, url: String, colorParams: Int) {
 
         customTabsIntent.launchUrl(context, uri)
 
-    } catch (e: ActivityNotFoundException) {
+    } catch (_: ActivityNotFoundException) {
         try {
             val browserIntent = Intent(Intent.ACTION_VIEW, uri)
             context.startActivity(browserIntent)
-        } catch (e2: Exception) {
+        } catch (_: Exception) {
             Toast.makeText(context, "Bağlantıyı açacak bir tarayıcı bulunamadı.", Toast.LENGTH_LONG).show()
         }
     }

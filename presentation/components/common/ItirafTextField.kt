@@ -1,6 +1,7 @@
 package com.itirafapp.android.presentation.components.common
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -108,10 +109,10 @@ fun CommonTextFieldPreview() {
 
     ItirafAppTheme {
         ItirafTextField(
-            value = text,
+            value = "Emre",
             onValueChange = { text = it },
             hint = "Örnek Metin Giriniz...",
-            isPassword = true
+            isPassword = false
         )
     }
 }

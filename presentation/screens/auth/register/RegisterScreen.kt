@@ -50,6 +50,7 @@ import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.common.ItirafButton
 import com.itirafapp.android.presentation.components.common.ItirafTextField
 import com.itirafapp.android.presentation.components.common.ItirafTopBar
+import com.itirafapp.android.presentation.screens.auth.components.TermText
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.Constants
@@ -291,58 +292,6 @@ fun RegisterContent(
             }
         }
     }
-}
-
-@Composable
-fun TermText(
-    @StringRes fullTextRes: Int,
-    @StringRes linkTextRes: Int,
-    onLinkClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val fullPattern = stringResource(id = fullTextRes)
-    val linkText = stringResource(id = linkTextRes)
-
-    val finalString = fullPattern.format(linkText)
-
-    val startIndex = finalString.indexOf(linkText)
-    val endIndex = startIndex + linkText.length
-
-    val annotatedString = buildAnnotatedString {
-        if (startIndex > 0) {
-            append(finalString.take(startIndex))
-        }
-
-        val link = LinkAnnotation.Clickable(
-            tag = "terms_link",
-            styles = TextLinkStyles(
-                style = SpanStyle(
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
-                    textDecoration = TextDecoration.Underline
-                )
-            ),
-            linkInteractionListener = {
-                onLinkClick()
-            }
-        )
-
-        withLink(link) {
-            append(linkText)
-        }
-
-        if (endIndex < finalString.length) {
-            append(finalString.substring(endIndex))
-        }
-    }
-
-    Text(
-        text = annotatedString,
-        modifier = modifier,
-        style = MaterialTheme.typography.bodyMedium.copy(
-            color = ItirafTheme.colors.textSecondary
-        )
-    )
 }
 
 @Preview(showBackground = true, name = "Light Mode")
