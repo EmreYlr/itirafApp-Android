@@ -1,8 +1,8 @@
 package com.itirafapp.android.presentation.screens.auth.login
 
 data class LoginState(
-    val email: String = "",
-    val password: String = "",
+    val email: String = "admin@admin.com",
+    val password: String = "password123",
     val isLoading: Boolean = false
 )
 

@@ -46,7 +46,7 @@ fun RootNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.MainGraph.route //Todo: Splash yapınca Screen.Splash.route yap
+        startDestination = Screen.AuthGraph.route //Todo: Splash yapınca Screen.Splash.route yap
     ) {
         // SPLASH (Başlangıç)
         composable(Screen.Splash.route) {
