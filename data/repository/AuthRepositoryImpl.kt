@@ -12,6 +12,7 @@ import com.itirafapp.android.util.Resource
 import com.itirafapp.android.util.TokenManager
 import javax.inject.Inject
 
+
 class AuthRepositoryImpl @Inject constructor(
     private val api: AuthService,
     private val tokenManager: TokenManager

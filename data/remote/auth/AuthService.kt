@@ -4,7 +4,6 @@ import com.itirafapp.android.data.remote.auth.dto.AnonymousLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
 import com.itirafapp.android.data.remote.auth.dto.AuthResponse
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
-import com.itirafapp.android.data.remote.auth.dto.RefreshTokenRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
 import retrofit2.http.Body
@@ -12,11 +11,6 @@ import retrofit2.http.DELETE
 import retrofit2.http.POST
 
 interface AuthService {
-    @POST("auth/tokens/refresh")
-    suspend fun refreshToken(
-        @Body request: RefreshTokenRequest
-    ): AuthResponse
-
     @POST("auth/register/anonymous")
     suspend fun registerAnonymous(): AnonymousRegisterResponse
 

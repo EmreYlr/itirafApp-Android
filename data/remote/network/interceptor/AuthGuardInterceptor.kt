@@ -1,4 +1,4 @@
-package com.itirafapp.android.data.remote.network
+package com.itirafapp.android.data.remote.network.interceptor
 
 import com.itirafapp.android.util.SessionEventBus
 import com.itirafapp.android.util.UserManager

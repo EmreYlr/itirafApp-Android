@@ -1,8 +1,8 @@
-package com.itirafapp.android.data.remote.network
+package com.itirafapp.android.data.remote.network.interceptor
 
 import android.util.Log
-import com.itirafapp.android.util.APIError
 import com.google.gson.Gson
+import com.itirafapp.android.util.APIError
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

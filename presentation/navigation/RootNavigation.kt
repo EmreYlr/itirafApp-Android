@@ -6,14 +6,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.itirafapp.android.presentation.components.common.LoginRequiredDialog
 import com.itirafapp.android.presentation.navigation.graphs.MainScreen
 import com.itirafapp.android.presentation.navigation.graphs.authNavGraph
 import com.itirafapp.android.util.SessionEvent
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.itirafapp.android.presentation.components.common.LoginRequiredDialog
 
 @Composable
 fun RootNavigation(
@@ -46,7 +46,7 @@ fun RootNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.AuthGraph.route //Todo: Splash yapınca Screen.Splash.route yap
+        startDestination = Screen.MainGraph.route //Todo: Splash yapınca Screen.Splash.route yap
     ) {
         // SPLASH (Başlangıç)
         composable(Screen.Splash.route) {
