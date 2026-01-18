@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
+import com.itirafapp.android.domain.usecase.auth.LoginAnonymousUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginUserUseCase
 import com.itirafapp.android.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUserUseCase: LoginUserUseCase
+    private val loginUserUseCase: LoginUserUseCase,
+    private val loginAnonymousUseCase: LoginAnonymousUseCase
 ) : ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
@@ -43,6 +45,9 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.LoginClicked -> {
                 login()
             }
+            is LoginEvent.AnonymousLoginClicked -> {
+                anonymousLogin()
+            }
             is LoginEvent.RegisterClicked -> {
                 sendUiEvent(LoginUiEvent.NavigateToRegister)
             }
@@ -61,6 +66,25 @@ class LoginViewModel @Inject constructor(
         loginUserUseCase(
             LoginRequest(email = state.email, password = state.password)
         ).onEach { result ->
+
+            when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(LoginUiEvent.NavigateToHome)
+                }
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(LoginUiEvent.ShowError(result.message ?: "Beklenmedik bir hata"))
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun anonymousLogin() {
+        loginAnonymousUseCase().onEach { result ->
 
             when (result) {
                 is Resource.Loading -> {

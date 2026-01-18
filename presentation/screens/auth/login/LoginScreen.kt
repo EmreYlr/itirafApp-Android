@@ -104,6 +104,10 @@ fun LoginScreen(
         onLoginClick = {
             focusManager.clearFocus()
             viewModel.onEvent(LoginEvent.LoginClicked)
+        },
+        onAnonLogin = {
+            focusManager.clearFocus()
+            viewModel.onEvent(LoginEvent.AnonymousLoginClicked)
         }
     )
 }
@@ -115,6 +119,7 @@ fun LoginContent(
     onEvent: (LoginEvent) -> Unit,
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onAnonLogin: () -> Unit,
     onForgotPasswordClick: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
@@ -268,7 +273,7 @@ fun LoginContent(
                 text = stringResource(R.string.anonymous_login_button),
                 onClick = {
                     focusManager.clearFocus()
-                    //TODO: onAnonLogin()
+                    onAnonLogin()
                 },
                 icon = Icons.Default.PersonOff,
                 isLoading = state.isLoading,
@@ -327,7 +332,8 @@ fun LoginScreenPreview() {
             state = LoginState(),
             onEvent = {},
             onRegisterClick = {},
-            onLoginClick = {}
+            onLoginClick = {},
+            onAnonLogin = {}
         )
     }
 }
