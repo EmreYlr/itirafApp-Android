@@ -34,4 +34,9 @@ class UserRepositoryImpl @Inject constructor(
     override fun clearUserData() {
         userManager.deleteUser()
     }
+
+    override fun isUserAuthenticated(): Boolean {
+        val user = getLocalUser()
+        return user != null && !user.anonymous
+    }
 }

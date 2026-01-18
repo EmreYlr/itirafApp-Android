@@ -1,5 +1,9 @@
 package com.itirafapp.android.data.remote.auth.dto
 
+data class RefreshTokenRequest(
+    val refreshToken: String
+)
+
 data class AnonymousLoginRequest(
     val email: String
 )

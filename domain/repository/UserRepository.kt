@@ -7,5 +7,5 @@ interface UserRepository {
     suspend fun getUser(): Resource<User>
     fun getLocalUser(): User?
     fun clearUserData()
-
+    fun isUserAuthenticated(): Boolean
 }
