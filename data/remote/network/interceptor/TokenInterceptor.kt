@@ -22,7 +22,12 @@ class TokenInterceptor @Inject constructor(
         val response = chain.proceed(originalRequest)
 
         if (response.code == 401) {
-            val errorBody = response.peekBody(Long.MAX_VALUE).string()
+            val errorBody = response.peekBody(1024 * 1024).string()
+
+            if (errorBody.contains("1401")) {
+                handleSessionExpired()
+                return response
+            }
 
             if (errorBody.contains("1402")) {
                 response.close()
@@ -48,8 +53,8 @@ class TokenInterceptor @Inject constructor(
                             .build()
                         return chain.proceed(newRequest)
                     } else {
-                        handleLogout()
-                        return chain.proceed(originalRequest)
+                        handleSessionExpired()
+                        return response
                     }
                 }
             }
@@ -76,10 +81,10 @@ class TokenInterceptor @Inject constructor(
         }
     }
 
-    private fun handleLogout() {
+    private fun handleSessionExpired() {
         tokenManager.deleteTokens()
         CoroutineScope(Dispatchers.IO).launch {
-            sessionEventBus.triggerLoginRequired()
+            sessionEventBus.triggerSessionExpired()
         }
     }
 }

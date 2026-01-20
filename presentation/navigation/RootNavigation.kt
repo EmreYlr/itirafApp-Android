@@ -10,7 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.itirafapp.android.presentation.components.common.LoginRequiredDialog
+import com.itirafapp.android.presentation.navigation.components.SessionDialogHandler
 import com.itirafapp.android.presentation.navigation.graphs.MainScreen
 import com.itirafapp.android.presentation.navigation.graphs.authNavGraph
 import com.itirafapp.android.util.SessionEvent
@@ -20,29 +20,25 @@ fun RootNavigation(
     viewModel: RootViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
-    var showLoginAlert by remember { mutableStateOf(false) }
+    var activeSessionEvent by remember { mutableStateOf<SessionEvent?>(null) }
 
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         viewModel.sessionEvents.collect { event ->
-            when(event) {
-                is SessionEvent.LoginRequired -> {
-                    showLoginAlert = true
-                }
-            }
+            activeSessionEvent = event
         }
     }
 
-    if (showLoginAlert) {
-        LoginRequiredDialog(
-            onDismiss = { showLoginAlert = false },
-            onConfirm = {
-                showLoginAlert = false
-                navController.navigate(Screen.AuthGraph.route)
-            }
-        )
+    val navigateToAuth = {
+        navController.navigate(Screen.AuthGraph.route) {
+            popUpTo(0) { inclusive = true }
+        }
     }
 
-    //val startDest = if (isLoggedIn) Screen.MainGraph.route else Screen.AuthGraph.route
+    SessionDialogHandler(
+        event = activeSessionEvent,
+        onDismiss = { activeSessionEvent = null },
+        onConfirm = navigateToAuth
+    )
 
     NavHost(
         navController = navController,
@@ -67,11 +63,7 @@ fun RootNavigation(
 
         // MAIN APP
         composable(Screen.MainGraph.route) {
-            MainScreen(onLogOut = {
-                navController.navigate(Screen.AuthGraph.route) {
-                    popUpTo(Screen.MainGraph.route) { inclusive = true }
-                }
-            })
+            MainScreen(onLogOut = navigateToAuth)
         }
 
         authNavGraph(navController)

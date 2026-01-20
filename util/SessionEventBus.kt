@@ -13,8 +13,13 @@ class SessionEventBus @Inject constructor() {
     suspend fun triggerLoginRequired() {
         _events.emit(SessionEvent.LoginRequired)
     }
+
+    suspend fun triggerSessionExpired() {
+        _events.emit(SessionEvent.SessionExpired)
+    }
 }
 
 sealed class SessionEvent {
     object LoginRequired : SessionEvent()
+    object SessionExpired : SessionEvent()
 }
