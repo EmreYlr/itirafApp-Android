@@ -8,4 +8,6 @@ interface UserRepository {
     fun getLocalUser(): User?
     fun clearUserData()
     fun isUserAuthenticated(): Boolean
+    fun isOnboardingCompleted(): Boolean
+    fun setOnboardingCompleted(completed: Boolean)
 }

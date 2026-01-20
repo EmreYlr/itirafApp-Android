@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.itirafapp.android.presentation.navigation.components.SessionDialogHandler
 import com.itirafapp.android.presentation.navigation.graphs.MainScreen
 import com.itirafapp.android.presentation.navigation.graphs.authNavGraph
+import com.itirafapp.android.presentation.screens.splash.SplashScreen
 import com.itirafapp.android.util.SessionEvent
 
 @Composable
@@ -42,17 +43,11 @@ fun RootNavigation(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.MainGraph.route //Todo: Splash yapınca Screen.Splash.route yap
+        startDestination = Screen.Splash.route
     ) {
-        // SPLASH (Başlangıç)
+        // SPLASH
         composable(Screen.Splash.route) {
-            /*android.window.SplashScreen(
-                navController = navController
-                // SplashViewModel içinden gelen event ile:
-                // -> Eğer Onboarding görülmediyse: navigate(Screen.Onboarding.route)
-                // -> Yoksa: navigate(Screen.MainGraph.route)
-            )
-             */
+            SplashScreen(navController)
         }
 
         // ONBOARDING (Placeholder)

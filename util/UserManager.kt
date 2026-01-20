@@ -1,11 +1,11 @@
 package com.itirafapp.android.util
 
 import android.content.Context
+import androidx.core.content.edit
 import com.google.gson.Gson
 import com.itirafapp.android.domain.model.User
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
-import androidx.core.content.edit
 
 class UserManager @Inject constructor(
     @ApplicationContext context: Context,
@@ -25,5 +25,13 @@ class UserManager @Inject constructor(
 
     fun deleteUser() {
         prefs.edit { remove("current_user") }
+    }
+
+    fun isOnboardingCompleted(): Boolean {
+        return prefs.getBoolean("is_onboarding_completed", false)
+    }
+
+    fun setOnboardingCompleted(completed: Boolean) {
+        prefs.edit { putBoolean("is_onboarding_completed", completed) }
     }
 }

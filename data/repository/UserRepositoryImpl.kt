@@ -39,4 +39,12 @@ class UserRepositoryImpl @Inject constructor(
         val user = getLocalUser()
         return user != null && !user.anonymous
     }
+
+    override fun isOnboardingCompleted(): Boolean {
+        return userManager.isOnboardingCompleted()
+    }
+
+    override fun setOnboardingCompleted(completed: Boolean) {
+        userManager.setOnboardingCompleted(completed)
+    }
 }
