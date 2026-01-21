@@ -26,4 +26,16 @@ class ConfessionRepositoryImpl @Inject constructor(
             response.toDomain()
         }
     }
+
+    override suspend fun likeConfession(id: Int): Resource<Unit> {
+        return safeApiCall {
+            api.likeConfession(id)
+        }
+    }
+
+    override suspend fun unlikeConfession(id: Int): Resource<Unit> {
+        return safeApiCall {
+            api.unlikeConfession(id)
+        }
+    }
 }

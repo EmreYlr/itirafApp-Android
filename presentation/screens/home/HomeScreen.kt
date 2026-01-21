@@ -74,7 +74,8 @@ fun HomeContent(
     onNotificationClick: () -> Unit
 ) {
 
-    val titles = listOf("Akış", "Takip Edilenler")
+    val titles =
+        listOf(stringResource(R.string.flow_title), stringResource(R.string.following_title))
     val pagerState = rememberPagerState(pageCount = { titles.size })
     val scope = rememberCoroutineScope()
 

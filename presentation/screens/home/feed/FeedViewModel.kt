@@ -6,6 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.confession.GetConfessionsUseCase
+import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
+import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +20,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val getConfessionsUseCase: GetConfessionsUseCase
+    private val getConfessionsUseCase: GetConfessionsUseCase,
+    private val likeConfessionUseCase: LikeConfessionUseCase,
+    private val unlikeConfessionUseCase: UnlikeConfessionUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(FeedState())
@@ -108,7 +112,9 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun toggleLike(id: Int) {
-        //TODO: LikeUseCase ekle
+        val currentConfession = state.confessions.find { it.id == id } ?: return
+        val wasLiked = currentConfession.liked
+        val oldList = state.confessions
         val updatedList = state.confessions.map { item ->
             if (item.id == id) {
                 item.copy(
@@ -118,6 +124,19 @@ class FeedViewModel @Inject constructor(
             } else item
         }
         state = state.copy(confessions = updatedList)
+
+        viewModelScope.launch {
+            val result = if (wasLiked) {
+                unlikeConfessionUseCase(id)
+            } else {
+                likeConfessionUseCase(id)
+            }
+            if (result is Resource.Error) {
+                state = state.copy(confessions = oldList)
+
+                sendUiEvent(FeedUiEvent.ShowMessage("İşlem başarısız"))
+            }
+        }
     }
 
     private fun sendUiEvent(event: FeedUiEvent) {
