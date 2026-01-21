@@ -24,7 +24,6 @@ import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -58,7 +58,9 @@ fun ConfessionCard(
     val hasTitle = confession.title.isEmpty()
 
     val animatedColor by animateColorAsState(
-        targetValue = if (confession.liked) ItirafTheme.colors.actionLike else ItirafTheme.colors.textSecondary,
+        targetValue =
+            if (confession.liked) ItirafTheme.colors.actionLike
+            else ItirafTheme.colors.textSecondary,
         label = "LikeColorAnimation"
     )
 
@@ -67,19 +69,20 @@ fun ConfessionCard(
             .fillMaxWidth()
             .clickable { onCardClick(confession.id) },
         colors = CardDefaults.cardColors(containerColor = ItirafTheme.colors.backgroundApp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        shape = RectangleShape,
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp, vertical = 10.dp)
         ) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = displayName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Normal,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Light,
                     color = ItirafTheme.colors.textSecondary
                 )
 
@@ -96,7 +99,8 @@ fun ConfessionCard(
                 Text(
                     text = confession.createdAt,
                     style = MaterialTheme.typography.bodySmall,
-                    color = ItirafTheme.colors.textSecondary
+                    color = ItirafTheme.colors.textSecondary,
+                    fontWeight = FontWeight.Light,
                 )
 
                 Spacer(modifier = Modifier.weight(1f))
@@ -105,7 +109,7 @@ fun ConfessionCard(
                     text = confession.channel.title,
                     style = MaterialTheme.typography.bodySmall,
                     color = ItirafTheme.colors.textSecondary,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.Normal,
                     textDecoration = TextDecoration.Underline,
                     modifier = Modifier.clickable {
                         onChannelClick(confession.id)
@@ -145,17 +149,16 @@ fun ConfessionCard(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
-                        onClick =
-                            { onLikeClick(confession.id) },
-                        modifier = Modifier.size(24.dp),
-                    ) {
-                        Icon(
-                            imageVector = if (confession.liked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
-                            contentDescription = if (confession.liked) "Unlike" else "Like",
-                            tint = animatedColor
-                        )
-                    }
+                    // 1. LIKE
+                    Icon(
+                        imageVector = if (confession.liked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = if (confession.liked) "Unlike" else "Like",
+                        tint = animatedColor,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .noRippleClickable { onLikeClick(confession.id) }
+                    )
+
                     AnimatedCounter(
                         modifier = Modifier.padding(2.dp),
                         count = confession.likeCount,
@@ -165,17 +168,15 @@ fun ConfessionCard(
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    IconButton(
-                        onClick =
-                            { onCommentClick(confession.id) },
-                        modifier = Modifier.size(24.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.ModeComment,
-                            contentDescription = "Comment",
-                            tint = ItirafTheme.colors.textSecondary
-                        )
-                    }
+                    // 2. COMMENT
+                    Icon(
+                        imageVector = Icons.Outlined.ModeComment,
+                        contentDescription = "Comment",
+                        tint = ItirafTheme.colors.textSecondary,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .noRippleClickable { onCommentClick(confession.id) }
+                    )
 
                     Text(
                         modifier = Modifier.padding(2.dp),
@@ -186,35 +187,30 @@ fun ConfessionCard(
 
                     Spacer(modifier = Modifier.width(16.dp))
 
-                    IconButton(
-                        onClick =
-                            { onDMRequestClick(confession.id) },
-                        modifier = Modifier.size(24.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.QuestionAnswer,
-                            contentDescription = "DM",
-                            tint = ItirafTheme.colors.textSecondary
-                        )
-                    }
+                    // 3. DM
+                    Icon(
+                        imageVector = Icons.Outlined.QuestionAnswer,
+                        contentDescription = "DM",
+                        tint = ItirafTheme.colors.textSecondary,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .noRippleClickable { onDMRequestClick(confession.id) }
+                    )
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    IconButton(
-                        onClick =
-                            { onShareClick(confession.id) },
-                        modifier = Modifier.size(24.dp),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.Share,
-                            contentDescription = "Share",
-                            tint = ItirafTheme.colors.textSecondary
-                        )
-                    }
+                    // 4. SHARE
+                    Icon(
+                        imageVector = Icons.Outlined.Share,
+                        contentDescription = "Share",
+                        tint = ItirafTheme.colors.textSecondary,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .noRippleClickable { onShareClick(confession.id) }
+                    )
                 }
             }
         }
-
     }
 }
 
@@ -238,7 +234,6 @@ fun ConfessionCardPreview() {
                 stateLike.value,
                 likeCount.value,
                 3,
-                0,
                 "2s önce",
                 OwnerUiModel(id = "1", username = "Emre"),
                 channel = ChannelData(

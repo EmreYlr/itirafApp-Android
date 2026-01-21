@@ -15,3 +15,23 @@ data class APIError(
     val type: String,
     val message: String
 )
+
+fun <T, R> Resource<T>.map(transform: (T) -> R): Resource<R> {
+    return when (this) {
+        is Resource.Success -> {
+            if (data != null) {
+                Resource.Success(transform(data))
+            } else {
+                Resource.Error("Data is null inside Success")
+            }
+        }
+
+        is Resource.Error -> {
+            Resource.Error(message ?: "Unknown Error", errorCode)
+        }
+
+        is Resource.Loading -> {
+            Resource.Loading()
+        }
+    }
+}

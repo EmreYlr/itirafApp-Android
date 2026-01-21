@@ -1,14 +1,16 @@
 package com.itirafapp.android.presentation.screens.home
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +26,7 @@ import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.common.SegmentedControl
 import com.itirafapp.android.presentation.components.common.TopBar
 import com.itirafapp.android.presentation.screens.home.components.NotificationIcon
+import com.itirafapp.android.presentation.screens.home.feed.FeedScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import kotlinx.coroutines.launch
@@ -62,7 +65,7 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeContent(
     state: HomeState,
@@ -107,13 +110,12 @@ fun HomeContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
             SegmentedControl(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 items = titles,
                 selectedIndex = state.selectedTabIndex,
                 onIndexChange = { newIndex ->
@@ -121,6 +123,29 @@ fun HomeContent(
                     scope.launch { pagerState.animateScrollToPage(newIndex) }
                 }
             )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) { pageIndex ->
+                when (pageIndex) {
+                    0 -> {
+                        FeedScreen(
+                            onItemClick = onConfessionClick
+                        )
+                    }
+
+                    1 -> {
+//                        FollowingScreen(
+//                            onItemClick = onConfessionClick
+//                        )
+                    }
+                }
+            }
         }
     }
 }

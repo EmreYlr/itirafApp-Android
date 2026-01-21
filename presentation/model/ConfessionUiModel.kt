@@ -9,7 +9,6 @@ data class ConfessionUiModel(
     val liked: Boolean,
     val likeCount: Int,
     val replyCount: Int,
-    val shareCount: Int,
     val createdAt: String,
     val owner: OwnerUiModel,
     val channel: ChannelData,

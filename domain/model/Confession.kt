@@ -8,7 +8,7 @@ data class ConfessionData(
     val likeCount: Int,
     val replyCount: Int,
     val shareCount: Int,
-    val createdAt: Long,
+    val createdAt: String,
     val owner: Owner,
     val channel: ChannelData?,
     val isNsfw: Boolean,
