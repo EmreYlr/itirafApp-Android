@@ -19,3 +19,10 @@ data class OwnerUiModel(
     val id: String,
     val username: String
 )
+
+fun ConfessionUiModel.toggleLikeState(): ConfessionUiModel {
+    return copy(
+        liked = !liked,
+        likeCount = if (liked) likeCount - 1 else likeCount + 1
+    )
+}

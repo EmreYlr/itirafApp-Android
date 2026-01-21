@@ -9,6 +9,8 @@ import com.itirafapp.android.domain.usecase.confession.GetConfessionsUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
+import com.itirafapp.android.presentation.model.ConfessionUiModel
+import com.itirafapp.android.presentation.model.toggleLikeState
 import com.itirafapp.android.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -113,30 +115,31 @@ class FeedViewModel @Inject constructor(
 
     private fun toggleLike(id: Int) {
         val currentConfession = state.confessions.find { it.id == id } ?: return
-        val wasLiked = currentConfession.liked
         val oldList = state.confessions
-        val updatedList = state.confessions.map { item ->
-            if (item.id == id) {
-                item.copy(
-                    liked = !item.liked,
-                    likeCount = if (item.liked) item.likeCount - 1 else item.likeCount + 1
-                )
-            } else item
-        }
-        state = state.copy(confessions = updatedList)
+
+        updateConfessionById(id) { it.toggleLikeState() }
 
         viewModelScope.launch {
-            val result = if (wasLiked) {
+            val result = if (currentConfession.liked) {
                 unlikeConfessionUseCase(id)
             } else {
                 likeConfessionUseCase(id)
             }
+
             if (result is Resource.Error) {
                 state = state.copy(confessions = oldList)
-
                 sendUiEvent(FeedUiEvent.ShowMessage("İşlem başarısız"))
             }
         }
+    }
+
+    private inline fun updateConfessionById(
+        id: Int,
+        transform: (ConfessionUiModel) -> ConfessionUiModel
+    ) {
+        state = state.copy(
+            confessions = state.confessions.map { if (it.id == id) transform(it) else it }
+        )
     }
 
     private fun sendUiEvent(event: FeedUiEvent) {
