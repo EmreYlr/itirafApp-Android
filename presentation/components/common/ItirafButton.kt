@@ -1,5 +1,6 @@
 package com.itirafapp.android.presentation.components.common
 
+import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -84,7 +85,7 @@ fun ItirafButton(
 @Preview(showBackground = true, name = "Light Mode")
 @Preview(
     showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
     name = "Dark Mode"
 )
 @Composable
@@ -100,7 +101,7 @@ fun ItirafButtonPreview() {
 @Preview(showBackground = true, name = "Light Mode")
 @Preview(
     showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
     name = "Dark Mode"
 )
 @Composable

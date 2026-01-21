@@ -1,5 +1,6 @@
 package com.itirafapp.android.presentation.screens.auth.passwordreset
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -177,7 +178,7 @@ fun PasswordResetContent(
 @Preview(showBackground = true, name = "Light Mode")
 @Preview(
     showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
     name = "Dark Mode"
 )
 @Composable

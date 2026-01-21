@@ -52,7 +52,7 @@ class SplashViewModel @Inject constructor(
         }
     }
 
-    private suspend fun startAnonymousLoginProcess() {
+    private fun startAnonymousLoginProcess() {
         viewModelScope.launch {
             loginAnonymousUseCase().collect { result ->
                 when (result) {

@@ -5,25 +5,28 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.common.SegmentedControl
 import com.itirafapp.android.presentation.components.common.TopBar
 import com.itirafapp.android.presentation.screens.home.components.NotificationIcon
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -33,7 +36,6 @@ fun HomeScreen(
 ) {
     val state = viewModel.state
     val context = LocalContext.current
-    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -41,9 +43,8 @@ fun HomeScreen(
                 is HomeUiEvent.NavigateToNotifications -> {
                     onNotificationClick()
                 }
-
                 is HomeUiEvent.NavigateToConfessionDetail -> {
-                    onConfessionClick("postId")
+                    onConfessionClick(event.postId)
                 }
             }
         }
@@ -53,11 +54,9 @@ fun HomeScreen(
         state = state,
         onEvent = viewModel::onEvent,
         onConfessionClick = { postId ->
-            focusManager.clearFocus()
-            viewModel.onEvent(HomeEvent.ConfessionClicked)
+            viewModel.onEvent(HomeEvent.ConfessionClicked(postId))
         },
         onNotificationClick = {
-            focusManager.clearFocus()
             viewModel.onEvent(HomeEvent.NotificationClicked)
         }
     )
@@ -71,7 +70,22 @@ fun HomeContent(
     onConfessionClick: (String) -> Unit,
     onNotificationClick: () -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
+
+    val titles = listOf("Akış", "Takip Edilenler")
+    val pagerState = rememberPagerState(pageCount = { titles.size })
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(pagerState.currentPage) {
+        if (state.selectedTabIndex != pagerState.currentPage) {
+            onEvent(HomeEvent.TabChanged(pagerState.currentPage))
+        }
+    }
+
+    LaunchedEffect(state.selectedTabIndex) {
+        if (pagerState.currentPage != state.selectedTabIndex) {
+            pagerState.animateScrollToPage(state.selectedTabIndex)
+        }
+    }
 
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
@@ -83,7 +97,6 @@ fun HomeContent(
                         hasUnread = state.hasUnread,
                         notificationCount = state.notificationCount,
                         onClick = {
-                            focusManager.clearFocus()
                             onNotificationClick()
                         }
                     )
@@ -100,7 +113,14 @@ fun HomeContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-
+            SegmentedControl(
+                items = titles,
+                selectedIndex = state.selectedTabIndex,
+                onIndexChange = { newIndex ->
+                    onEvent(HomeEvent.TabChanged(newIndex))
+                    scope.launch { pagerState.animateScrollToPage(newIndex) }
+                }
+            )
         }
     }
 }

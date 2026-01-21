@@ -1,5 +1,6 @@
 package com.itirafapp.android.presentation.screens.auth.register
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -290,7 +291,7 @@ fun RegisterContent(
 @Preview(showBackground = true, name = "Light Mode")
 @Preview(
     showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
     name = "Dark Mode"
 )
 @Composable

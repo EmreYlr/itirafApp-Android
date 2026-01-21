@@ -8,12 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.notification.FetchNotificationCountUseCase
 import com.itirafapp.android.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -51,15 +51,12 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeEvent) {
         when (event) {
-            is HomeEvent.UpdateNotificationCount -> {
-                state = state.copy(notificationCount = event.count)
-            }
-            is HomeEvent.UpdateNotificationStatus -> {
-                state = state.copy(hasUnread = event.status)
+            is HomeEvent.TabChanged -> {
+                state = state.copy(selectedTabIndex = event.index)
             }
 
             is HomeEvent.ConfessionClicked -> {
-                sendUiEvent(HomeUiEvent.NavigateToConfessionDetail)
+                sendUiEvent(HomeUiEvent.NavigateToConfessionDetail(event.postId))
             }
 
             is HomeEvent.NotificationClicked -> {
