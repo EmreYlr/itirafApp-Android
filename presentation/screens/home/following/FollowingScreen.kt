@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.screens.home.feed
+package com.itirafapp.android.presentation.screens.home.following
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -27,9 +27,9 @@ import com.itirafapp.android.presentation.components.common.ConfessionCard
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
-fun FeedScreen(
+fun FollowingScreen(
     onItemClick: (String) -> Unit,
-    viewModel: FeedViewModel = hiltViewModel()
+    viewModel: FollowingViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
     val context = LocalContext.current
@@ -37,15 +37,15 @@ fun FeedScreen(
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {
-                is FeedUiEvent.NavigateToDetail -> onItemClick(event.id.toString())
-                is FeedUiEvent.ShowMessage -> {
+                is FollowingUiEvent.NavigateToDetail -> onItemClick(event.id.toString())
+                is FollowingUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
 
-    FeedContent(
+    FollowingScreen(
         state = state,
         onEvent = viewModel::onEvent
     )
@@ -53,9 +53,9 @@ fun FeedScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FeedContent(
-    state: FeedState,
-    onEvent: (FeedEvent) -> Unit
+fun FollowingScreen(
+    state: FollowingState,
+    onEvent: (FollowingEvent) -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -63,7 +63,7 @@ fun FeedContent(
     ) {
         PullToRefreshBox(
             isRefreshing = state.isRefreshing,
-            onRefresh = { onEvent(FeedEvent.Refresh) },
+            onRefresh = { onEvent(FollowingEvent.Refresh) },
             modifier = Modifier.fillMaxSize()
         ) {
             if (state.confessions.isNotEmpty()) {
@@ -78,12 +78,12 @@ fun FeedContent(
                     ) { confession ->
                         ConfessionCard(
                             confession = confession,
-                            onCardClick = { onEvent(FeedEvent.PostClicked(confession.id)) },
-                            onChannelClick = { onEvent(FeedEvent.ChannelClicked(confession.id)) },
-                            onLikeClick = { onEvent(FeedEvent.LikeClicked(confession.id)) },
-                            onCommentClick = { onEvent(FeedEvent.CommentClicked(confession.id)) },
-                            onDMRequestClick = { onEvent(FeedEvent.DMRequestClicked(confession.id)) },
-                            onShareClick = { onEvent(FeedEvent.ShareClicked(confession.id)) }
+                            onCardClick = { onEvent(FollowingEvent.PostClicked(confession.id)) },
+                            onChannelClick = { onEvent(FollowingEvent.ChannelClicked(confession.id)) },
+                            onLikeClick = { onEvent(FollowingEvent.LikeClicked(confession.id)) },
+                            onCommentClick = { onEvent(FollowingEvent.CommentClicked(confession.id)) },
+                            onDMRequestClick = { onEvent(FollowingEvent.DMRequestClicked(confession.id)) },
+                            onShareClick = { onEvent(FollowingEvent.ShareClicked(confession.id)) }
                         )
 
                         HorizontalDivider(
@@ -108,7 +108,7 @@ fun FeedContent(
                             }
                         } else {
                             LaunchedEffect(true) {
-                                onEvent(FeedEvent.LoadMore)
+                                onEvent(FollowingEvent.LoadMore)
                             }
                         }
                     }

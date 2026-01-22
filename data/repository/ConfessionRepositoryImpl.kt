@@ -27,6 +27,19 @@ class ConfessionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getFollowingConfessions(
+        page: Int,
+        limit: Int
+    ): Resource<PaginatedResult<ConfessionData>> {
+        val apiResult: Resource<ConfessionResponse> = safeApiCall {
+            api.fetchFollowingFlow(page = page, limit = limit)
+        }
+
+        return apiResult.map { response ->
+            response.toDomain()
+        }
+    }
+
     override suspend fun likeConfession(id: Int): Resource<Unit> {
         return safeApiCall {
             api.likeConfession(id)
