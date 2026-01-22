@@ -122,6 +122,10 @@ fun HomeContent(
                 items = titles,
                 selectedIndex = state.selectedTabIndex,
                 onIndexChange = { newIndex ->
+                    if (newIndex == 1 && !state.isUserAuthenticated) {
+                        return@SegmentedControl
+                    }
+
                     onEvent(HomeEvent.TabChanged(newIndex))
                     scope.launch { pagerState.animateScrollToPage(newIndex) }
                 }
@@ -133,7 +137,8 @@ fun HomeContent(
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
+                userScrollEnabled = state.isUserAuthenticated
             ) { pageIndex ->
                 when (pageIndex) {
                     0 -> {

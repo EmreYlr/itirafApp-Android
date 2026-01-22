@@ -133,7 +133,6 @@ class FeedViewModel @Inject constructor(
 
             if (result is Resource.Error) {
                 state = state.copy(confessions = oldList)
-                sendUiEvent(FeedUiEvent.ShowMessage("İşlem başarısız"))
             }
         }
     }

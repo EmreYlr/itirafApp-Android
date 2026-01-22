@@ -22,11 +22,13 @@ interface ConfessionService {
         @Query("limit") limit: Int
     ): ConfessionResponse
 
+    @Headers("X-Auth-Restriction: NonAnonymous")
     @POST("messages/{id}/likes")
     suspend fun likeConfession(
         @Path("id") id: Int
     ): Unit
 
+    @Headers("X-Auth-Restriction: NonAnonymous")
     @DELETE("messages/{id}/likes")
     suspend fun unlikeConfession(
         @Path("id") id: Int

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.notification.FetchNotificationCountUseCase
+import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val fetchNotificationCountUseCase: FetchNotificationCountUseCase,
+    private val isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase
 ): ViewModel() {
 
     var state by mutableStateOf(HomeState())
@@ -27,10 +29,17 @@ class HomeViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        checkAuthStatus()
         checkNotifications()
     }
 
+    private fun checkAuthStatus() {
+        val isAuthenticated = isUserAuthenticatedUseCase()
+        state = state.copy(isUserAuthenticated = isAuthenticated)
+    }
     private fun checkNotifications() {
+        if (!state.isUserAuthenticated) return
+
         fetchNotificationCountUseCase().onEach {
             result ->
             when (result) {

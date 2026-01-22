@@ -3,7 +3,8 @@ package com.itirafapp.android.presentation.screens.home
 data class HomeState(
     val selectedTabIndex: Int = 0,
     val notificationCount: Int = 0,
-    val hasUnread: Boolean = false
+    val hasUnread: Boolean = false,
+    val isUserAuthenticated: Boolean = false
 )
 
 sealed class HomeEvent {
