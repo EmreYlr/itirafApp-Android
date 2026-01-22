@@ -1,8 +1,8 @@
 package com.itirafapp.android.domain.usecase.auth
 
-import com.itirafapp.android.domain.model.AuthState
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.manager.TokenManager
+import com.itirafapp.android.util.state.AuthState
 import javax.inject.Inject
 
 class GetAuthStateUseCase @Inject constructor(

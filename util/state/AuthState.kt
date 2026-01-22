@@ -1,4 +1,4 @@
-package com.itirafapp.android.domain.model
+package com.itirafapp.android.util.state
 
 enum class AuthState {
     AUTHENTICATED,

@@ -64,10 +64,6 @@ class HomeViewModel @Inject constructor(
                 state = state.copy(selectedTabIndex = event.index)
             }
 
-            is HomeEvent.ConfessionClicked -> {
-                sendUiEvent(HomeUiEvent.NavigateToConfessionDetail(event.postId))
-            }
-
             is HomeEvent.NotificationClicked -> {
                 sendUiEvent(HomeUiEvent.NavigateToNotifications)
             }

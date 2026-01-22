@@ -9,12 +9,11 @@ data class HomeState(
 
 sealed class HomeEvent {
     data class TabChanged(val index: Int) : HomeEvent()
-    data class ConfessionClicked(val postId: String) : HomeEvent()
     object NotificationClicked : HomeEvent()
 
 }
 
 sealed class HomeUiEvent {
     object NavigateToNotifications : HomeUiEvent()
-    data class NavigateToConfessionDetail(val postId: String) : HomeUiEvent()
+
 }

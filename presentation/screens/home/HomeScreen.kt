@@ -47,10 +47,6 @@ fun HomeScreen(
                 is HomeUiEvent.NavigateToNotifications -> {
                     onNotificationClick()
                 }
-
-                is HomeUiEvent.NavigateToConfessionDetail -> {
-                    onConfessionClick(event.postId)
-                }
             }
         }
     }
@@ -58,9 +54,7 @@ fun HomeScreen(
     HomeContent(
         state = state,
         onEvent = viewModel::onEvent,
-        onConfessionClick = { postId ->
-            viewModel.onEvent(HomeEvent.ConfessionClicked(postId))
-        },
+        onConfessionClick = onConfessionClick,
         onNotificationClick = {
             viewModel.onEvent(HomeEvent.NotificationClicked)
         }

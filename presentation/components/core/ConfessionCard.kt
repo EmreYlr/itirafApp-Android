@@ -219,17 +219,19 @@ fun ConfessionCard(
                         color = ItirafTheme.colors.textSecondary
                     )
 
-                    Spacer(modifier = Modifier.width(16.dp))
-
                     // 3. DM
-                    Icon(
-                        imageVector = Icons.Outlined.QuestionAnswer,
-                        contentDescription = "DM",
-                        tint = ItirafTheme.colors.textSecondary,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .noRippleClickable { onDMRequestClick(confession.id) }
-                    )
+                    if (!confession.isMine) {
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Icon(
+                            imageVector = Icons.Outlined.QuestionAnswer,
+                            contentDescription = "DM",
+                            tint = ItirafTheme.colors.textSecondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .noRippleClickable { onDMRequestClick(confession.id) }
+                        )
+                    }
 
                     Spacer(modifier = Modifier.weight(1f))
 

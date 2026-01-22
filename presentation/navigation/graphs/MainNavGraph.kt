@@ -14,6 +14,7 @@ import androidx.navigation.navArgument
 import com.itirafapp.android.presentation.components.layout.BottomNavigation
 import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.presentation.screens.home.HomeScreen
+import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
 
@@ -51,7 +52,7 @@ fun MainScreen(
             composable(Screen.Home.route) {
                  HomeScreen(
                     onConfessionClick = { postId ->
-                        navController.navigate(Screen.ItirafDetail.createRoute(postId))
+                        navController.navigate(Screen.Detail.createRoute(postId))
                     },
                     onNotificationClick = {
                         navController.navigate(Screen.Notifications.route)
@@ -77,11 +78,14 @@ fun MainScreen(
             }
 
             composable(
-                route = Screen.ItirafDetail.route,
+                route = Screen.Detail.route,
                 arguments = listOf(navArgument("postId") { type = NavType.StringType })
-            ) { backStackEntry ->
-                val postId = backStackEntry.arguments?.getString("postId")
-                // ItirafDetailScreen(postId = postId)
+            ) {
+                DetailScreen(
+                    onNavigationBack = {
+                        navController.navigateUp()
+                    }
+                )
             }
         }
     }

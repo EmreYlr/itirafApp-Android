@@ -5,6 +5,7 @@ import com.itirafapp.android.data.remote.confession.ConfessionService
 import com.itirafapp.android.data.remote.confession.dto.ConfessionResponse
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.model.ConfessionData
+import com.itirafapp.android.domain.model.ConfessionDetail
 import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.repository.ConfessionRepository
 import com.itirafapp.android.util.state.Resource
@@ -37,6 +38,14 @@ class ConfessionRepositoryImpl @Inject constructor(
 
         return apiResult.map { response ->
             response.toDomain()
+        }
+    }
+
+    override suspend fun getConfessionDetail(id: Int): Resource<ConfessionDetail> {
+        return safeApiCall {
+            val result = api.fetchConfessionDetail(id)
+            val detail = result.toDomain()
+            detail
         }
     }
 
