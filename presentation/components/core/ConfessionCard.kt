@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.components.common
+package com.itirafapp.android.presentation.components.core
 
 import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
@@ -42,12 +42,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ChannelData
+import com.itirafapp.android.presentation.components.content.AnimatedCounter
 import com.itirafapp.android.presentation.model.ConfessionUiModel
 import com.itirafapp.android.presentation.model.OwnerUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
-import com.itirafapp.android.util.UiText
-import com.itirafapp.android.util.toTruncatedAnnotatedString
+import com.itirafapp.android.util.extension.noRippleClickable
+import com.itirafapp.android.util.extension.toTruncatedAnnotatedString
+import com.itirafapp.android.util.state.UiText
 
 @Composable
 fun ConfessionCard(

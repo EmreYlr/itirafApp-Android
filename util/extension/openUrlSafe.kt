@@ -1,5 +1,6 @@
-package com.itirafapp.android.util
+package com.itirafapp.android.util.extension
 
+import android.R
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -19,7 +20,7 @@ fun openUrlSafe(context: Context, url: String, colorParams: Int) {
         builder.setDefaultColorSchemeParams(colorScheme)
         builder.setShowTitle(true)
 
-        builder.setExitAnimations(context, android.R.anim.fade_in, android.R.anim.fade_out)
+        builder.setExitAnimations(context, R.anim.fade_in, R.anim.fade_out)
 
         val customTabsIntent = builder.build()
 

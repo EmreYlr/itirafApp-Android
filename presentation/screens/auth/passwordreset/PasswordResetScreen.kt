@@ -34,9 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
-import com.itirafapp.android.presentation.components.common.ItirafButton
-import com.itirafapp.android.presentation.components.common.ItirafTextField
-import com.itirafapp.android.presentation.components.common.TopBar
+import com.itirafapp.android.presentation.components.core.ItirafButton
+import com.itirafapp.android.presentation.components.core.ItirafTextField
+import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 

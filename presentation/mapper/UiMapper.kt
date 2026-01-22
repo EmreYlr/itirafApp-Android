@@ -6,8 +6,8 @@ import com.itirafapp.android.domain.model.ConfessionData
 import com.itirafapp.android.domain.model.Owner
 import com.itirafapp.android.presentation.model.ConfessionUiModel
 import com.itirafapp.android.presentation.model.OwnerUiModel
-import com.itirafapp.android.util.UiText
-import com.itirafapp.android.util.formatToRelativeTime
+import com.itirafapp.android.util.extension.formatToRelativeTime
+import com.itirafapp.android.util.state.UiText
 
 fun ConfessionData.toUiModel(currentUserId: String?): ConfessionUiModel {
     val isOwner = this.owner.id == currentUserId

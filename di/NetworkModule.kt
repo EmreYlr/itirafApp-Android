@@ -20,9 +20,9 @@ import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.ConfessionRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
 import com.itirafapp.android.domain.repository.UserRepository
-import com.itirafapp.android.util.SessionEventBus
-import com.itirafapp.android.util.TokenManager
-import com.itirafapp.android.util.UserManager
+import com.itirafapp.android.util.manager.SessionEventBus
+import com.itirafapp.android.util.manager.TokenManager
+import com.itirafapp.android.util.manager.UserManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

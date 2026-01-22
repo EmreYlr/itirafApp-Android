@@ -8,14 +8,14 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.domain.usecase.auth.LoginAnonymousUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginUserUseCase
-import com.itirafapp.android.util.Resource
+import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(

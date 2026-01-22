@@ -7,7 +7,7 @@ import com.itirafapp.android.domain.usecase.auth.GetAuthStateUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginAnonymousUseCase
 import com.itirafapp.android.domain.usecase.onboarding.GetOnboardingStatusUseCase
 import com.itirafapp.android.presentation.navigation.Screen
-import com.itirafapp.android.util.Resource
+import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow

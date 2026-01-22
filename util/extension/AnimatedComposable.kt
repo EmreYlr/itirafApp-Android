@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.navigation
+package com.itirafapp.android.util.extension
 
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedContentTransitionScope

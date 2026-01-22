@@ -1,7 +1,6 @@
-package com.itirafapp.android.presentation.components.common
+package com.itirafapp.android.presentation.components.core
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape

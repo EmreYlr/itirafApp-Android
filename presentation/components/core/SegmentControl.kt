@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.components.common
+package com.itirafapp.android.presentation.components.core
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

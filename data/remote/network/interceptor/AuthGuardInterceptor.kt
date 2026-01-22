@@ -1,7 +1,7 @@
 package com.itirafapp.android.data.remote.network.interceptor
 
-import com.itirafapp.android.util.SessionEventBus
-import com.itirafapp.android.util.UserManager
+import com.itirafapp.android.util.manager.SessionEventBus
+import com.itirafapp.android.util.manager.UserManager
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response

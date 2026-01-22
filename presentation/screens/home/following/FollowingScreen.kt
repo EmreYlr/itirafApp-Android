@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.itirafapp.android.presentation.components.common.ConfessionCard
+import com.itirafapp.android.presentation.components.core.ConfessionCard
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable

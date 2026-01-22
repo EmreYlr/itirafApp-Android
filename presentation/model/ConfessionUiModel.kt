@@ -1,7 +1,7 @@
 package com.itirafapp.android.presentation.model
 
 import com.itirafapp.android.domain.model.ChannelData
-import com.itirafapp.android.util.UiText
+import com.itirafapp.android.util.state.UiText
 
 data class ConfessionUiModel(
     val id: Int,

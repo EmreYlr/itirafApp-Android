@@ -1,4 +1,4 @@
-package com.itirafapp.android.util
+package com.itirafapp.android.util.state
 
 sealed class Resource<T>(
     val data: T? = null,

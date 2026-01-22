@@ -1,4 +1,4 @@
-package com.itirafapp.android.util
+package com.itirafapp.android.util.constant
 
 object Constants {
     const val TERMS_URL = "https://itirafapp.com/terms"

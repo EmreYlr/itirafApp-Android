@@ -8,8 +8,8 @@ import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.repository.AuthRepository
-import com.itirafapp.android.util.Resource
-import com.itirafapp.android.util.TokenManager
+import com.itirafapp.android.util.manager.TokenManager
+import com.itirafapp.android.util.state.Resource
 import javax.inject.Inject
 
 

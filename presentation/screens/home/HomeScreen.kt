@@ -23,8 +23,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
-import com.itirafapp.android.presentation.components.common.SegmentedControl
-import com.itirafapp.android.presentation.components.common.TopBar
+import com.itirafapp.android.presentation.components.core.SegmentedControl
+import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.home.components.NotificationIcon
 import com.itirafapp.android.presentation.screens.home.feed.FeedScreen
 import com.itirafapp.android.presentation.screens.home.following.FollowingScreen
@@ -47,6 +47,7 @@ fun HomeScreen(
                 is HomeUiEvent.NavigateToNotifications -> {
                     onNotificationClick()
                 }
+
                 is HomeUiEvent.NavigateToConfessionDetail -> {
                     onConfessionClick(event.postId)
                 }

@@ -1,4 +1,4 @@
-package com.itirafapp.android.util
+package com.itirafapp.android.util.manager
 
 import android.content.Context
 import androidx.core.content.edit

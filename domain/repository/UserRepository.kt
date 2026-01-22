@@ -1,7 +1,7 @@
 package com.itirafapp.android.domain.repository
 
 import com.itirafapp.android.domain.model.User
-import com.itirafapp.android.util.Resource
+import com.itirafapp.android.util.state.Resource
 
 interface UserRepository {
     suspend fun getUser(): Resource<User>

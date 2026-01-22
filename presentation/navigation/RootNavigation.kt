@@ -14,7 +14,7 @@ import com.itirafapp.android.presentation.navigation.components.SessionDialogHan
 import com.itirafapp.android.presentation.navigation.graphs.MainScreen
 import com.itirafapp.android.presentation.navigation.graphs.authNavGraph
 import com.itirafapp.android.presentation.screens.splash.SplashScreen
-import com.itirafapp.android.util.SessionEvent
+import com.itirafapp.android.util.manager.SessionEvent
 
 @Composable
 fun RootNavigation(

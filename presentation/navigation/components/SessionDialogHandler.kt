@@ -1,9 +1,9 @@
 package com.itirafapp.android.presentation.navigation.components
 
 import androidx.compose.runtime.Composable
-import com.itirafapp.android.presentation.components.common.LoginRequiredDialog
-import com.itirafapp.android.presentation.components.common.SessionExpiredDialog
-import com.itirafapp.android.util.SessionEvent
+import com.itirafapp.android.presentation.components.dialog.LoginRequiredDialog
+import com.itirafapp.android.presentation.components.dialog.SessionExpiredDialog
+import com.itirafapp.android.util.manager.SessionEvent
 
 @Composable
 fun SessionDialogHandler(

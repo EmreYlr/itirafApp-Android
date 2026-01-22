@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.components.common
+package com.itirafapp.android.presentation.components.core
 
 import android.content.res.Configuration
 import androidx.compose.foundation.BorderStroke

@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.components.common
+package com.itirafapp.android.presentation.components.dialog
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme

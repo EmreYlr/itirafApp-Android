@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.components.common
+package com.itirafapp.android.presentation.components.layout
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope

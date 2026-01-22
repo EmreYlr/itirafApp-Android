@@ -1,4 +1,4 @@
-package com.itirafapp.android.util
+package com.itirafapp.android.util.extension
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString

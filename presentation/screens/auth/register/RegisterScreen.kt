@@ -41,14 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
-import com.itirafapp.android.presentation.components.common.ItirafButton
-import com.itirafapp.android.presentation.components.common.ItirafTextField
-import com.itirafapp.android.presentation.components.common.TopBar
+import com.itirafapp.android.presentation.components.core.ItirafButton
+import com.itirafapp.android.presentation.components.core.ItirafTextField
+import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.auth.components.TermText
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
-import com.itirafapp.android.util.Constants
-import com.itirafapp.android.util.openUrlSafe
+import com.itirafapp.android.util.constant.Constants
+import com.itirafapp.android.util.extension.openUrlSafe
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

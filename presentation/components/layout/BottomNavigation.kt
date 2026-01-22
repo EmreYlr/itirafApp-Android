@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.components.common
+package com.itirafapp.android.presentation.components.layout
 
 import android.content.res.Configuration
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -75,7 +75,8 @@ fun BottomNavigation(
     val dividerColor = ItirafTheme.colors.dividerColor
 
     NavigationBar(
-        modifier = Modifier.height(60.dp)
+        modifier = Modifier
+            .height(60.dp)
             .drawBehind {
                 val strokeWidth = 1.dp.toPx()
                 drawLine(

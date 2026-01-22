@@ -1,4 +1,4 @@
-package com.itirafapp.android.util
+package com.itirafapp.android.util.manager
 
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow

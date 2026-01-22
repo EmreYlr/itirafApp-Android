@@ -1,8 +1,8 @@
 package com.itirafapp.android.data.remote.network
 
 import com.google.gson.Gson
-import com.itirafapp.android.util.APIError
-import com.itirafapp.android.util.Resource
+import com.itirafapp.android.util.state.APIError
+import com.itirafapp.android.util.state.Resource
 import retrofit2.HttpException
 import java.io.IOException
 

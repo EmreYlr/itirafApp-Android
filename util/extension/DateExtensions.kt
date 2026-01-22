@@ -1,4 +1,4 @@
-package com.itirafapp.android.util
+package com.itirafapp.android.util.extension
 
 import java.time.Duration
 import java.time.Instant

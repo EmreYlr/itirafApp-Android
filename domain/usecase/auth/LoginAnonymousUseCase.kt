@@ -3,9 +3,8 @@ package com.itirafapp.android.domain.usecase.auth
 import com.itirafapp.android.data.remote.auth.dto.AnonymousLoginRequest
 import com.itirafapp.android.domain.model.User
 import com.itirafapp.android.domain.repository.AuthRepository
-import com.itirafapp.android.domain.repository.UserRepository
-import com.itirafapp.android.util.Resource
-import com.itirafapp.android.util.UserManager
+import com.itirafapp.android.util.manager.UserManager
+import com.itirafapp.android.util.state.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

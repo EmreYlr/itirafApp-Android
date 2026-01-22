@@ -2,8 +2,8 @@ package com.itirafapp.android.data.remote.network.interceptor
 
 import com.itirafapp.android.data.remote.auth.dto.RefreshTokenRequest
 import com.itirafapp.android.data.remote.network.api.TokenRefreshApi
-import com.itirafapp.android.util.SessionEventBus
-import com.itirafapp.android.util.TokenManager
+import com.itirafapp.android.util.manager.SessionEventBus
+import com.itirafapp.android.util.manager.TokenManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

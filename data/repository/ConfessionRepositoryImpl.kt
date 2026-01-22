@@ -7,8 +7,8 @@ import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.model.ConfessionData
 import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.repository.ConfessionRepository
-import com.itirafapp.android.util.Resource
-import com.itirafapp.android.util.map
+import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.map
 import javax.inject.Inject
 
 class ConfessionRepositoryImpl @Inject constructor(

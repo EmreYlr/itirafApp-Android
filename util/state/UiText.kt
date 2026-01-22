@@ -1,4 +1,4 @@
-package com.itirafapp.android.util
+package com.itirafapp.android.util.state
 
 import android.content.Context
 import androidx.annotation.StringRes

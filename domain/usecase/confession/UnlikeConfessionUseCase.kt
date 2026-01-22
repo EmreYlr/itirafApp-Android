@@ -1,7 +1,7 @@
 package com.itirafapp.android.domain.usecase.confession
 
 import com.itirafapp.android.domain.repository.ConfessionRepository
-import com.itirafapp.android.util.Resource
+import com.itirafapp.android.util.state.Resource
 import javax.inject.Inject
 
 class UnlikeConfessionUseCase @Inject constructor(

@@ -1,9 +1,8 @@
 package com.itirafapp.android.presentation.navigation
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.itirafapp.android.util.SessionEvent
-import com.itirafapp.android.util.SessionEventBus
+import com.itirafapp.android.util.manager.SessionEvent
+import com.itirafapp.android.util.manager.SessionEventBus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharedFlow
 import javax.inject.Inject

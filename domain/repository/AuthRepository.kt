@@ -5,7 +5,7 @@ import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
-import com.itirafapp.android.util.Resource
+import com.itirafapp.android.util.state.Resource
 
 interface AuthRepository {
     suspend fun loginAnonymous(request: AnonymousLoginRequest): Resource<Unit>

@@ -5,8 +5,8 @@ import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.data.remote.user.UserService
 import com.itirafapp.android.domain.model.User
 import com.itirafapp.android.domain.repository.UserRepository
-import com.itirafapp.android.util.Resource
-import com.itirafapp.android.util.UserManager
+import com.itirafapp.android.util.manager.UserManager
+import com.itirafapp.android.util.state.Resource
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(

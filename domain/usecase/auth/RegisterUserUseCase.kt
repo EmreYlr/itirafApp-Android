@@ -2,7 +2,7 @@ package com.itirafapp.android.domain.usecase.auth
 
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import com.itirafapp.android.domain.repository.AuthRepository
-import com.itirafapp.android.util.Resource
+import com.itirafapp.android.util.state.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.itirafapp.android.presentation.components.common.BottomNavigation
+import com.itirafapp.android.presentation.components.layout.BottomNavigation
 import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen

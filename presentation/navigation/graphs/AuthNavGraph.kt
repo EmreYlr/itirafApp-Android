@@ -4,10 +4,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.navigation
 import com.itirafapp.android.presentation.navigation.Screen
-import com.itirafapp.android.presentation.navigation.animatedComposable
 import com.itirafapp.android.presentation.screens.auth.login.LoginScreen
 import com.itirafapp.android.presentation.screens.auth.passwordreset.PasswordResetScreen
 import com.itirafapp.android.presentation.screens.auth.register.RegisterScreen
+import com.itirafapp.android.util.extension.animatedComposable
 
 fun NavGraphBuilder.authNavGraph(navController: NavController) {
     navigation(

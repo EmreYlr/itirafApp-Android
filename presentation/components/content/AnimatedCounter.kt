@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.components.common
+package com.itirafapp.android.presentation.components.content
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
