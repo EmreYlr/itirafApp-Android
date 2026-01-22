@@ -33,16 +33,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ChannelData
 import com.itirafapp.android.presentation.model.ConfessionUiModel
 import com.itirafapp.android.presentation.model.OwnerUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.UiText
+import com.itirafapp.android.util.toTruncatedAnnotatedString
 
 @Composable
 fun ConfessionCard(
@@ -54,8 +59,10 @@ fun ConfessionCard(
     onDMRequestClick: (Int) -> Unit,
     onShareClick: (Int) -> Unit
 ) {
-    val displayName = confession.owner.username
-    val hasTitle = confession.title.isEmpty()
+    val displayName = confession.owner.username.asString()
+    val hasTitle = confession.title.isNotEmpty()
+    val seeMoreColor = ItirafTheme.colors.brandPrimary
+    val readMoreText = stringResource(id = R.string.confession_read_more)
 
     val animatedColor by animateColorAsState(
         targetValue =
@@ -63,6 +70,14 @@ fun ConfessionCard(
             else ItirafTheme.colors.textSecondary,
         label = "LikeColorAnimation"
     )
+
+    val messageText = remember(confession.message) {
+        confession.message.toTruncatedAnnotatedString(
+            limit = 300,
+            seeMoreColor = seeMoreColor,
+            seeMoreText = readMoreText
+        )
+    }
 
     Card(
         modifier = Modifier
@@ -78,32 +93,45 @@ fun ConfessionCard(
                 .padding(horizontal = 16.dp, vertical = 10.dp)
         ) {
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    text = displayName,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Light,
-                    color = ItirafTheme.colors.textSecondary
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    modifier = Modifier.weight(1f, fill = false),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = displayName,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Light,
+                        color = ItirafTheme.colors.textSecondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
 
-                Box(
-                    modifier = Modifier
-                        .padding(horizontal = 6.dp)
-                        .size(4.dp)
-                        .background(
-                            color = ItirafTheme.colors.textSecondary,
-                            shape = CircleShape
-                        )
-                )
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 6.dp)
+                            .size(4.dp)
+                            .background(
+                                color = ItirafTheme.colors.textSecondary,
+                                shape = CircleShape
+                            )
+                    )
 
-                Text(
-                    text = confession.createdAt,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = ItirafTheme.colors.textSecondary,
-                    fontWeight = FontWeight.Light,
-                )
+                    Text(
+                        text = confession.createdAt,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = ItirafTheme.colors.textSecondary,
+                        fontWeight = FontWeight.Light,
+                        maxLines = 1
+                    )
+                }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.width(12.dp))
 
                 Text(
                     text = confession.channel.title,
@@ -111,29 +139,33 @@ fun ConfessionCard(
                     color = ItirafTheme.colors.textSecondary,
                     fontWeight = FontWeight.Normal,
                     textDecoration = TextDecoration.Underline,
-                    modifier = Modifier.clickable {
-                        onChannelClick(confession.id)
-                    }
-
+                    textAlign = TextAlign.End,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .weight(0.7f, fill = false)
+                        .clickable { onChannelClick(confession.id) }
                 )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Column(horizontalAlignment = Alignment.Start) {
-                if (!hasTitle) {
+                if (hasTitle) {
                     Text(
                         text = confession.title,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Medium,
-                        color = ItirafTheme.colors.textPrimary
+                        color = ItirafTheme.colors.textPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
 
                     Spacer(modifier = Modifier.height(4.dp))
                 }
 
                 Text(
-                    text = confession.message,
+                    text = messageText,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Normal,
                     color = ItirafTheme.colors.textSecondary,
@@ -228,14 +260,17 @@ fun ConfessionCardPreview() {
         ConfessionCard(
             confession = ConfessionUiModel(
                 id = 1,
-                title = "Bu bir itiraftır. ",
-                "Bugün Ankara'ya gittim. Orda bir kız gördüm. Sarı saçlı," +
+                title = "Bu bir itiraftır. Bu yüzden dolayı çok fazla önemseyebilirsiniz.",
+                message = "Bugün Ankara'ya gittim. Orda bir kız gördüm. Sarı saçlı," +
                         " mavi gözlü çok güzeldi.Hala unutamıyorum.",
-                stateLike.value,
-                likeCount.value,
-                3,
-                "2s önce",
-                OwnerUiModel(id = "1", username = "Emre"),
+                liked = stateLike.value,
+                likeCount = likeCount.value,
+                replyCount = 3,
+                createdAt = "2s önce",
+                owner = OwnerUiModel(
+                    id = "1",
+                    username = UiText.DynamicString("Emre")
+                ),
                 channel = ChannelData(
                     id = 1,
                     title = "Ankara Üni",

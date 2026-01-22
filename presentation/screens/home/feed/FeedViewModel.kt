@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.confession.GetConfessionsUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
+import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.presentation.model.ConfessionUiModel
 import com.itirafapp.android.presentation.model.toggleLikeState
@@ -24,7 +25,8 @@ import javax.inject.Inject
 class FeedViewModel @Inject constructor(
     private val getConfessionsUseCase: GetConfessionsUseCase,
     private val likeConfessionUseCase: LikeConfessionUseCase,
-    private val unlikeConfessionUseCase: UnlikeConfessionUseCase
+    private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(FeedState())
@@ -65,6 +67,8 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun loadConfessions(isRefresh: Boolean = false) {
+        val currentUserId = getCurrentUserUseCase()?.id
+
         getConfessionsUseCase(page = currentPage)
             .onEach { result ->
                 when (result) {
@@ -80,7 +84,8 @@ class FeedViewModel @Inject constructor(
                         val paginatedResult = result.data
 
                         if (paginatedResult != null) {
-                            val newUiItems = paginatedResult.items.map { it.toUiModel() }
+                            val newUiItems =
+                                paginatedResult.items.map { it.toUiModel(currentUserId) }
 
                             val currentList = if (isRefresh) emptyList() else state.confessions
                             val combinedList = currentList + newUiItems

@@ -1,6 +1,7 @@
 package com.itirafapp.android.presentation.model
 
 import com.itirafapp.android.domain.model.ChannelData
+import com.itirafapp.android.util.UiText
 
 data class ConfessionUiModel(
     val id: Int,
@@ -13,11 +14,12 @@ data class ConfessionUiModel(
     val owner: OwnerUiModel,
     val channel: ChannelData,
     val isNsfw: Boolean,
+    val isMine: Boolean = false
 )
 
 data class OwnerUiModel(
     val id: String,
-    val username: String
+    val username: UiText
 )
 
 fun ConfessionUiModel.toggleLikeState(): ConfessionUiModel {
