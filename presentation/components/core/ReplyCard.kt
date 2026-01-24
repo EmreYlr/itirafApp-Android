@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.itirafapp.android.presentation.components.content.SeparatorDot
 import com.itirafapp.android.presentation.model.OwnerUiModel
 import com.itirafapp.android.presentation.model.ReplyUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
@@ -96,12 +97,7 @@ fun ReplyCard(
                             overflow = TextOverflow.Ellipsis
                         )
 
-                        Box(
-                            modifier = Modifier
-                                .padding(horizontal = 6.dp)
-                                .size(3.dp)
-                                .background(ItirafTheme.colors.textSecondary, CircleShape)
-                        )
+                        SeparatorDot()
 
                         Text(
                             text = reply.createdAt,

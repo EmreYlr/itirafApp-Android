@@ -54,7 +54,8 @@ fun DetailContent(
         containerColor = ItirafTheme.colors.backgroundApp,
         topBar = {
             TopBar(
-                title = "Detail Screen",
+                canNavigateBack = true,
+                onNavigateBack = { onEvent(DetailEvent.BackClicked) }
             )
         }
     ) { paddingValues ->

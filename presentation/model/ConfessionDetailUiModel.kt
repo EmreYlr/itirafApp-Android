@@ -4,7 +4,7 @@ import com.itirafapp.android.domain.model.ChannelData
 
 data class ConfessionDetailUiModel(
     val id: Int,
-    val title: String? = null,
+    val title: String,
     val message: String,
     val liked: Boolean,
     val likeCount: Int,

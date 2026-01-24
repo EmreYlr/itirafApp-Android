@@ -20,7 +20,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBar(
-    title: String,
+    title: String = "",
     canNavigateBack: Boolean = false,
     onNavigateBack: () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {}
