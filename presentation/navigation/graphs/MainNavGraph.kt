@@ -17,6 +17,7 @@ import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
+import com.itirafapp.android.util.extension.animatedComposable
 
 @Composable
 fun MainScreen(
@@ -49,7 +50,7 @@ fun MainScreen(
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
             // 1. HOME TAB
-            composable(Screen.Home.route) {
+            animatedComposable(Screen.Home.route) {
                  HomeScreen(
                     onConfessionClick = { postId ->
                         navController.navigate(Screen.Detail.createRoute(postId))
@@ -77,7 +78,7 @@ fun MainScreen(
                 )
             }
 
-            composable(
+            animatedComposable(
                 route = Screen.Detail.route,
                 arguments = listOf(navArgument("postId") { type = NavType.StringType })
             ) {

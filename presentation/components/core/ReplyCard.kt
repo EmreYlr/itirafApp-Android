@@ -90,7 +90,7 @@ fun ReplyCard(
                     ) {
                         Text(
                             text = displayName,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.SemiBold,
                             color = ItirafTheme.colors.textPrimary,
                             maxLines = 1,

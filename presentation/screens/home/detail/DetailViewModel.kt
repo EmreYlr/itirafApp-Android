@@ -98,6 +98,14 @@ class DetailViewModel @Inject constructor(
             is DetailEvent.DMRequestClicked -> {
 
             }
+
+            is DetailEvent.SendCommentClicked -> {
+
+            }
+
+            is DetailEvent.CommentTextChanged -> {
+                state = state.copy(commentText = event.text)
+            }
         }
     }
 
