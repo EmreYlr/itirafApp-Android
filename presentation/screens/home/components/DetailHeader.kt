@@ -264,7 +264,7 @@ fun DetailHeaderPreview() {
                     description = "Test",
                     imageURL = ""
                 ),
-                shortLink = "itiraf.app/x9s2",
+                shortlink = "itiraf.app/x9s2",
                 replies = emptyList(),
                 isNsfw = false,
                 isMine = false

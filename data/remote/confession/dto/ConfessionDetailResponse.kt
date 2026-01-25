@@ -13,7 +13,7 @@ data class ConfessionDetailResponse(
     val createdAt: String,
     val owner: OwnerResponse,
     val channel: ChannelDataResponse,
-    val shortLink: String?,
+    val shortlink: String?,
     val replies: List<ReplyResponse>,
     val isNsfw: Boolean,
 )

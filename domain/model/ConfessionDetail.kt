@@ -11,7 +11,7 @@ data class ConfessionDetail(
     val createdAt: String,
     val owner: Owner,
     val channel: ChannelData,
-    val shortLink: String?,
+    val shortlink: String?,
     val replies: List<Reply>,
     val isNsfw: Boolean,
 )
@@ -21,8 +21,4 @@ data class Reply(
     val message: String,
     val owner: Owner,
     val createdAt: String,
-)
-
-data class Shortlink(
-    val url: String
 )

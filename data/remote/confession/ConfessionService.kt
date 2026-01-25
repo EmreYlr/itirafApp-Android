@@ -3,6 +3,8 @@ package com.itirafapp.android.data.remote.confession
 import com.itirafapp.android.data.remote.confession.dto.ConfessionDetailResponse
 import com.itirafapp.android.data.remote.confession.dto.ConfessionResponse
 import com.itirafapp.android.data.remote.confession.dto.ReplyRequest
+import com.itirafapp.android.data.remote.confession.dto.ShortlinkRequest
+import com.itirafapp.android.data.remote.confession.dto.ShortlinkResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -31,6 +33,11 @@ interface ConfessionService {
         @Path("id") id: Int,
         @Body request: ReplyRequest
     ): Unit
+
+    @POST("shortlinks")
+    suspend fun repliesMessage(
+        @Body request: ShortlinkRequest
+    ): ShortlinkResponse
 
     @GET("messages/{id}")
     suspend fun fetchConfessionDetail(

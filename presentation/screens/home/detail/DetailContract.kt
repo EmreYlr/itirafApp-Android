@@ -13,7 +13,6 @@ data class DetailState(
 sealed class DetailEvent {
     object BackClicked : DetailEvent()
     data class LikeClicked(val id: Int) : DetailEvent()
-    data class CommentClicked(val id: Int) : DetailEvent()
     data class DMRequestClicked(val id: Int) : DetailEvent()
     data class ShareClicked(val id: Int) : DetailEvent()
     data class MoreClicked(val id: Int) : DetailEvent()
@@ -23,5 +22,6 @@ sealed class DetailEvent {
 
 sealed class DetailUiEvent {
     object NavigateToBack : DetailUiEvent()
+    data class OpenShareSheet(val link: String) : DetailUiEvent()
     data class ShowMessage(val message: String) : DetailUiEvent()
 }

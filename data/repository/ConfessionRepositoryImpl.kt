@@ -4,6 +4,8 @@ import com.itirafapp.android.data.mapper.toDomain
 import com.itirafapp.android.data.remote.confession.ConfessionService
 import com.itirafapp.android.data.remote.confession.dto.ConfessionResponse
 import com.itirafapp.android.data.remote.confession.dto.ReplyRequest
+import com.itirafapp.android.data.remote.confession.dto.ShortlinkRequest
+import com.itirafapp.android.data.remote.confession.dto.ShortlinkResponse
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.model.ConfessionData
 import com.itirafapp.android.domain.model.ConfessionDetail
@@ -57,6 +59,14 @@ class ConfessionRepositoryImpl @Inject constructor(
             val result = api.fetchConfessionDetail(id)
             val detail = result.toDomain()
             detail
+        }
+    }
+
+    override suspend fun createShortlink(id: Int): Resource<ShortlinkResponse> {
+        return safeApiCall {
+            val request = ShortlinkRequest(id)
+            val shortlinkURL = api.repliesMessage(request)
+            shortlinkURL
         }
     }
 

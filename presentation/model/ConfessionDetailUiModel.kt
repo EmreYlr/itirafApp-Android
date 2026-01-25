@@ -13,7 +13,7 @@ data class ConfessionDetailUiModel(
     val createdAt: String,
     val owner: OwnerUiModel,
     val channel: ChannelData,
-    val shortLink: String?,
+    val shortlink: String?,
     val replies: List<ReplyUiModel>,
     val isNsfw: Boolean,
     val isMine: Boolean = false
@@ -25,14 +25,3 @@ data class ReplyUiModel(
     val owner: OwnerUiModel,
     val createdAt: String,
 )
-
-data class ShortlinkUiModel(
-    val url: String
-)
-
-fun ConfessionDetailUiModel.toggleLikeState(): ConfessionDetailUiModel {
-    return copy(
-        liked = !liked,
-        likeCount = if (liked) likeCount - 1 else likeCount + 1
-    )
-}

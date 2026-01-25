@@ -23,7 +23,7 @@ fun ConfessionDetail.toUiModel(currentUserId: String?): ConfessionDetailUiModel 
         replies = this.replies.map { it.toUiModel(isOwner) },
         isNsfw = this.isNsfw,
         isMine = isOwner,
-        shortLink = this.shortLink
+        shortlink = this.shortlink
     )
 }
 

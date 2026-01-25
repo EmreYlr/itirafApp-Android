@@ -17,7 +17,7 @@ fun ConfessionDetailResponse.toDomain(): ConfessionDetail {
         createdAt = this.createdAt,
         owner = this.owner.toDomain(),
         channel = this.channel.toDomain(),
-        shortLink = this.shortLink,
+        shortlink = this.shortlink,
         replies = this.replies.map { it.toDomain() },
         isNsfw = this.isNsfw
     )

@@ -37,6 +37,7 @@ import com.itirafapp.android.presentation.components.core.ReplyCard
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.home.components.DetailHeader
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.state.shareLink
 
 @Composable
 fun DetailScreen(
@@ -51,6 +52,10 @@ fun DetailScreen(
             when (event) {
                 is DetailUiEvent.NavigateToBack -> {
                     onNavigationBack()
+                }
+
+                is DetailUiEvent.OpenShareSheet -> {
+                    shareLink(context, event.link)
                 }
 
                 is DetailUiEvent.ShowMessage -> {

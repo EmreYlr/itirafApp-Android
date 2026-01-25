@@ -1,5 +1,6 @@
 package com.itirafapp.android.domain.repository
 
+import com.itirafapp.android.data.remote.confession.dto.ShortlinkResponse
 import com.itirafapp.android.domain.model.ConfessionData
 import com.itirafapp.android.domain.model.ConfessionDetail
 import com.itirafapp.android.domain.model.PaginatedResult
@@ -13,6 +14,7 @@ interface ConfessionRepository {
     ): Resource<PaginatedResult<ConfessionData>>
     suspend fun postReply(id: Int, message: String): Resource<Unit>
     suspend fun getConfessionDetail(id: Int): Resource<ConfessionDetail>
+    suspend fun createShortlink(id: Int): Resource<ShortlinkResponse>
     suspend fun likeConfession(id: Int): Resource<Unit>
     suspend fun unlikeConfession(id: Int): Resource<Unit>
 }

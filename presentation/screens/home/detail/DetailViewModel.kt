@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.GetConfessionDetailUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.PostReplyUseCase
@@ -32,6 +33,7 @@ class DetailViewModel @Inject constructor(
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val postReplyUseCase: PostReplyUseCase,
+    private val createShortlinkUseCase: CreateShortlinkUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -95,11 +97,7 @@ class DetailViewModel @Inject constructor(
             }
 
             is DetailEvent.ShareClicked -> {
-
-            }
-
-            is DetailEvent.CommentClicked -> {
-
+                handleShareClick()
             }
 
             is DetailEvent.DMRequestClicked -> {
@@ -118,6 +116,46 @@ class DetailViewModel @Inject constructor(
                 state = state.copy(commentText = event.text)
             }
         }
+    }
+
+    private fun handleShareClick() {
+        val currentConfession = state.confession ?: return
+
+        if (!currentConfession.shortlink.isNullOrBlank()) {
+            sendUiEvent(DetailUiEvent.OpenShareSheet(currentConfession.shortlink))
+        } else {
+            fetchShortLink(currentConfession.id)
+        }
+    }
+
+    private fun fetchShortLink(id: Int) {
+        createShortlinkUseCase(id).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {}
+
+                is Resource.Success -> {
+                    val response = result.data
+
+                    val newLink = response?.url ?: ""
+
+                    if (newLink.isNotBlank()) {
+                        val updatedConfession = state.confession?.copy(shortlink = newLink)
+
+                        state = state.copy(
+                            confession = updatedConfession
+                        )
+
+                        sendUiEvent(DetailUiEvent.OpenShareSheet(newLink))
+                    } else {
+                        sendUiEvent(DetailUiEvent.ShowMessage("Link boş geldi."))
+                    }
+                }
+
+                is Resource.Error -> {
+                    sendUiEvent(DetailUiEvent.ShowMessage(result.message ?: "Link oluşturulamadı"))
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun sendComment() {
