@@ -20,8 +20,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -71,6 +73,7 @@ fun DetailContent(
     onEvent: (DetailEvent) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
 
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
@@ -90,8 +93,7 @@ fun DetailContent(
                     detectTapGestures(
                         onTap = {
                             focusManager.clearFocus()
-                        }
-                    )
+                        })
                 }
         ) {
             if (state.isLoading) {
@@ -116,10 +118,14 @@ fun DetailContent(
                         DetailHeader(
                             confessionDetail = state.confession,
                             onLikeClick = { onEvent(DetailEvent.LikeClicked(it)) },
-                            onCommentClick = { },
+                            onCommentClick = {
+                                focusRequester.requestFocus()
+                            },
                             onDMRequestClick = { onEvent(DetailEvent.DMRequestClicked(it)) },
                             onShareClick = { onEvent(DetailEvent.ShareClicked(it)) },
-                            onMoreClick = { }
+                            onMoreClick = {
+                                onEvent(DetailEvent.MoreClicked(it))
+                            }
                         )
                     }
 
@@ -149,7 +155,7 @@ fun DetailContent(
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-
+                    //TODO: Boş state yönetimi yapılacak
                     if (state.confession.replies.isEmpty()) {
                         item {
                             Box(
@@ -174,7 +180,8 @@ fun DetailContent(
                     value = state.commentText,
                     onValueChange = { onEvent(DetailEvent.CommentTextChanged(it)) },
                     onSendClick = { onEvent(DetailEvent.SendCommentClicked) },
-                    isLoading = state.isSendingComment
+                    isLoading = state.isSendingComment,
+                    focusRequester = focusRequester
                 )
             }
         }

@@ -37,6 +37,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -53,7 +55,8 @@ fun CommentInputBar(
     onValueChange: (String) -> Unit,
     onSendClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
+    focusRequester: FocusRequester = remember { FocusRequester() }
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -81,6 +84,7 @@ fun CommentInputBar(
                     modifier = Modifier
                         .weight(1f)
                         .height(40.dp)
+                        .focusRequester(focusRequester)
                         .onFocusChanged { isFocused = it.isFocused }
                         .background(ItirafTheme.colors.backgroundCard, CircleShape)
                         .border(

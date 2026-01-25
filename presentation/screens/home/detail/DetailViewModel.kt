@@ -6,12 +6,17 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.usecase.confession.GetConfessionDetailUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
+import com.itirafapp.android.domain.usecase.confession.PostReplyUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
+import com.itirafapp.android.presentation.model.OwnerUiModel
+import com.itirafapp.android.presentation.model.ReplyUiModel
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -26,6 +31,7 @@ class DetailViewModel @Inject constructor(
     private val likeConfessionUseCase: LikeConfessionUseCase,
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val postReplyUseCase: PostReplyUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -93,20 +99,71 @@ class DetailViewModel @Inject constructor(
             }
 
             is DetailEvent.CommentClicked -> {
+
             }
 
             is DetailEvent.DMRequestClicked -> {
 
             }
 
-            is DetailEvent.SendCommentClicked -> {
+            is DetailEvent.MoreClicked -> {
 
+            }
+
+            is DetailEvent.SendCommentClicked -> {
+                sendComment()
             }
 
             is DetailEvent.CommentTextChanged -> {
                 state = state.copy(commentText = event.text)
             }
         }
+    }
+
+    private fun sendComment() {
+        val currentUserId = getCurrentUserUseCase()?.id ?: "-1"
+
+        val currentConfession = state.confession ?: return
+        val message = state.commentText.trim()
+        val id = currentConfession.id
+
+        if (message.isBlank()) return
+
+        postReplyUseCase(id, message).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                }
+
+                is Resource.Success -> {
+                    val newReply = ReplyUiModel(
+                        id = -1,
+                        message = message,
+                        owner = OwnerUiModel(
+                            currentUserId,
+                            username = UiText.StringResource(R.string.confession_owner_you)
+                        ),
+                        createdAt = "Şimdi"
+                    )
+
+                    val updatedReplies = currentConfession.replies + newReply
+
+                    state = state.copy(
+                        commentText = "",
+                        confession = currentConfession.copy(
+                            replies = updatedReplies,
+                            replyCount = currentConfession.replyCount + 1
+                        )
+                    )
+
+                    sendUiEvent(DetailUiEvent.ShowMessage("Yorumunuz gönderildi!"))
+                }
+
+                is Resource.Error -> {
+                    sendUiEvent(DetailUiEvent.ShowMessage(result.message ?: "Yorum gönderilemedi"))
+                }
+            }
+        }.launchIn(viewModelScope)
+
     }
 
     private fun toggleLike() {

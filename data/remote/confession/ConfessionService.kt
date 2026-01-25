@@ -2,6 +2,8 @@ package com.itirafapp.android.data.remote.confession
 
 import com.itirafapp.android.data.remote.confession.dto.ConfessionDetailResponse
 import com.itirafapp.android.data.remote.confession.dto.ConfessionResponse
+import com.itirafapp.android.data.remote.confession.dto.ReplyRequest
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -22,6 +24,13 @@ interface ConfessionService {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): ConfessionResponse
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @POST("messages/{id}/replies")
+    suspend fun repliesMessage(
+        @Path("id") id: Int,
+        @Body request: ReplyRequest
+    ): Unit
 
     @GET("messages/{id}")
     suspend fun fetchConfessionDetail(
