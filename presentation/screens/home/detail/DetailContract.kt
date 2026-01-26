@@ -15,9 +15,11 @@ sealed class DetailEvent {
     data class LikeClicked(val id: Int) : DetailEvent()
     data class DMRequestClicked(val id: Int) : DetailEvent()
     data class ShareClicked(val id: Int) : DetailEvent()
-    data class MoreClicked(val id: Int) : DetailEvent()
     data class CommentTextChanged(val text: String) : DetailEvent()
     object SendCommentClicked : DetailEvent()
+    data class DeleteItemClicked(val id: Int, val isReply: Boolean) : DetailEvent()
+    data class ReportItemClicked(val id: Int, val isReply: Boolean) : DetailEvent()
+    data class BlockUserClicked(val id: String) : DetailEvent()
 }
 
 sealed class DetailUiEvent {

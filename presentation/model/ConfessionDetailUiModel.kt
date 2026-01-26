@@ -24,4 +24,5 @@ data class ReplyUiModel(
     val message: String,
     val owner: OwnerUiModel,
     val createdAt: String,
+    val isMine: Boolean = false
 )

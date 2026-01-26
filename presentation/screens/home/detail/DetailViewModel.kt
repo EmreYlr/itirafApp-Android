@@ -106,16 +106,24 @@ class DetailViewModel @Inject constructor(
                 }
             }
 
-            is DetailEvent.MoreClicked -> {
-
-            }
-
             is DetailEvent.SendCommentClicked -> {
                 sendComment()
             }
 
             is DetailEvent.CommentTextChanged -> {
                 state = state.copy(commentText = event.text)
+            }
+
+            is DetailEvent.BlockUserClicked -> {
+
+            }
+
+            is DetailEvent.DeleteItemClicked -> {
+
+            }
+
+            is DetailEvent.ReportItemClicked -> {
+
             }
         }
     }

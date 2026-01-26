@@ -23,6 +23,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -40,9 +44,13 @@ import com.itirafapp.android.util.state.UiText
 @Composable
 fun ReplyCard(
     reply: ReplyUiModel,
-    onMoreClicked: (Int) -> Unit,
+    onDeleteClick: (Int) -> Unit,
+    onReportClick: (Int) -> Unit,
+    onBlockClick: (String) -> Unit
 ) {
     val displayName = reply.owner.username.asString()
+
+    var menuExpanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
@@ -107,14 +115,25 @@ fun ReplyCard(
                         )
                     }
 
-                    Icon(
-                        imageVector = Icons.Default.MoreHoriz,
-                        contentDescription = "More Options",
-                        tint = ItirafTheme.colors.textSecondary,
-                        modifier = Modifier
-                            .size(20.dp)
-                            .clickable { onMoreClicked(reply.id) }
-                    )
+                    Box {
+                        Icon(
+                            imageVector = Icons.Default.MoreHoriz,
+                            contentDescription = "More Options",
+                            tint = ItirafTheme.colors.textSecondary,
+                            modifier = Modifier
+                                .size(20.dp)
+                                .clickable { menuExpanded = true }
+                        )
+
+                        MoreActionMenu(
+                            expanded = menuExpanded,
+                            onDismiss = { menuExpanded = false },
+                            isMine = reply.isMine,
+                            onDelete = { onDeleteClick(reply.id) },
+                            onReport = { onReportClick(reply.id) },
+                            onBlock = { onBlockClick(reply.owner.id) }
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -149,7 +168,9 @@ fun ReplyCardPreview() {
                 ),
                 createdAt = "2sa önce"
             ),
-            onMoreClicked = {}
+            onDeleteClick = {},
+            onReportClick = {},
+            onBlockClick = {}
         )
     }
 }

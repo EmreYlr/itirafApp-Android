@@ -32,6 +32,7 @@ fun Reply.toUiModel(isMine: Boolean): ReplyUiModel {
         id = this.id,
         message = this.message,
         owner = this.owner.toUiModel(isMine),
-        createdAt = formatToRelativeTime(this.createdAt)
+        createdAt = formatToRelativeTime(this.createdAt),
+        isMine = isMine
     )
 }

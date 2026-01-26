@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -38,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import com.itirafapp.android.domain.model.ChannelData
 import com.itirafapp.android.presentation.components.content.AnimatedCounter
 import com.itirafapp.android.presentation.components.content.SeparatorDot
+import com.itirafapp.android.presentation.components.core.MoreActionMenu
 import com.itirafapp.android.presentation.model.ConfessionDetailUiModel
 import com.itirafapp.android.presentation.model.OwnerUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
@@ -52,10 +57,14 @@ fun DetailHeader(
     onCommentClick: () -> Unit,
     onDMRequestClick: (Int) -> Unit,
     onShareClick: (Int) -> Unit,
-    onMoreClick: (Int) -> Unit
+    onDeleteClick: (Int) -> Unit,
+    onReportClick: (Int) -> Unit,
+    onBlockClick: (String) -> Unit
 ) {
     val displayName = confessionDetail.owner.username.asString()
     val hasTitle = confessionDetail.title.isNotEmpty()
+
+    var menuExpanded by remember { mutableStateOf(false) }
 
     val animatedColor by animateColorAsState(
         targetValue =
@@ -121,14 +130,26 @@ fun DetailHeader(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Icon(
-                    imageVector = Icons.Default.MoreHoriz,
-                    contentDescription = "More Options",
-                    tint = ItirafTheme.colors.textSecondary,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clickable { onMoreClick(confessionDetail.id) }
-                )
+                Box {
+                    Icon(
+                        imageVector = Icons.Default.MoreHoriz,
+                        contentDescription = "More Options",
+                        tint = ItirafTheme.colors.textSecondary,
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable { menuExpanded = true }
+                    )
+
+                    MoreActionMenu(
+                        expanded = menuExpanded,
+                        onDismiss = { menuExpanded = false },
+                        isMine = confessionDetail.isMine,
+                        onDelete = { onDeleteClick(confessionDetail.id) },
+                        onReport = { onReportClick(confessionDetail.id) },
+                        onBlock = { onBlockClick(confessionDetail.owner.id) }
+                    )
+                }
+
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -273,7 +294,9 @@ fun DetailHeaderPreview() {
             onCommentClick = {},
             onDMRequestClick = {},
             onShareClick = {},
-            onMoreClick = {}
+            onDeleteClick = {},
+            onReportClick = {},
+            onBlockClick = {}
         )
     }
 }

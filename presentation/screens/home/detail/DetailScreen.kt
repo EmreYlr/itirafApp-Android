@@ -133,8 +133,14 @@ fun DetailContent(
                             },
                             onDMRequestClick = { onEvent(DetailEvent.DMRequestClicked(it)) },
                             onShareClick = { onEvent(DetailEvent.ShareClicked(it)) },
-                            onMoreClick = {
-                                onEvent(DetailEvent.MoreClicked(it))
+                            onDeleteClick = { id ->
+                                onEvent(DetailEvent.DeleteItemClicked(id, isReply = false))
+                            },
+                            onReportClick = { id ->
+                                onEvent(DetailEvent.ReportItemClicked(id, isReply = false))
+                            },
+                            onBlockClick = { userId ->
+                                onEvent(DetailEvent.BlockUserClicked(userId))
                             }
                         )
                     }
@@ -160,7 +166,15 @@ fun DetailContent(
                         Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                             ReplyCard(
                                 reply = reply,
-                                onMoreClicked = { }
+                                onDeleteClick = { id ->
+                                    onEvent(DetailEvent.DeleteItemClicked(id, isReply = true))
+                                },
+                                onReportClick = { id ->
+                                    onEvent(DetailEvent.ReportItemClicked(id, isReply = true))
+                                },
+                                onBlockClick = { userId ->
+                                    onEvent(DetailEvent.BlockUserClicked(userId))
+                                }
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))
