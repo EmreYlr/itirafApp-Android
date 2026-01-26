@@ -101,7 +101,9 @@ class DetailViewModel @Inject constructor(
             }
 
             is DetailEvent.DMRequestClicked -> {
-
+                viewModelScope.launch {
+                    _uiEvent.send(DetailUiEvent.OpenDMSheet(event.id))
+                }
             }
 
             is DetailEvent.MoreClicked -> {

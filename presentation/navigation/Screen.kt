@@ -27,9 +27,6 @@ sealed class Screen(val route: String) {
         fun createRoute(postId: String) = "detail/$postId"
     }
 
-    object DMRequest : Screen("dm_request/{postId}") {
-        fun createRoute(postId: String) = "dm_request/$postId"
-    }
     object Notifications : Screen("notifications_screen")
     object Settings : Screen("settings_screen")
 }

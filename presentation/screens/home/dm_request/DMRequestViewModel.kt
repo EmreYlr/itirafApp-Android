@@ -3,11 +3,11 @@ package com.itirafapp.android.presentation.screens.home.dm_request
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.room.RequestCreateRoomUseCase
 import com.itirafapp.android.util.state.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -15,11 +15,11 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@HiltViewModel
 class DMRequestViewModel @Inject constructor(
     private val requestCreateRoomUseCase: RequestCreateRoomUseCase,
-    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-    private val postId: String? = savedStateHandle.get<String>("postId")
+    private var postId: Int? = null
 
     var state by mutableStateOf(DMRequestState())
         private set
@@ -29,6 +29,10 @@ class DMRequestViewModel @Inject constructor(
 
     fun onEvent(event: DMRequestEvent) {
         when (event) {
+            is DMRequestEvent.Init -> {
+                postId = event.postId
+            }
+
             is DMRequestEvent.SubmitClicked -> {
                 sendRequest()
             }
@@ -44,15 +48,15 @@ class DMRequestViewModel @Inject constructor(
     }
 
     private fun sendRequest() {
-        val id = postId?.toIntOrNull()
+        val currentId = postId
 
-        if (id == null) {
-            viewModelScope.launch { _uiEvent.send(DMRequestUiEvent.ShowMessage("ID Hatası")) }
+        if (currentId == null) {
+            viewModelScope.launch { _uiEvent.send(DMRequestUiEvent.ShowMessage("ID bulunamadı")) }
             return
         }
 
         requestCreateRoomUseCase(
-            channelMessageId = id,
+            channelMessageId = currentId,
             initialMessage = state.initialMessage,
             shareSocialLinks = state.shareSocialLinks
         ).onEach { result ->
@@ -62,7 +66,14 @@ class DMRequestViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    state = state.copy(isLoading = false)
+                    state = state.copy(
+                        isLoading = false,
+                        error = null,
+                        initialMessage = "",
+                        shareSocialLinks = true
+                    )
+
+                    _uiEvent.send(DMRequestUiEvent.ShowMessage("Mesaj isteğiniz gönderildi."))
                     _uiEvent.send(DMRequestUiEvent.Dismiss)
                 }
 

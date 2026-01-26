@@ -8,7 +8,7 @@ import retrofit2.http.POST
 interface RoomService {
     @Headers("X-Auth-Restriction: NonAnonymous")
     @POST("rooms/request")
-    fun requestCreateRoom(
+    suspend fun requestCreateRoom(
         @Body request: DMRequest
     ): Unit
 

@@ -42,6 +42,7 @@ import com.itirafapp.android.util.state.shareLink
 @Composable
 fun DetailScreen(
     onNavigationBack: () -> Unit,
+    onOpenDM: (Int) -> Unit,
     viewModel: DetailViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
@@ -56,6 +57,10 @@ fun DetailScreen(
 
                 is DetailUiEvent.OpenShareSheet -> {
                     shareLink(context, event.link)
+                }
+
+                is DetailUiEvent.OpenDMSheet -> {
+                    onOpenDM(event.targetId)
                 }
 
                 is DetailUiEvent.ShowMessage -> {

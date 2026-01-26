@@ -8,6 +8,7 @@ data class DMRequestState(
 )
 
 sealed class DMRequestEvent {
+    data class Init(val postId: Int) : DMRequestEvent()
     data class MessageChanged(val message: String) : DMRequestEvent()
     data class ShareLinksToggled(val isChecked: Boolean) : DMRequestEvent()
     object SubmitClicked : DMRequestEvent()

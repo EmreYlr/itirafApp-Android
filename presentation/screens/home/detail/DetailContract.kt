@@ -23,5 +23,6 @@ sealed class DetailEvent {
 sealed class DetailUiEvent {
     object NavigateToBack : DetailUiEvent()
     data class OpenShareSheet(val link: String) : DetailUiEvent()
+    data class OpenDMSheet(val targetId: Int) : DetailUiEvent()
     data class ShowMessage(val message: String) : DetailUiEvent()
 }

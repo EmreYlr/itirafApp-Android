@@ -10,10 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -34,14 +30,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun DMRequestScreen(
+    targetId: Int,
     onDismiss: () -> Unit,
     viewModel: DMRequestViewModel = hiltViewModel(),
 ) {
+    LaunchedEffect(key1 = targetId) {
+        viewModel.onEvent(DMRequestEvent.Init(targetId))
+    }
+
     val state = viewModel.state
     val context = LocalContext.current
 
@@ -88,8 +90,6 @@ fun DMRequestContent(
             .imePadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        BottomSheetDefaults.DragHandle()
-
         Text(
             text = stringResource(R.string.dm_request_title),
             style = MaterialTheme.typography.titleLarge,
@@ -170,21 +170,14 @@ fun DMRequestContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = { onEvent(DMRequestEvent.SubmitClicked) },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !state.isLoading && state.initialMessage.isNotBlank()
-        ) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    strokeWidth = 2.dp
-                )
-            } else {
-                Text(text = stringResource(R.string.dm_request_button))
+        ItirafButton(
+            text = stringResource(R.string.dm_request_button),
+            isLoading = state.isLoading,
+            enabled = state.initialMessage.isNotBlank(),
+            onClick = {
+                onEvent(DMRequestEvent.SubmitClicked)
             }
-        }
+        )
 
         if (state.error != null) {
             Spacer(modifier = Modifier.height(8.dp))
