@@ -15,6 +15,7 @@ import com.itirafapp.android.presentation.components.layout.BottomNavigation
 import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
+import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
 import com.itirafapp.android.util.extension.animatedComposable
@@ -85,6 +86,17 @@ fun MainScreen(
                 DetailScreen(
                     onNavigationBack = {
                         navController.navigateUp()
+                    }
+                )
+            }
+
+            animatedComposable(
+                route = Screen.DMRequest.route,
+                arguments = listOf(navArgument("postId") { type = NavType.StringType })
+            ) {
+                DMRequestScreen(
+                    onDismiss = {
+                        navController.popBackStack()
                     }
                 )
             }

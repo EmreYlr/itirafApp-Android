@@ -1,0 +1,28 @@
+package com.itirafapp.android.data.repository
+
+import com.itirafapp.android.data.remote.network.safeApiCall
+import com.itirafapp.android.data.remote.room.RoomService
+import com.itirafapp.android.data.remote.room.dto.DMRequest
+import com.itirafapp.android.domain.repository.RoomRepository
+import com.itirafapp.android.util.state.Resource
+import javax.inject.Inject
+
+class RoomRepositoryImpl @Inject constructor(
+    private val api: RoomService
+) : RoomRepository {
+    override suspend fun requestCreateRoom(
+        channelMessageId: Int,
+        initialMessage: String,
+        shareSocialLinks: Boolean
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = DMRequest(
+                channelMessageId = channelMessageId,
+                initialMessage = initialMessage,
+                shareSocialLinks = shareSocialLinks
+            )
+
+            api.requestCreateRoom(request)
+        }
+    }
+}

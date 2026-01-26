@@ -11,14 +11,17 @@ import com.itirafapp.android.data.remote.network.interceptor.ClientHeadersInterc
 import com.itirafapp.android.data.remote.network.interceptor.NetworkLoggerInterceptor
 import com.itirafapp.android.data.remote.network.interceptor.TokenInterceptor
 import com.itirafapp.android.data.remote.notification.NotificationService
+import com.itirafapp.android.data.remote.room.RoomService
 import com.itirafapp.android.data.remote.user.UserService
 import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.data.repository.ConfessionRepositoryImpl
 import com.itirafapp.android.data.repository.NotificationRepositoryImpl
+import com.itirafapp.android.data.repository.RoomRepositoryImpl
 import com.itirafapp.android.data.repository.UserRepositoryImpl
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.ConfessionRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
+import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.manager.SessionEventBus
 import com.itirafapp.android.util.manager.TokenManager
@@ -159,6 +162,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideRoomService(retrofit: Retrofit): RoomService {
+        return retrofit.create(RoomService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthRepository(
         api: AuthService,
         tokenManager: TokenManager
@@ -189,6 +198,14 @@ object NetworkModule {
         api: ConfessionService
     ): ConfessionRepository {
         return ConfessionRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRoomRepository(
+        api: RoomService
+    ): RoomRepository {
+        return RoomRepositoryImpl(api)
     }
 
     @Provides
