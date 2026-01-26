@@ -56,12 +56,16 @@ class FollowingViewModel @Inject constructor(
                 }
             }
 
+            is FollowingEvent.DMRequestClicked -> {
+                sendUiEvent(FollowingUiEvent.OpenDMSheet(event.id))
+            }
+
             is FollowingEvent.PostClicked -> sendUiEvent(FollowingUiEvent.NavigateToDetail(event.id))
             is FollowingEvent.LikeClicked -> toggleLike(event.id)
 
             is FollowingEvent.ChannelClicked -> sendUiEvent(FollowingUiEvent.ShowMessage("Kanal ID: ${event.id}"))
             is FollowingEvent.CommentClicked -> sendUiEvent(FollowingUiEvent.ShowMessage("Yorumlar: ${event.id}"))
-            is FollowingEvent.DMRequestClicked -> sendUiEvent(FollowingUiEvent.ShowMessage("DM İsteği: ${event.id}"))
+
             is FollowingEvent.ShareClicked -> sendUiEvent(FollowingUiEvent.ShowMessage("Paylaş: ${event.id}"))
         }
     }

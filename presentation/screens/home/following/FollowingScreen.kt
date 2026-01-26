@@ -29,6 +29,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 @Composable
 fun FollowingScreen(
     onItemClick: (String) -> Unit,
+    onOpenDM: (Int) -> Unit,
     viewModel: FollowingViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -38,6 +39,11 @@ fun FollowingScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is FollowingUiEvent.NavigateToDetail -> onItemClick(event.id.toString())
+
+                is FollowingUiEvent.OpenDMSheet -> {
+                    onOpenDM(event.targetId)
+                }
+
                 is FollowingUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }

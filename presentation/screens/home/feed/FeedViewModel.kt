@@ -59,9 +59,13 @@ class FeedViewModel @Inject constructor(
             is FeedEvent.PostClicked -> sendUiEvent(FeedUiEvent.NavigateToDetail(event.id))
             is FeedEvent.LikeClicked -> toggleLike(event.id)
 
+            is FeedEvent.DMRequestClicked -> {
+                sendUiEvent(FeedUiEvent.OpenDMSheet(event.id))
+            }
+
             is FeedEvent.ChannelClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Kanal ID: ${event.id}"))
             is FeedEvent.CommentClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Yorumlar: ${event.id}"))
-            is FeedEvent.DMRequestClicked -> sendUiEvent(FeedUiEvent.ShowMessage("DM İsteği: ${event.id}"))
+
             is FeedEvent.ShareClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Paylaş: ${event.id}"))
         }
     }

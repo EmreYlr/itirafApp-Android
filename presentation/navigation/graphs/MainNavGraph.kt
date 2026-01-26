@@ -83,6 +83,9 @@ fun MainScreen(
                     },
                     onNotificationClick = {
                         navController.navigate(Screen.Notifications.route)
+                    },
+                    onOpenDM = { targetId ->
+                        currentSheet = BottomSheetType.DMRequest(targetId)
                     }
                 )
             }

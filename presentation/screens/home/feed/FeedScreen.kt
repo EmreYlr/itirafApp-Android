@@ -29,6 +29,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 @Composable
 fun FeedScreen(
     onItemClick: (String) -> Unit,
+    onOpenDM: (Int) -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -38,6 +39,11 @@ fun FeedScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is FeedUiEvent.NavigateToDetail -> onItemClick(event.id.toString())
+
+                is FeedUiEvent.OpenDMSheet -> {
+                    onOpenDM(event.targetId)
+                }
+
                 is FeedUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }

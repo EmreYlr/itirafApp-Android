@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onConfessionClick: (String) -> Unit,
     onNotificationClick: () -> Unit,
+    onOpenDM: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -57,7 +58,8 @@ fun HomeScreen(
         onConfessionClick = onConfessionClick,
         onNotificationClick = {
             viewModel.onEvent(HomeEvent.NotificationClicked)
-        }
+        },
+        onOpenDM = onOpenDM
     )
 }
 
@@ -67,7 +69,8 @@ fun HomeContent(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit,
     onConfessionClick: (String) -> Unit,
-    onNotificationClick: () -> Unit
+    onNotificationClick: () -> Unit,
+    onOpenDM: (Int) -> Unit
 ) {
 
     val titles =
@@ -137,13 +140,15 @@ fun HomeContent(
                 when (pageIndex) {
                     0 -> {
                         FeedScreen(
-                            onItemClick = onConfessionClick
+                            onItemClick = onConfessionClick,
+                            onOpenDM = onOpenDM
                         )
                     }
 
                     1 -> {
                         FollowingScreen(
-                            onItemClick = onConfessionClick
+                            onItemClick = onConfessionClick,
+                            onOpenDM = onOpenDM
                         )
                     }
                 }
@@ -165,7 +170,8 @@ fun HomeScreenPreview() {
             state = HomeState(),
             onEvent = {},
             onConfessionClick = {},
-            onNotificationClick = {}
+            onNotificationClick = {},
+            onOpenDM = {}
         )
     }
 }
