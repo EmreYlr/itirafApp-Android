@@ -81,4 +81,16 @@ class ConfessionRepositoryImpl @Inject constructor(
             api.unlikeConfession(id)
         }
     }
+
+    override suspend fun deleteConfession(id: Int): Resource<Unit> {
+        return safeApiCall {
+            api.deleteConfession(id)
+        }
+    }
+
+    override suspend fun deleteReply(id: Int): Resource<Unit> {
+        return safeApiCall {
+            api.deleteReply(id)
+        }
+    }
 }

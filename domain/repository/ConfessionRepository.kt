@@ -17,4 +17,6 @@ interface ConfessionRepository {
     suspend fun createShortlink(id: Int): Resource<ShortlinkResponse>
     suspend fun likeConfession(id: Int): Resource<Unit>
     suspend fun unlikeConfession(id: Int): Resource<Unit>
+    suspend fun deleteConfession(id: Int): Resource<Unit>
+    suspend fun deleteReply(id: Int): Resource<Unit>
 }

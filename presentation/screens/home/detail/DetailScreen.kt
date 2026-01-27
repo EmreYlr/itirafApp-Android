@@ -211,20 +211,39 @@ fun DetailContent(
             }
         }
     }
-    if (state.userToBlockId != null) {
-        GenericAlertDialog(
-            onDismissRequest = { onEvent(DetailEvent.DismissDialog) },
-            title = stringResource(R.string.block_user_title),
-            text = stringResource(R.string.block_user_desciription),
-            confirmButtonText = stringResource(R.string.block),
-            onConfirmClick = {
-                onEvent(DetailEvent.BlockUserConfirmed)
-            },
-            dismissButtonText = stringResource(R.string.cancel),
-            onDismissClick = {
-                onEvent(DetailEvent.DismissDialog)
-            },
-            isDestructive = true
-        )
+    when (val dialog = state.activeDialog) {
+        is ActiveDialog.DeleteItem -> {
+            GenericAlertDialog(
+                onDismissRequest = { onEvent(DetailEvent.DismissDialog) },
+                title =
+                    if (dialog.isReply) stringResource(R.string.delete_reply_title)
+                    else stringResource(R.string.delete_confession_title),
+                text = stringResource(R.string.delete_description),
+                confirmButtonText = stringResource(R.string.delete),
+                onConfirmClick = { onEvent(DetailEvent.ConfirmAction) },
+                dismissButtonText = stringResource(R.string.cancel),
+                onDismissClick = { onEvent(DetailEvent.DismissDialog) },
+                isDestructive = true
+            )
+        }
+
+        is ActiveDialog.BlockUser -> {
+            GenericAlertDialog(
+                onDismissRequest = { onEvent(DetailEvent.DismissDialog) },
+                title = stringResource(R.string.block_user_title),
+                text = stringResource(R.string.block_user_description),
+                confirmButtonText = stringResource(R.string.block),
+                onConfirmClick = { onEvent(DetailEvent.ConfirmAction) },
+                dismissButtonText = stringResource(R.string.cancel),
+                onDismissClick = { onEvent(DetailEvent.DismissDialog) },
+                isDestructive = true
+            )
+        }
+
+        is ActiveDialog.ReportItem -> {
+
+        }
+
+        null -> {}
     }
 }

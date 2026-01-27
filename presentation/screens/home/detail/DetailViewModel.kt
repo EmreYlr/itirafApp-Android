@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
+import com.itirafapp.android.domain.usecase.confession.DeleteConfessionUseCase
+import com.itirafapp.android.domain.usecase.confession.DeleteReplyUseCase
 import com.itirafapp.android.domain.usecase.confession.GetConfessionDetailUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.PostReplyUseCase
@@ -36,6 +38,8 @@ class DetailViewModel @Inject constructor(
     private val postReplyUseCase: PostReplyUseCase,
     private val createShortlinkUseCase: CreateShortlinkUseCase,
     private val blockUserUseCase: BlockUserUseCase,
+    private val deleteConfessionUseCase: DeleteConfessionUseCase,
+    private val deleteReplyUseCase: DeleteReplyUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -116,35 +120,115 @@ class DetailViewModel @Inject constructor(
             }
 
             is DetailEvent.BlockUserClicked -> {
-                state = state.copy(userToBlockId = event.id, isBlockTargetReply = event.isReply)
-
-            }
-
-            is DetailEvent.DismissDialog -> {
                 state = state.copy(
-                    userToBlockId = null,
-                    isBlockTargetReply = false
+                    activeDialog = ActiveDialog.BlockUser(
+                        userId = event.id,
+                        isReply = event.isReply
+                    )
                 )
             }
 
-            is DetailEvent.BlockUserConfirmed -> {
-                val userId = state.userToBlockId
-                val isReply = state.isBlockTargetReply
-
-                if (userId != null) {
-                    blockUser(userId, isReply)
-                }
-                state = state.copy(userToBlockId = null, isBlockTargetReply = false)
-            }
-
             is DetailEvent.DeleteItemClicked -> {
-
+                state = state.copy(
+                    activeDialog = ActiveDialog.DeleteItem(
+                        itemId = event.id,
+                        isReply = event.isReply
+                    )
+                )
             }
 
             is DetailEvent.ReportItemClicked -> {
 
             }
+
+            is DetailEvent.ConfirmAction -> {
+                when (val dialog = state.activeDialog) {
+                    is ActiveDialog.BlockUser -> {
+                        blockUser(dialog.userId, dialog.isReply)
+                    }
+
+                    is ActiveDialog.DeleteItem -> {
+                        deleteItem(dialog.itemId, dialog.isReply)
+                    }
+
+                    is ActiveDialog.ReportItem -> {
+
+                    }
+
+                    null -> {}
+                }
+
+                state = state.copy(activeDialog = null)
+            }
+
+            is DetailEvent.DismissDialog -> {
+                state = state.copy(activeDialog = null)
+            }
         }
+    }
+
+    private fun deleteItem(itemId: Int, isReply: Boolean) {
+        if (isReply) {
+            deleteReply(itemId)
+        } else {
+            deleteConfession(itemId)
+        }
+    }
+
+    private fun deleteReply(itemId: Int) {
+        deleteReplyUseCase(
+            id = itemId
+        ).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
+
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(DetailUiEvent.ShowMessage("Yorum silindi"))
+                    loadConfessionDetail()
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        DetailUiEvent.ShowMessage(
+                            result.message ?: "Yorum Silinenemdi"
+                        )
+                    )
+                }
+            }
+
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteConfession(itemId: Int) {
+        deleteConfessionUseCase(
+            id = itemId
+        ).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
+
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(DetailUiEvent.ShowMessage("İtiraf silindi"))
+                    sendUiEvent(DetailUiEvent.NavigateToBack)
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        DetailUiEvent.ShowMessage(
+                            result.message ?: "İtiraf Silinenemdi"
+                        )
+                    )
+                }
+            }
+
+        }.launchIn(viewModelScope)
     }
 
     private fun blockUser(userId: String, isReply: Boolean) {

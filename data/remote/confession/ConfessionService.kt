@@ -55,4 +55,17 @@ interface ConfessionService {
     suspend fun unlikeConfession(
         @Path("id") id: Int
     ): Unit
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @DELETE("messages/{id}")
+    suspend fun deleteConfession(
+        @Path("id") id: Int
+    ): Unit
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @DELETE("replies/{id}")
+    suspend fun deleteReply(
+        @Path("id") id: Int
+    ): Unit
+
 }
