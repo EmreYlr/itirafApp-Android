@@ -8,4 +8,8 @@ interface RoomRepository {
         initialMessage: String,
         shareSocialLinks: Boolean
     ): Resource<Unit>
+
+    suspend fun blockRoom(
+        targetUserId: String
+    ): Resource<Unit>
 }

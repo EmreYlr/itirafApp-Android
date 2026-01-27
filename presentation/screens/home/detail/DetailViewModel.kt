@@ -12,6 +12,7 @@ import com.itirafapp.android.domain.usecase.confession.GetConfessionDetailUseCas
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.PostReplyUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
+import com.itirafapp.android.domain.usecase.user.BlockUserUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.presentation.model.OwnerUiModel
@@ -34,10 +35,11 @@ class DetailViewModel @Inject constructor(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val postReplyUseCase: PostReplyUseCase,
     private val createShortlinkUseCase: CreateShortlinkUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val postId: String? = savedStateHandle.get<String>("postId")
+    private val currentId: Int? = savedStateHandle.get<String>("postId")?.toIntOrNull()
 
     var state by mutableStateOf(DetailState())
         private set
@@ -46,16 +48,15 @@ class DetailViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
-        val id = postId?.toIntOrNull()
-
-        if (id != null) {
-            loadConfessionDetail(id)
+        if (currentId != null) {
+            loadConfessionDetail()
         } else {
             state = state.copy(error = "Geçersiz veya eksik ID")
         }
     }
 
-    private fun loadConfessionDetail(id: Int) {
+    private fun loadConfessionDetail() {
+        val id = currentId ?: return
         val currentUserId = getCurrentUserUseCase()?.id
 
         getConfessionDetailUseCase(id).onEach { result ->
@@ -115,7 +116,25 @@ class DetailViewModel @Inject constructor(
             }
 
             is DetailEvent.BlockUserClicked -> {
+                state = state.copy(userToBlockId = event.id, isBlockTargetReply = event.isReply)
 
+            }
+
+            is DetailEvent.DismissDialog -> {
+                state = state.copy(
+                    userToBlockId = null,
+                    isBlockTargetReply = false
+                )
+            }
+
+            is DetailEvent.BlockUserConfirmed -> {
+                val userId = state.userToBlockId
+                val isReply = state.isBlockTargetReply
+
+                if (userId != null) {
+                    blockUser(userId, isReply)
+                }
+                state = state.copy(userToBlockId = null, isBlockTargetReply = false)
             }
 
             is DetailEvent.DeleteItemClicked -> {
@@ -126,6 +145,38 @@ class DetailViewModel @Inject constructor(
 
             }
         }
+    }
+
+    private fun blockUser(userId: String, isReply: Boolean) {
+        blockUserUseCase(
+            targetUserId = userId
+        ).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
+
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(DetailUiEvent.ShowMessage("Kullanıcı engellendi"))
+
+                    if (!isReply) {
+                        sendUiEvent(DetailUiEvent.NavigateToBack)
+                    } else {
+                        loadConfessionDetail()
+                    }
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        DetailUiEvent.ShowMessage(
+                            result.message ?: "Kullanıcı engellenemedi"
+                        )
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun handleShareClick() {

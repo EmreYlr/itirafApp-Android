@@ -3,6 +3,7 @@ package com.itirafapp.android.data.repository
 import com.itirafapp.android.data.mapper.toDomain
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.data.remote.user.UserService
+import com.itirafapp.android.data.remote.user.dto.BlockUserRequest
 import com.itirafapp.android.domain.model.User
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.manager.UserManager
@@ -24,6 +25,15 @@ class UserRepositoryImpl @Inject constructor(
             userManager.saveUser(user)
 
             user
+        }
+    }
+
+    override suspend fun blockUser(targetUserId: String): Resource<Unit> {
+        return safeApiCall {
+            val request = BlockUserRequest(
+                userId = targetUserId
+            )
+            userApi.blockUser(request)
         }
     }
 

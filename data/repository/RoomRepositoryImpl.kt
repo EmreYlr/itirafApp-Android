@@ -2,6 +2,7 @@ package com.itirafapp.android.data.repository
 
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.data.remote.room.RoomService
+import com.itirafapp.android.data.remote.room.dto.BlockRoomRequest
 import com.itirafapp.android.data.remote.room.dto.DMRequest
 import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.util.state.Resource
@@ -23,6 +24,16 @@ class RoomRepositoryImpl @Inject constructor(
             )
 
             api.requestCreateRoom(request)
+        }
+    }
+
+    override suspend fun blockRoom(targetUserId: String): Resource<Unit> {
+        return safeApiCall {
+            val request = BlockRoomRequest(
+                userId = targetUserId
+            )
+
+            api.blockRoom(request)
         }
     }
 }

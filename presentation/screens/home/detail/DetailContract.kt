@@ -8,6 +8,8 @@ data class DetailState(
     val commentText: String = "",
     val isSendingComment: Boolean = false,
     val error: String? = null,
+    val userToBlockId: String? = null,
+    val isBlockTargetReply: Boolean = false
 )
 
 sealed class DetailEvent {
@@ -19,7 +21,9 @@ sealed class DetailEvent {
     object SendCommentClicked : DetailEvent()
     data class DeleteItemClicked(val id: Int, val isReply: Boolean) : DetailEvent()
     data class ReportItemClicked(val id: Int, val isReply: Boolean) : DetailEvent()
-    data class BlockUserClicked(val id: String) : DetailEvent()
+    data class BlockUserClicked(val id: String, val isReply: Boolean) : DetailEvent()
+    object BlockUserConfirmed : DetailEvent()
+    object DismissDialog : DetailEvent()
 }
 
 sealed class DetailUiEvent {

@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.CommentInputBar
+import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.core.ReplyCard
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.home.components.DetailHeader
@@ -140,7 +141,7 @@ fun DetailContent(
                                 onEvent(DetailEvent.ReportItemClicked(id, isReply = false))
                             },
                             onBlockClick = { userId ->
-                                onEvent(DetailEvent.BlockUserClicked(userId))
+                                onEvent(DetailEvent.BlockUserClicked(userId, isReply = false))
                             }
                         )
                     }
@@ -173,7 +174,7 @@ fun DetailContent(
                                     onEvent(DetailEvent.ReportItemClicked(id, isReply = true))
                                 },
                                 onBlockClick = { userId ->
-                                    onEvent(DetailEvent.BlockUserClicked(userId))
+                                    onEvent(DetailEvent.BlockUserClicked(userId, isReply = true))
                                 }
                             )
                         }
@@ -209,5 +210,21 @@ fun DetailContent(
                 )
             }
         }
+    }
+    if (state.userToBlockId != null) {
+        GenericAlertDialog(
+            onDismissRequest = { onEvent(DetailEvent.DismissDialog) },
+            title = stringResource(R.string.block_user_title),
+            text = stringResource(R.string.block_user_desciription),
+            confirmButtonText = stringResource(R.string.block),
+            onConfirmClick = {
+                onEvent(DetailEvent.BlockUserConfirmed)
+            },
+            dismissButtonText = stringResource(R.string.cancel),
+            onDismissClick = {
+                onEvent(DetailEvent.DismissDialog)
+            },
+            isDestructive = true
+        )
     }
 }
