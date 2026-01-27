@@ -3,6 +3,7 @@ package com.itirafapp.android.di
 import com.google.gson.Gson
 import com.itirafapp.android.BuildConfig
 import com.itirafapp.android.data.remote.auth.AuthService
+import com.itirafapp.android.data.remote.channel.ChannelService
 import com.itirafapp.android.data.remote.confession.ConfessionService
 import com.itirafapp.android.data.remote.network.api.TokenRefreshApi
 import com.itirafapp.android.data.remote.network.interceptor.AuthGuardInterceptor
@@ -14,11 +15,13 @@ import com.itirafapp.android.data.remote.notification.NotificationService
 import com.itirafapp.android.data.remote.room.RoomService
 import com.itirafapp.android.data.remote.user.UserService
 import com.itirafapp.android.data.repository.AuthRepositoryImpl
+import com.itirafapp.android.data.repository.ChannelRepositoryImpl
 import com.itirafapp.android.data.repository.ConfessionRepositoryImpl
 import com.itirafapp.android.data.repository.NotificationRepositoryImpl
 import com.itirafapp.android.data.repository.RoomRepositoryImpl
 import com.itirafapp.android.data.repository.UserRepositoryImpl
 import com.itirafapp.android.domain.repository.AuthRepository
+import com.itirafapp.android.domain.repository.ChannelRepository
 import com.itirafapp.android.domain.repository.ConfessionRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
 import com.itirafapp.android.domain.repository.RoomRepository
@@ -168,6 +171,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideChannelService(retrofit: Retrofit): ChannelService {
+        return retrofit.create(ChannelService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthRepository(
         api: AuthService,
         tokenManager: TokenManager
@@ -206,6 +215,14 @@ object NetworkModule {
         api: RoomService
     ): RoomRepository {
         return RoomRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChannelRepository(
+        api: ChannelService
+    ): ChannelRepository {
+        return ChannelRepositoryImpl(api)
     }
 
     @Provides

@@ -28,7 +28,7 @@ sealed class Screen(val route: String) {
     }
 
     object ChannelDetail : Screen("channel_detail/{channelId}") {
-        fun createRoute(channelId: String) = "channel_detail/$channelId"
+        fun createRoute(channelId: Int) = "channel_detail/$channelId"
     }
 
     object Notifications : Screen("notifications_screen")

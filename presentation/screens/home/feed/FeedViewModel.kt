@@ -69,7 +69,7 @@ class FeedViewModel @Inject constructor(
             }
 
             is FeedEvent.ChannelClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Kanal ID: ${event.id}"))
-            is FeedEvent.CommentClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Yorumlar: ${event.id}"))
+            is FeedEvent.CommentClicked -> sendUiEvent(FeedUiEvent.NavigateToDetail(event.id))
         }
     }
 

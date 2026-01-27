@@ -1,8 +1,11 @@
 package com.itirafapp.android.presentation.screens.channel
 
+import com.itirafapp.android.domain.model.ChannelData
+
 data class ChannelState(
     val isLoading: Boolean = false,
-    //val channel: List<ChannelUiModel> = emptyList(),
+    val channel: List<ChannelData> = emptyList(),
+    val searchQuery: String = "",
     val error: String? = null,
     val isRefreshing: Boolean = false
 )
@@ -11,6 +14,8 @@ sealed class ChannelEvent {
     object Refresh : ChannelEvent()
     object LoadMore : ChannelEvent()
     data class ChannelClicked(val id: Int) : ChannelEvent()
+    data class SearchQueryChanged(val query: String) : ChannelEvent()
+    object SearchTriggered : ChannelEvent()
     data class FollowClicked(val id: Int) : ChannelEvent()
 }
 
