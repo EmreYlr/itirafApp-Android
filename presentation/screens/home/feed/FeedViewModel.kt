@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.GetConfessionsUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
@@ -26,7 +27,8 @@ class FeedViewModel @Inject constructor(
     private val getConfessionsUseCase: GetConfessionsUseCase,
     private val likeConfessionUseCase: LikeConfessionUseCase,
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val createShortlinkUseCase: CreateShortlinkUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(FeedState())
@@ -62,11 +64,12 @@ class FeedViewModel @Inject constructor(
             is FeedEvent.DMRequestClicked -> {
                 sendUiEvent(FeedUiEvent.OpenDMSheet(event.id))
             }
+            is FeedEvent.ShareClicked -> {
+                handleShareClick(event.id)
+            }
 
             is FeedEvent.ChannelClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Kanal ID: ${event.id}"))
             is FeedEvent.CommentClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Yorumlar: ${event.id}"))
-
-            is FeedEvent.ShareClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Paylaş: ${event.id}"))
         }
     }
 
@@ -120,6 +123,41 @@ class FeedViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun handleShareClick(id: Int) {
+        val confession = state.confessions.find { it.id == id } ?: return
+        if (!confession.shortlink.isNullOrBlank()) {
+            sendUiEvent(FeedUiEvent.OpenShareSheet(confession.shortlink))
+        } else {
+            fetchShortLink(id)
+        }
+    }
+
+    private fun fetchShortLink(id: Int) {
+        createShortlinkUseCase(id).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                }
+
+                is Resource.Success -> {
+                    val response = result.data
+                    val newLink = response?.url ?: ""
+
+                    if (newLink.isNotBlank()) {
+                        updateConfessionById(id) { it.copy(shortlink = newLink) }
+
+                        sendUiEvent(FeedUiEvent.OpenShareSheet(newLink))
+                    } else {
+                        sendUiEvent(FeedUiEvent.ShowMessage("Link oluşturulamadı."))
+                    }
+                }
+
+                is Resource.Error -> {
+                    sendUiEvent(FeedUiEvent.ShowMessage(result.message ?: "Link hatası"))
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun toggleLike(id: Int) {

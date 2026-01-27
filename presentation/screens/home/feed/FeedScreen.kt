@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.presentation.components.core.ConfessionCard
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.state.shareLink
 
 @Composable
 fun FeedScreen(
@@ -46,6 +47,10 @@ fun FeedScreen(
 
                 is FeedUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                is FeedUiEvent.OpenShareSheet -> {
+                    shareLink(context, event.link)
                 }
             }
         }

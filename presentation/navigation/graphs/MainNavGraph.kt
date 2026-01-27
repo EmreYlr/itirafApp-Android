@@ -91,6 +91,15 @@ fun MainScreen(
                 )
             }
 
+            // 2. CHANNEL TAB
+            composable(Screen.Channel.route) {
+//                ChannelScreen(
+//                    onChannelDetail = { channelId ->
+//                        navController.navigate(Screen.ChannelDetail.createRoute(channelId))
+//                    }
+//                )
+            }
+
             // 5. PROFILE TAB
             composable(Screen.Profile.route) {
                 ProfileScreen(
@@ -122,6 +131,16 @@ fun MainScreen(
                     }
                 )
             }
+
+            animatedComposable(
+                route = Screen.ChannelDetail.route,
+                arguments = listOf(navArgument("channelId") { type = NavType.StringType })
+            ) {
+//                ChannelDetailScreen(
+//
+//                )
+            }
+
         }
     }
 

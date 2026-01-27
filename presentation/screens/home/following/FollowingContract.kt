@@ -23,5 +23,6 @@ sealed class FollowingEvent {
 sealed class FollowingUiEvent {
     data class NavigateToDetail(val id: Int) : FollowingUiEvent()
     data class OpenDMSheet(val targetId: Int) : FollowingUiEvent()
+    data class OpenShareSheet(val link: String) : FollowingUiEvent()
     data class ShowMessage(val message: String) : FollowingUiEvent()
 }

@@ -23,5 +23,6 @@ sealed class FeedEvent {
 sealed class FeedUiEvent {
     data class NavigateToDetail(val id: Int) : FeedUiEvent()
     data class OpenDMSheet(val targetId: Int) : FeedUiEvent()
+    data class OpenShareSheet(val link: String) : FeedUiEvent()
     data class ShowMessage(val message: String) : FeedUiEvent()
 }

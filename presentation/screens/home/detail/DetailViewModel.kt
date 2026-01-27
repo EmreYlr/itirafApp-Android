@@ -60,38 +60,6 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadConfessionDetail() {
-        val id = currentId ?: return
-        val currentUserId = getCurrentUserUseCase()?.id
-
-        getConfessionDetailUseCase(id).onEach { result ->
-            when (result) {
-                is Resource.Loading -> {
-                    state = state.copy(isLoading = true, error = null)
-                }
-
-                is Resource.Success -> {
-                    val data = result.data
-                    state = if (data != null) {
-                        state.copy(
-                            isLoading = false,
-                            confession = data.toUiModel(currentUserId)
-                        )
-                    } else {
-                        state.copy(isLoading = false, error = "Veri boş geldi")
-                    }
-                }
-
-                is Resource.Error -> {
-                    state = state.copy(
-                        isLoading = false,
-                        error = result.message ?: "Beklenmedik bir hata oluştu"
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
     fun onEvent(event: DetailEvent) {
         when (event) {
             is DetailEvent.BackClicked -> {
@@ -168,6 +136,38 @@ class DetailViewModel @Inject constructor(
                 state = state.copy(activeDialog = null)
             }
         }
+    }
+
+    private fun loadConfessionDetail() {
+        val id = currentId ?: return
+        val currentUserId = getCurrentUserUseCase()?.id
+
+        getConfessionDetailUseCase(id).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true, error = null)
+                }
+
+                is Resource.Success -> {
+                    val data = result.data
+                    state = if (data != null) {
+                        state.copy(
+                            isLoading = false,
+                            confession = data.toUiModel(currentUserId)
+                        )
+                    } else {
+                        state.copy(isLoading = false, error = "Veri boş geldi")
+                    }
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(
+                        isLoading = false,
+                        error = result.message ?: "Beklenmedik bir hata oluştu"
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun deleteItem(itemId: Int, isReply: Boolean) {

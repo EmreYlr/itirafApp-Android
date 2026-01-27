@@ -14,7 +14,8 @@ data class ConfessionUiModel(
     val owner: OwnerUiModel,
     val channel: ChannelData,
     val isNsfw: Boolean,
-    val isMine: Boolean = false
+    val isMine: Boolean = false,
+    val shortlink: String? = null
 )
 
 data class OwnerUiModel(

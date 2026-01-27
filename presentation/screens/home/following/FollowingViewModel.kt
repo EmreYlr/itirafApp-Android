@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.GetFollowingConfessionsUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
@@ -26,7 +27,8 @@ class FollowingViewModel @Inject constructor(
     private val getFollowingConfessionsUseCase: GetFollowingConfessionsUseCase,
     private val likeConfessionUseCase: LikeConfessionUseCase,
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val createShortlinkUseCase: CreateShortlinkUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(FollowingState())
@@ -60,13 +62,16 @@ class FollowingViewModel @Inject constructor(
                 sendUiEvent(FollowingUiEvent.OpenDMSheet(event.id))
             }
 
+            is FollowingEvent.ShareClicked -> {
+                handleShareClick(event.id)
+            }
+
             is FollowingEvent.PostClicked -> sendUiEvent(FollowingUiEvent.NavigateToDetail(event.id))
             is FollowingEvent.LikeClicked -> toggleLike(event.id)
 
             is FollowingEvent.ChannelClicked -> sendUiEvent(FollowingUiEvent.ShowMessage("Kanal ID: ${event.id}"))
             is FollowingEvent.CommentClicked -> sendUiEvent(FollowingUiEvent.ShowMessage("Yorumlar: ${event.id}"))
 
-            is FollowingEvent.ShareClicked -> sendUiEvent(FollowingUiEvent.ShowMessage("Paylaş: ${event.id}"))
         }
     }
 
@@ -120,6 +125,41 @@ class FollowingViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
+    }
+
+    private fun handleShareClick(id: Int) {
+        val confession = state.confessions.find { it.id == id } ?: return
+        if (!confession.shortlink.isNullOrBlank()) {
+            sendUiEvent(FollowingUiEvent.OpenShareSheet(confession.shortlink))
+        } else {
+            fetchShortLink(id)
+        }
+    }
+
+    private fun fetchShortLink(id: Int) {
+        createShortlinkUseCase(id).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                }
+
+                is Resource.Success -> {
+                    val response = result.data
+                    val newLink = response?.url ?: ""
+
+                    if (newLink.isNotBlank()) {
+                        updateConfessionById(id) { it.copy(shortlink = newLink) }
+
+                        sendUiEvent(FollowingUiEvent.OpenShareSheet(newLink))
+                    } else {
+                        sendUiEvent(FollowingUiEvent.ShowMessage("Link oluşturulamadı."))
+                    }
+                }
+
+                is Resource.Error -> {
+                    sendUiEvent(FollowingUiEvent.ShowMessage(result.message ?: "Link hatası"))
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun toggleLike(id: Int) {
