@@ -63,7 +63,8 @@ class ChannelViewModel @Inject constructor(
                 if (event.query.isEmpty()) {
                     currentPage = 1
                     isLastPage = false
-                    loadChannel(isRefresh = true)
+                    state = state.copy(channel = emptyList())
+                    loadChannel(isRefresh = false)
                 }
             }
 

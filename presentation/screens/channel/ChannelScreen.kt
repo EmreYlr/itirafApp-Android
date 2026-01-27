@@ -1,7 +1,6 @@
 package com.itirafapp.android.presentation.screens.channel
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.core.ChannelCard
 import com.itirafapp.android.presentation.components.core.SearchComponent
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -86,7 +86,7 @@ fun ChannelContent(
                 onQueryChanged = { query ->
                     onEvent(ChannelEvent.SearchQueryChanged(query))
                 },
-                placeholderText = "Kanal ara...",
+                placeholderText = "${stringResource(R.string.channel_search_placeholder)}...",
                 onSearchTriggered = {
                     onEvent(ChannelEvent.SearchTriggered)
                 }
@@ -101,7 +101,7 @@ fun ChannelContent(
             ) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                    contentPadding = PaddingValues(top = 8.dp, bottom = 16.dp)
                 ) {
                     if (state.channel.isEmpty() && !state.isLoading) {
                         item {
@@ -124,25 +124,12 @@ fun ChannelContent(
                             onEvent(ChannelEvent.LoadMore)
                         }
 
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onChannelClick(channel.id) }
-                                .padding(vertical = 12.dp)
-                        ) {
-                            Text(
-                                text = channel.title,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = ItirafTheme.colors.textPrimary
-                            )
-                        }
-
-                        if (index < state.channel.lastIndex) {
-                            HorizontalDivider(
-                                color = ItirafTheme.colors.dividerColor,
-                                thickness = 0.5.dp
-                            )
-                        }
+                        ChannelCard(
+                            channel = channel,
+                            isFollowed = false,//TODO: Real data gelecek
+                            onFollowClick = { onEvent(ChannelEvent.FollowClicked(channel.id)) },
+                            onClick = { onChannelClick(channel.id) }
+                        )
                     }
 
                     if (state.isLoading && !state.isRefreshing && state.channel.isNotEmpty()) {
