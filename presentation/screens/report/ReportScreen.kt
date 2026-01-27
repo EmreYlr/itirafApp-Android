@@ -28,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
@@ -88,7 +90,7 @@ fun ReportContent(
             .imePadding()
     ) {
         Text(
-            text = "Şikayet Detayı",
+            text = stringResource(R.string.report_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             color = ItirafTheme.colors.textPrimary,
@@ -99,7 +101,7 @@ fun ReportContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Lütfen yaşadığınız sorunu aşağıda detaylı bir şekilde açıklayınız.",
+            text = stringResource(R.string.report_description),
             style = MaterialTheme.typography.bodySmall,
             color = ItirafTheme.colors.textSecondary,
             textAlign = TextAlign.Start,
@@ -120,7 +122,7 @@ fun ReportContent(
                 .height(180.dp),
             placeholder = {
                 Text(
-                    text = "Yaşadığınız sorunu veya şikayetinizi detaylı bir şekilde buraya yazabilirsiniz.",
+                    text = stringResource(R.string.report_placeholder),
                     style = MaterialTheme.typography.bodyMedium,
                     color = ItirafTheme.colors.textTertiary
                 )
@@ -170,7 +172,7 @@ fun ReportContent(
             Spacer(modifier = Modifier.width(12.dp))
 
             Text(
-                text = "Şikayetiniz kalite standartlarımız gereği incelenecek ve en kısa sürede tarafınıza dönüş yapılacaktır.",
+                text = stringResource(R.string.report_warning_text),
                 style = MaterialTheme.typography.bodySmall,
                 color = ItirafTheme.colors.textSecondary
             )
@@ -179,7 +181,7 @@ fun ReportContent(
         Spacer(modifier = Modifier.weight(1f))
 
         ItirafButton(
-            text = "Şikayeti İlet",
+            text = stringResource(R.string.report_button),
             onClick = { onEvent(ReportEvent.SubmitClicked) },
             isLoading = state.isLoading,
             enabled = state.reason.isNotBlank(),
@@ -192,7 +194,6 @@ fun ReportContent(
 
 @Preview(showBackground = true)
 @Preview(
-    name = "4. Dark Mode",
     showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
