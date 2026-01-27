@@ -4,6 +4,8 @@ import com.itirafapp.android.data.mapper.toDomain
 import com.itirafapp.android.data.remote.confession.ConfessionService
 import com.itirafapp.android.data.remote.confession.dto.ConfessionResponse
 import com.itirafapp.android.data.remote.confession.dto.ReplyRequest
+import com.itirafapp.android.data.remote.confession.dto.ReportConfessionRequest
+import com.itirafapp.android.data.remote.confession.dto.ReportReplyRequest
 import com.itirafapp.android.data.remote.confession.dto.ShortlinkRequest
 import com.itirafapp.android.data.remote.confession.dto.ShortlinkResponse
 import com.itirafapp.android.data.remote.network.safeApiCall
@@ -91,6 +93,26 @@ class ConfessionRepositoryImpl @Inject constructor(
     override suspend fun deleteReply(id: Int): Resource<Unit> {
         return safeApiCall {
             api.deleteReply(id)
+        }
+    }
+
+    override suspend fun reportConfession(
+        id: Int,
+        reason: String
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = ReportConfessionRequest(reason)
+            api.reportConfession(id, request)
+        }
+    }
+
+    override suspend fun reportReply(
+        id: Int,
+        reason: String
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = ReportReplyRequest(reason)
+            api.reportReply(id, request)
         }
     }
 }

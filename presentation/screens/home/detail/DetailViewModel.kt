@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.DeleteConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.DeleteReplyUseCase
@@ -138,7 +139,13 @@ class DetailViewModel @Inject constructor(
             }
 
             is DetailEvent.ReportItemClicked -> {
+                val target = if (event.isReply) {
+                    ReportTarget.Comment(replyId = event.id)
+                } else {
+                    ReportTarget.Confession(confessionId = event.id)
+                }
 
+                sendUiEvent(DetailUiEvent.OpenReportSheet(target))
             }
 
             is DetailEvent.ConfirmAction -> {
@@ -149,10 +156,6 @@ class DetailViewModel @Inject constructor(
 
                     is ActiveDialog.DeleteItem -> {
                         deleteItem(dialog.itemId, dialog.isReply)
-                    }
-
-                    is ActiveDialog.ReportItem -> {
-
                     }
 
                     null -> {}

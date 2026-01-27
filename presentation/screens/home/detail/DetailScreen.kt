@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.presentation.components.core.CommentInputBar
 import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.core.ReplyCard
@@ -44,6 +45,7 @@ import com.itirafapp.android.util.state.shareLink
 fun DetailScreen(
     onNavigationBack: () -> Unit,
     onOpenDM: (Int) -> Unit,
+    onOpenReport: (ReportTarget) -> Unit,
     viewModel: DetailViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
@@ -62,6 +64,10 @@ fun DetailScreen(
 
                 is DetailUiEvent.OpenDMSheet -> {
                     onOpenDM(event.targetId)
+                }
+
+                is DetailUiEvent.OpenReportSheet -> {
+                    onOpenReport(event.target)
                 }
 
                 is DetailUiEvent.ShowMessage -> {
@@ -238,10 +244,6 @@ fun DetailContent(
                 onDismissClick = { onEvent(DetailEvent.DismissDialog) },
                 isDestructive = true
             )
-        }
-
-        is ActiveDialog.ReportItem -> {
-
         }
 
         null -> {}

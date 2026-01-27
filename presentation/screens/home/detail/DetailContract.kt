@@ -1,5 +1,6 @@
 package com.itirafapp.android.presentation.screens.home.detail
 
+import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.presentation.model.ConfessionDetailUiModel
 
 data class DetailState(
@@ -28,12 +29,12 @@ sealed class DetailEvent {
 sealed interface ActiveDialog {
     data class BlockUser(val userId: String, val isReply: Boolean) : ActiveDialog
     data class DeleteItem(val itemId: Int, val isReply: Boolean) : ActiveDialog
-    data class ReportItem(val itemId: Int) : ActiveDialog
 }
 
 sealed class DetailUiEvent {
     object NavigateToBack : DetailUiEvent()
     data class OpenShareSheet(val link: String) : DetailUiEvent()
+    data class OpenReportSheet(val target: ReportTarget) : DetailUiEvent()
     data class OpenDMSheet(val targetId: Int) : DetailUiEvent()
     data class ShowMessage(val message: String) : DetailUiEvent()
 }

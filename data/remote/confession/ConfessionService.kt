@@ -3,6 +3,8 @@ package com.itirafapp.android.data.remote.confession
 import com.itirafapp.android.data.remote.confession.dto.ConfessionDetailResponse
 import com.itirafapp.android.data.remote.confession.dto.ConfessionResponse
 import com.itirafapp.android.data.remote.confession.dto.ReplyRequest
+import com.itirafapp.android.data.remote.confession.dto.ReportConfessionRequest
+import com.itirafapp.android.data.remote.confession.dto.ReportReplyRequest
 import com.itirafapp.android.data.remote.confession.dto.ShortlinkRequest
 import com.itirafapp.android.data.remote.confession.dto.ShortlinkResponse
 import retrofit2.http.Body
@@ -66,6 +68,20 @@ interface ConfessionService {
     @DELETE("replies/{id}")
     suspend fun deleteReply(
         @Path("id") id: Int
+    ): Unit
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @POST("messages/{id}/report")
+    suspend fun reportConfession(
+        @Path("id") id: Int,
+        @Body request: ReportConfessionRequest
+    ): Unit
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @POST("replies/{id}/report")
+    suspend fun reportReply(
+        @Path("id") id: Int,
+        @Body request: ReportReplyRequest
     ): Unit
 
 }

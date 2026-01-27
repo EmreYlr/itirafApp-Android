@@ -26,6 +26,7 @@ import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
+import com.itirafapp.android.presentation.screens.report.ReportScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.extension.animatedComposable
 import kotlinx.coroutines.launch
@@ -107,7 +108,7 @@ fun MainScreen(
                 )
             }
 
-            composable(
+            animatedComposable(
                 route = Screen.Detail.route,
                 arguments = listOf(navArgument("postId") { type = NavType.StringType })
             ) {
@@ -115,6 +116,9 @@ fun MainScreen(
                     onNavigationBack = { navController.navigateUp() },
                     onOpenDM = { targetId ->
                         currentSheet = BottomSheetType.DMRequest(targetId)
+                    },
+                    onOpenReport = { target ->
+                        currentSheet = BottomSheetType.Report(target)
                     }
                 )
             }
@@ -133,6 +137,13 @@ fun MainScreen(
                 is BottomSheetType.DMRequest -> {
                     DMRequestScreen(
                         targetId = type.targetId,
+                        onDismiss = { closeSheet() }
+                    )
+                }
+
+                is BottomSheetType.Report -> {
+                    ReportScreen(
+                        target = type.target,
                         onDismiss = { closeSheet() }
                     )
                 }
