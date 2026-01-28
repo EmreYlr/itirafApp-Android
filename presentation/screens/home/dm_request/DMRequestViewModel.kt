@@ -31,6 +31,13 @@ class DMRequestViewModel @Inject constructor(
         when (event) {
             is DMRequestEvent.Init -> {
                 postId = event.postId
+
+                state = state.copy(
+                    initialMessage = "",
+                    error = null,
+                    shareSocialLinks = true,
+                    isLoading = false
+                )
             }
 
             is DMRequestEvent.SubmitClicked -> {

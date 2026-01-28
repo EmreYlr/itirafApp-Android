@@ -3,6 +3,7 @@ package com.itirafapp.android.data.repository
 import com.itirafapp.android.data.mapper.toDomain
 import com.itirafapp.android.data.remote.confession.ConfessionService
 import com.itirafapp.android.data.remote.confession.dto.ConfessionResponse
+import com.itirafapp.android.data.remote.confession.dto.PostRequest
 import com.itirafapp.android.data.remote.confession.dto.ReplyRequest
 import com.itirafapp.android.data.remote.confession.dto.ReportConfessionRequest
 import com.itirafapp.android.data.remote.confession.dto.ReportReplyRequest
@@ -57,6 +58,17 @@ class ConfessionRepositoryImpl @Inject constructor(
 
         return apiResult.map { response ->
             response.toDomain()
+        }
+    }
+
+    override suspend fun postConfession(
+        channelId: Int,
+        title: String?,
+        message: String
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = PostRequest(title, message)
+            api.postChannelConfession(channelId, request)
         }
     }
 

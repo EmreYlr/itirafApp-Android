@@ -18,7 +18,7 @@ interface ConfessionRepository {
         page: Int,
         limit: Int
     ): Resource<PaginatedResult<ConfessionData>>
-
+    suspend fun postConfession(channelId: Int, title: String?, message: String): Resource<Unit>
     suspend fun postReply(id: Int, message: String): Resource<Unit>
     suspend fun getConfessionDetail(id: Int): Resource<ConfessionDetail>
     suspend fun createShortlink(id: Int): Resource<ShortlinkResponse>

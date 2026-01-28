@@ -26,6 +26,7 @@ import com.itirafapp.android.presentation.screens.channel.channel_detail.Channel
 import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
+import com.itirafapp.android.presentation.screens.post.PostScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
 import com.itirafapp.android.presentation.screens.report.ReportScreen
@@ -91,7 +92,7 @@ fun MainScreen(
                         currentSheet = BottomSheetType.DMRequest(targetId)
                     },
                     onPostConfessionClick = {
-                        currentSheet = BottomSheetType.AddPost()
+                        currentSheet = BottomSheetType.AddPost(-1)
                     },
                     onChannelClick = { channelId, channelTitle ->
                         navController.navigate(
@@ -193,16 +194,17 @@ fun MainScreen(
                 }
 
                 is BottomSheetType.AddPost -> {
-//                    if (type.channelId != null) {
-//                        PostConfessionScreen(
-//                            channelId = type.channelId,
-//                            onDismiss = { closeSheet() }
-//                        )
-//                    } else {
-//                        PostConfessionScreen(
-//                            onDismiss = { closeSheet() }
-//                        )
-//                    }
+                    if (type.channelId != -1) {
+                        PostScreen(
+                            channelId = type.channelId,
+                            onDismiss = { closeSheet() }
+                        )
+                    } else {
+                        PostScreen(
+                            channelId = -1,
+                            onDismiss = { closeSheet() }
+                        )
+                    }
                 }
 
                 else -> {}

@@ -2,6 +2,7 @@ package com.itirafapp.android.data.remote.confession
 
 import com.itirafapp.android.data.remote.confession.dto.ConfessionDetailResponse
 import com.itirafapp.android.data.remote.confession.dto.ConfessionResponse
+import com.itirafapp.android.data.remote.confession.dto.PostRequest
 import com.itirafapp.android.data.remote.confession.dto.ReplyRequest
 import com.itirafapp.android.data.remote.confession.dto.ReportConfessionRequest
 import com.itirafapp.android.data.remote.confession.dto.ReportReplyRequest
@@ -35,6 +36,13 @@ interface ConfessionService {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): ConfessionResponse
+
+    @POST("channels/{id}/messages")
+    suspend fun postChannelConfession(
+        @Path("id") id: Int,
+        @Body request: PostRequest
+    ): Unit
+
 
     @Headers("X-Auth-Restriction: NonAnonymous")
     @POST("messages/{id}/replies")

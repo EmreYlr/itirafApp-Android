@@ -4,7 +4,7 @@ import com.itirafapp.android.domain.model.ReportTarget
 
 sealed class BottomSheetType {
     object None : BottomSheetType()
-    data class AddPost(val channelId: Int? = null) : BottomSheetType()
+    data class AddPost(val channelId: Int) : BottomSheetType()
     data class DMRequest(val targetId: Int) : BottomSheetType()
     data class Report(val target: ReportTarget) : BottomSheetType()
 }

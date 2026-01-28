@@ -145,7 +145,7 @@ fun ReportContent(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Kalan: $remainingChar",
+            text = stringResource(R.string.remaining, remainingChar),
             style = MaterialTheme.typography.labelMedium,
             color = if (remainingChar < 50) ItirafTheme.colors.statusError else ItirafTheme.colors.textSecondary,
             textAlign = TextAlign.End,
