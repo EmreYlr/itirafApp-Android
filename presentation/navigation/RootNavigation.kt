@@ -30,6 +30,8 @@ fun RootNavigation(
     }
 
     val navigateToAuth = {
+        activeSessionEvent = null
+
         navController.navigate(Screen.AuthGraph.route) {
             popUpTo(0) { inclusive = true }
         }
