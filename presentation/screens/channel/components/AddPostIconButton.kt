@@ -9,12 +9,12 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun AddPostIconButton(
-    isUserAuthenticated: Boolean,
+    isEnabled: Boolean,
     onClick: () -> Unit,
     icon: ImageVector,
     contentDescription: String? = null
 ) {
-    val iconTint = if (isUserAuthenticated) {
+    val iconTint = if (isEnabled) {
         ItirafTheme.colors.brandPrimary
     } else {
         Color.Gray.copy(alpha = 0.6f)
@@ -22,7 +22,7 @@ fun AddPostIconButton(
 
     IconButton(
         onClick = {
-            if (isUserAuthenticated) {
+            if (isEnabled) {
                 onClick()
             }
         }
