@@ -11,12 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddComment
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,6 +42,7 @@ fun HomeScreen(
     onConfessionClick: (String) -> Unit,
     onNotificationClick: () -> Unit,
     onOpenDM: (Int) -> Unit,
+    onPostConfessionClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -57,7 +64,8 @@ fun HomeScreen(
         onNotificationClick = {
             viewModel.onEvent(HomeEvent.NotificationClicked)
         },
-        onOpenDM = onOpenDM
+        onOpenDM = onOpenDM,
+        onPostConfessionClick = onPostConfessionClick,
     )
 }
 
@@ -68,7 +76,8 @@ fun HomeContent(
     onEvent: (HomeEvent) -> Unit,
     onConfessionClick: (String) -> Unit,
     onNotificationClick: () -> Unit,
-    onOpenDM: (Int) -> Unit
+    onOpenDM: (Int) -> Unit,
+    onPostConfessionClick: () -> Unit
 ) {
 
     val titles =
@@ -90,6 +99,35 @@ fun HomeContent(
 
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
+        floatingActionButton = {
+            val fabBackgroundColor = if (state.isUserAuthenticated) {
+                ItirafTheme.colors.brandPrimary
+            } else {
+                Color.Gray
+            }
+
+            val iconColor = if (state.isUserAuthenticated) {
+                Color.White
+            } else {
+                Color.White.copy(alpha = 0.5f)
+            }
+
+            FloatingActionButton(
+                onClick = {
+                    if (state.isUserAuthenticated) {
+                        onPostConfessionClick()
+                    }
+                },
+                containerColor = fabBackgroundColor,
+                shape = CircleShape
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AddComment,
+                    contentDescription = "Add",
+                    tint = iconColor
+                )
+            }
+        },
         topBar = {
             TopBar(
                 title = stringResource(R.string.home),
@@ -169,7 +207,8 @@ fun HomeScreenPreview() {
             onEvent = {},
             onConfessionClick = {},
             onNotificationClick = {},
-            onOpenDM = {}
+            onOpenDM = {},
+            onPostConfessionClick = {}
         )
     }
 }

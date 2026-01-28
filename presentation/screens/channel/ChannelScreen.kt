@@ -126,7 +126,7 @@ fun ChannelContent(
 
                         ChannelCard(
                             channel = channel,
-                            isFollowed = false,//TODO: Real data gelecek
+                            isFollowed = channel.isFollowing,
                             onFollowClick = { onEvent(ChannelEvent.FollowClicked(channel.id)) },
                             onClick = { onChannelClick(channel.id) }
                         )

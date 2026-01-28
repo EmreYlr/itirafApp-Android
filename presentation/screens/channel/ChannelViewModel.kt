@@ -5,8 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.model.ChannelData
 import com.itirafapp.android.domain.usecase.channel.GetChannelsUseCase
 import com.itirafapp.android.domain.usecase.channel.SearchChannelsUseCase
+import com.itirafapp.android.domain.usecase.follow.GetFollowedChannelsUseCase
+import com.itirafapp.android.domain.usecase.follow.ToggleFollowChannelUseCase
+import com.itirafapp.android.presentation.model.ChannelUiModel
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -19,7 +23,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ChannelViewModel @Inject constructor(
     private val getChannelsUseCase: GetChannelsUseCase,
-    private val searchChannelsUseCase: SearchChannelsUseCase
+    private val searchChannelsUseCase: SearchChannelsUseCase,
+    private val toggleFollowChannelUseCase: ToggleFollowChannelUseCase,
+    private val getFollowedChannelsUseCase: GetFollowedChannelsUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(ChannelState())
@@ -31,8 +37,38 @@ class ChannelViewModel @Inject constructor(
     private var currentPage = 1
     private var isLastPage = false
 
+    private var rawChannelList = emptyList<ChannelData>()
+    private var rawSearchResults = emptyList<ChannelData>()
+    private var currentFollowedIds = emptySet<Int>()
+
     init {
+        observeFollowedChannels()
+
         loadChannel()
+    }
+
+    private fun observeFollowedChannels() {
+        getFollowedChannelsUseCase()
+            .onEach { followedList ->
+                currentFollowedIds = followedList.map { it.id }.toSet()
+                updateUiState()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun updateUiState() {
+        val sourceList = if (state.searchQuery.isNotEmpty()) rawSearchResults else rawChannelList
+        val uiList = sourceList.map { channel ->
+            ChannelUiModel(
+                id = channel.id,
+                title = channel.title,
+                description = channel.description,
+                imageURL = channel.imageURL,
+                isFollowing = currentFollowedIds.contains(channel.id)
+            )
+        }
+
+        state = state.copy(channel = uiList)
     }
 
     fun onEvent(event: ChannelEvent) {
@@ -63,8 +99,12 @@ class ChannelViewModel @Inject constructor(
                 if (event.query.isEmpty()) {
                     currentPage = 1
                     isLastPage = false
-                    state = state.copy(channel = emptyList())
-                    loadChannel(isRefresh = false)
+                    rawSearchResults = emptyList()
+                    updateUiState()
+
+                    if (rawChannelList.isEmpty()) {
+                        loadChannel(isRefresh = false)
+                    }
                 }
             }
 
@@ -98,17 +138,19 @@ class ChannelViewModel @Inject constructor(
                         val paginatedResult = result.data
                         if (paginatedResult != null) {
                             val newItems = paginatedResult.items
-                            val currentList = if (isRefresh) emptyList() else state.channel
-                            val combinedList = currentList + newItems
+
+                            val currentRaw = if (isRefresh) emptyList() else rawChannelList
+                            rawChannelList = currentRaw + newItems
 
                             isLastPage = !paginatedResult.hasNextPage
                             if (!isLastPage) currentPage++
 
                             state = state.copy(
                                 isLoading = false,
-                                isRefreshing = false,
-                                channel = combinedList
+                                isRefreshing = false
                             )
+
+                            updateUiState()
                         } else {
                             state = state.copy(isLoading = false, isRefreshing = false)
                         }
@@ -134,12 +176,11 @@ class ChannelViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val searchResults = result.data ?: emptyList()
+                    val results = result.data ?: emptyList()
+                    rawSearchResults = results
 
-                    state = state.copy(
-                        isLoading = false,
-                        channel = searchResults
-                    )
+                    state = state.copy(isLoading = false)
+                    updateUiState()
                 }
 
                 is Resource.Error -> {
@@ -153,7 +194,20 @@ class ChannelViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun toggleFollow(id: Int) {}
+    private fun toggleFollow(id: Int) {
+        viewModelScope.launch {
+            val targetChannel = rawSearchResults.find { it.id == id }
+                ?: rawChannelList.find { it.id == id }
+
+            if (targetChannel != null) {
+                val result = toggleFollowChannelUseCase(targetChannel)
+
+                if (result is Resource.Error) {
+                    sendUiEvent(ChannelUiEvent.ShowMessage(result.message ?: "İşlem başarısız"))
+                }
+            }
+        }
+    }
 
     private fun sendUiEvent(event: ChannelUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }

@@ -20,13 +20,13 @@ sealed class Screen(val route: String) {
     object Channel : Screen("channel_screen")
     object DM : Screen("dm_screen")
     object MyConfession : Screen("my_confession_screen")
-
     object Profile : Screen("profile_screen")
 
+    // Sub Screens
+    object PostConfession : Screen("post_confession_screen")
     object Detail : Screen("detail/{postId}") {
         fun createRoute(postId: String) = "detail/$postId"
     }
-
     object ChannelDetail : Screen("channel_detail/{channelId}") {
         fun createRoute(channelId: Int) = "channel_detail/$channelId"
     }

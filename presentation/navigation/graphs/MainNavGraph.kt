@@ -88,6 +88,9 @@ fun MainScreen(
                     },
                     onOpenDM = { targetId ->
                         currentSheet = BottomSheetType.DMRequest(targetId)
+                    },
+                    onPostConfessionClick = {
+                        navController.navigate(Screen.PostConfession.route)
                     }
                 )
             }
@@ -110,6 +113,7 @@ fun MainScreen(
                 )
             }
 
+            // SETTINGS SCREEN
             composable(Screen.Settings.route) {
                 SettingsScreen(
                     onNavigateToLogin = {
@@ -118,6 +122,7 @@ fun MainScreen(
                 )
             }
 
+            // DETAIL SCREEN
             animatedComposable(
                 route = Screen.Detail.route,
                 arguments = listOf(navArgument("postId") { type = NavType.StringType })
@@ -133,6 +138,7 @@ fun MainScreen(
                 )
             }
 
+            // CHANNEL DETAIL SCREEN
             animatedComposable(
                 route = Screen.ChannelDetail.route,
                 arguments = listOf(navArgument("channelId") { type = NavType.IntType })
@@ -142,6 +148,10 @@ fun MainScreen(
 //                )
             }
 
+            // POST CONFESSION SCREEN
+            animatedComposable(Screen.PostConfession.route) {
+
+            }
         }
     }
 

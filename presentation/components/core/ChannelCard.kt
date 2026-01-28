@@ -33,13 +33,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itirafapp.android.R
-import com.itirafapp.android.domain.model.ChannelData
+import com.itirafapp.android.presentation.model.ChannelUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun ChannelCard(
-    channel: ChannelData,
+    channel: ChannelUiModel,
     isFollowed: Boolean,
     onFollowClick: () -> Unit,
     onClick: () -> Unit
@@ -126,7 +126,7 @@ fun ChannelCard(
 @Composable
 fun PreviewChannelCard() {
     ItirafAppTheme {
-        val mockChannel = ChannelData(
+        val mockChannel = ChannelUiModel(
             id = 1,
             title = "Ankara Üniversitesi",
             description = "Kampüs itirafları",

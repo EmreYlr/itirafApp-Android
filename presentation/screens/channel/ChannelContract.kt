@@ -1,10 +1,10 @@
 package com.itirafapp.android.presentation.screens.channel
 
-import com.itirafapp.android.domain.model.ChannelData
+import com.itirafapp.android.presentation.model.ChannelUiModel
 
 data class ChannelState(
     val isLoading: Boolean = false,
-    val channel: List<ChannelData> = emptyList(),
+    val channel: List<ChannelUiModel> = emptyList(),
     val searchQuery: String = "",
     val error: String? = null,
     val isRefreshing: Boolean = false

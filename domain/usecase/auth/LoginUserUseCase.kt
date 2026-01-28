@@ -2,6 +2,7 @@ package com.itirafapp.android.domain.usecase.auth
 
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.domain.repository.AuthRepository
+import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.state.Resource
 import kotlinx.coroutines.flow.Flow
@@ -10,7 +11,8 @@ import javax.inject.Inject
 
 class LoginUserUseCase @Inject constructor(
     private val authRepository: AuthRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val followRepository: FollowRepository
 ) {
     operator fun invoke(request: LoginRequest): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
@@ -25,6 +27,9 @@ class LoginUserUseCase @Inject constructor(
         val profileResult = userRepository.getUser()
 
         if (profileResult is Resource.Success) {
+
+            followRepository.syncFollowedChannels()
+
             emit(Resource.Success(Unit))
         } else {
             emit(Resource.Error(profileResult.message ?: "Profil bilgileri alınamadı"))
