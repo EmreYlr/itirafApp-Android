@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.presentation.components.core.ConfessionCard
 import com.itirafapp.android.presentation.components.layout.TopBar
+import com.itirafapp.android.presentation.screens.channel.components.AddPostIconButton
 import com.itirafapp.android.presentation.screens.channel.components.ChannelDetailHeader
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
@@ -34,6 +37,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 fun ChannelDetailScreen(
     onBackClick: () -> Unit,
     onConfessionClick: (String) -> Unit,
+    onAddPostClick: (String) -> Unit,
     viewModel: ChannelDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -48,6 +52,10 @@ fun ChannelDetailScreen(
 
                 is ChannelDetailUiEvent.NavigateToConfessionDetail -> {
                     onConfessionClick(event.id.toString())
+                }
+
+                is ChannelDetailUiEvent.NavigateToAddPost -> {
+                    onAddPostClick(event.id.toString())
                 }
 
                 is ChannelDetailUiEvent.ShowMessage -> {
@@ -77,7 +85,14 @@ fun ChannelDetailContent(
             TopBar(
                 title = state.channelTitle,
                 canNavigateBack = true,
-                onNavigateBack = { onBackClick() }
+                onNavigateBack = { onBackClick() },
+                actions = {
+                    AddPostIconButton(
+                        isUserAuthenticated = state.isUserAuthenticated,
+                        onClick = { onEvent(ChannelDetailEvent.AddPostClicked(state.channelId)) },
+                        icon = Icons.Default.AddComment
+                    )
+                }
             )
         }
     ) { paddingValues ->

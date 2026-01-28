@@ -69,7 +69,9 @@ class FollowingViewModel @Inject constructor(
             is FollowingEvent.PostClicked -> sendUiEvent(FollowingUiEvent.NavigateToDetail(event.id))
             is FollowingEvent.LikeClicked -> toggleLike(event.id)
 
-            is FollowingEvent.ChannelClicked -> sendUiEvent(FollowingUiEvent.ShowMessage("Kanal ID: ${event.id}"))
+            is FollowingEvent.ChannelClicked -> {
+                sendUiEvent(FollowingUiEvent.NavigateToChannel(event.id, event.title))
+            }
             is FollowingEvent.CommentClicked -> sendUiEvent(FollowingUiEvent.NavigateToDetail(event.id))
 
         }

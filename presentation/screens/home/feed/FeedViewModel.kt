@@ -68,7 +68,9 @@ class FeedViewModel @Inject constructor(
                 handleShareClick(event.id)
             }
 
-            is FeedEvent.ChannelClicked -> sendUiEvent(FeedUiEvent.ShowMessage("Kanal ID: ${event.id}"))
+            is FeedEvent.ChannelClicked -> {
+                sendUiEvent(FeedUiEvent.NavigateToChannel(event.id, event.title))
+            }
             is FeedEvent.CommentClicked -> sendUiEvent(FeedUiEvent.NavigateToDetail(event.id))
         }
     }

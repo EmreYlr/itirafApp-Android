@@ -43,6 +43,7 @@ fun HomeScreen(
     onNotificationClick: () -> Unit,
     onOpenDM: (Int) -> Unit,
     onPostConfessionClick: () -> Unit,
+    onChannelClick: (Int, String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -66,6 +67,7 @@ fun HomeScreen(
         },
         onOpenDM = onOpenDM,
         onPostConfessionClick = onPostConfessionClick,
+        onChannelClick = onChannelClick
     )
 }
 
@@ -77,7 +79,8 @@ fun HomeContent(
     onConfessionClick: (String) -> Unit,
     onNotificationClick: () -> Unit,
     onOpenDM: (Int) -> Unit,
-    onPostConfessionClick: () -> Unit
+    onPostConfessionClick: () -> Unit,
+    onChannelClick: (Int, String) -> Unit,
 ) {
 
     val titles =
@@ -177,14 +180,16 @@ fun HomeContent(
                     0 -> {
                         FeedScreen(
                             onItemClick = onConfessionClick,
-                            onOpenDM = onOpenDM
+                            onOpenDM = onOpenDM,
+                            onChannelClick = onChannelClick
                         )
                     }
 
                     1 -> {
                         FollowingScreen(
                             onItemClick = onConfessionClick,
-                            onOpenDM = onOpenDM
+                            onOpenDM = onOpenDM,
+                            onChannelClick = onChannelClick
                         )
                     }
                 }
@@ -208,7 +213,8 @@ fun HomeScreenPreview() {
             onConfessionClick = {},
             onNotificationClick = {},
             onOpenDM = {},
-            onPostConfessionClick = {}
+            onPostConfessionClick = {},
+            onChannelClick = { _, _ -> }
         )
     }
 }

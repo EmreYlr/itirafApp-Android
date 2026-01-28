@@ -31,6 +31,7 @@ import com.itirafapp.android.util.state.shareLink
 fun FollowingScreen(
     onItemClick: (String) -> Unit,
     onOpenDM: (Int) -> Unit,
+    onChannelClick: (Int, String) -> Unit,
     viewModel: FollowingViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -47,6 +48,10 @@ fun FollowingScreen(
 
                 is FollowingUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                is FollowingUiEvent.NavigateToChannel -> {
+                    onChannelClick(event.id, event.title)
                 }
 
                 is FollowingUiEvent.OpenShareSheet -> {
@@ -90,7 +95,14 @@ fun FollowingScreen(
                         ConfessionCard(
                             confession = confession,
                             onCardClick = { onEvent(FollowingEvent.PostClicked(confession.id)) },
-                            onChannelClick = { onEvent(FollowingEvent.ChannelClicked(confession.id)) },
+                            onChannelClick = {
+                                onEvent(
+                                    FollowingEvent.ChannelClicked(
+                                        confession.channel.id,
+                                        confession.channel.title
+                                    )
+                                )
+                            },
                             onLikeClick = { onEvent(FollowingEvent.LikeClicked(confession.id)) },
                             onCommentClick = { onEvent(FollowingEvent.CommentClicked(confession.id)) },
                             onDMRequestClick = { onEvent(FollowingEvent.DMRequestClicked(confession.id)) },

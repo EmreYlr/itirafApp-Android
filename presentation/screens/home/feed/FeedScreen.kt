@@ -31,6 +31,7 @@ import com.itirafapp.android.util.state.shareLink
 fun FeedScreen(
     onItemClick: (String) -> Unit,
     onOpenDM: (Int) -> Unit,
+    onChannelClick: (Int, String) -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -51,6 +52,10 @@ fun FeedScreen(
 
                 is FeedUiEvent.OpenShareSheet -> {
                     shareLink(context, event.link)
+                }
+
+                is FeedUiEvent.NavigateToChannel -> {
+                    onChannelClick(event.id, event.title)
                 }
             }
         }
@@ -90,7 +95,14 @@ fun FeedContent(
                         ConfessionCard(
                             confession = confession,
                             onCardClick = { onEvent(FeedEvent.PostClicked(confession.id)) },
-                            onChannelClick = { onEvent(FeedEvent.ChannelClicked(confession.id)) },
+                            onChannelClick = {
+                                onEvent(
+                                    FeedEvent.ChannelClicked(
+                                        confession.channel.id,
+                                        confession.channel.title
+                                    )
+                                )
+                            },
                             onLikeClick = { onEvent(FeedEvent.LikeClicked(confession.id)) },
                             onCommentClick = { onEvent(FeedEvent.CommentClicked(confession.id)) },
                             onDMRequestClick = { onEvent(FeedEvent.DMRequestClicked(confession.id)) },

@@ -92,6 +92,11 @@ fun MainScreen(
                     },
                     onPostConfessionClick = {
                         navController.navigate(Screen.PostConfession.route)
+                    },
+                    onChannelClick = { channelId, channelTitle ->
+                        navController.navigate(
+                            Screen.ChannelDetail.createRoute(channelId, channelTitle)
+                        )
                     }
                 )
             }
@@ -156,6 +161,9 @@ fun MainScreen(
                     onConfessionClick = { postId ->
                         navController.navigate(Screen.Detail.createRoute(postId))
                     },
+                    onAddPostClick = { channelId ->
+                        navController.navigate(Screen.PostConfession.route) //TODO: opsiyonel id eklenecek
+                    }
                 )
             }
 

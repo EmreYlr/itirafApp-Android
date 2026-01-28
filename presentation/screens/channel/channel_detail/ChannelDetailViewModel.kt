@@ -13,6 +13,7 @@ import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.follow.ToggleFollowChannelUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
+import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.presentation.model.ConfessionUiModel
 import com.itirafapp.android.presentation.model.toggleLikeState
@@ -30,13 +31,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChannelDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val getChannelConfessionUseCase: GetChannelConfessionUseCase,
     private val followRepository: FollowRepository,
     private val toggleFollowChannelUseCase: ToggleFollowChannelUseCase,
     private val likeConfessionUseCase: LikeConfessionUseCase,
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     var state by mutableStateOf(ChannelDetailState())
@@ -58,6 +60,12 @@ class ChannelDetailViewModel @Inject constructor(
         )
         observeFollowStatus()
         loadConfessions()
+        checkAuthStatus()
+    }
+
+    private fun checkAuthStatus() {
+        val isAuthenticated = isUserAuthenticatedUseCase()
+        state = state.copy(isUserAuthenticated = isAuthenticated)
     }
 
     private fun observeFollowStatus() {
@@ -84,6 +92,10 @@ class ChannelDetailViewModel @Inject constructor(
                 if (!state.isLoading && !isLastPage) {
                     loadConfessions()
                 }
+            }
+
+            is ChannelDetailEvent.AddPostClicked -> {
+                sendUiEvent(ChannelDetailUiEvent.NavigateToAddPost(channelId))
             }
 
             is ChannelDetailEvent.BackClicked -> {
