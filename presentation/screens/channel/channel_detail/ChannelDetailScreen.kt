@@ -37,7 +37,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 fun ChannelDetailScreen(
     onBackClick: () -> Unit,
     onConfessionClick: (String) -> Unit,
-    onAddPostClick: (String) -> Unit,
+    onAddPostClick: (Int) -> Unit,
     viewModel: ChannelDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -55,7 +55,7 @@ fun ChannelDetailScreen(
                 }
 
                 is ChannelDetailUiEvent.NavigateToAddPost -> {
-                    onAddPostClick(event.id.toString())
+                    onAddPostClick(event.id)
                 }
 
                 is ChannelDetailUiEvent.ShowMessage -> {

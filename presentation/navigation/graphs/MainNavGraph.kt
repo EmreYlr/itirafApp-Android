@@ -91,7 +91,7 @@ fun MainScreen(
                         currentSheet = BottomSheetType.DMRequest(targetId)
                     },
                     onPostConfessionClick = {
-                        navController.navigate(Screen.PostConfession.route)
+                        currentSheet = BottomSheetType.AddPost()
                     },
                     onChannelClick = { channelId, channelTitle ->
                         navController.navigate(
@@ -162,14 +162,9 @@ fun MainScreen(
                         navController.navigate(Screen.Detail.createRoute(postId))
                     },
                     onAddPostClick = { channelId ->
-                        navController.navigate(Screen.PostConfession.route) //TODO: opsiyonel id eklenecek
+                        currentSheet = BottomSheetType.AddPost(channelId)
                     }
                 )
-            }
-
-            // POST CONFESSION SCREEN
-            animatedComposable(Screen.PostConfession.route) {
-
             }
         }
     }
@@ -195,6 +190,19 @@ fun MainScreen(
                         target = type.target,
                         onDismiss = { closeSheet() }
                     )
+                }
+
+                is BottomSheetType.AddPost -> {
+//                    if (type.channelId != null) {
+//                        PostConfessionScreen(
+//                            channelId = type.channelId,
+//                            onDismiss = { closeSheet() }
+//                        )
+//                    } else {
+//                        PostConfessionScreen(
+//                            onDismiss = { closeSheet() }
+//                        )
+//                    }
                 }
 
                 else -> {}
