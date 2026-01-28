@@ -29,6 +29,13 @@ interface ConfessionService {
         @Query("limit") limit: Int
     ): ConfessionResponse
 
+    @GET("channels/{id}/messages")
+    suspend fun getChannelConfession(
+        @Path("id") id: Int,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): ConfessionResponse
+
     @Headers("X-Auth-Restriction: NonAnonymous")
     @POST("messages/{id}/replies")
     suspend fun repliesMessage(

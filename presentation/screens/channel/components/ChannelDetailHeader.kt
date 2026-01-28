@@ -1,24 +1,22 @@
-package com.itirafapp.android.presentation.components.core
+package com.itirafapp.android.presentation.screens.channel.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,38 +26,33 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itirafapp.android.R
-import com.itirafapp.android.presentation.model.ChannelUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
-fun ChannelCard(
-    channel: ChannelUiModel,
+fun ChannelDetailHeader(
+    title: String,
     isFollowed: Boolean,
-    onFollowClick: () -> Unit,
-    onClick: () -> Unit
+    onFollowClick: () -> Unit
 ) {
+    val initials = title.trim().take(2).uppercase()
     val linkColor = if (isSystemInDarkTheme()) Color.White else Color.Black
 
-    val initials = channel.title.trim()
-        .take(2)
-        .uppercase()
-
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(top = 16.dp, bottom = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         Box(
             modifier = Modifier
-                .size(48.dp)
+                .size(72.dp)
                 .clip(CircleShape)
                 .border(
                     0.6.dp,
@@ -71,25 +64,26 @@ fun ChannelCard(
         ) {
             Text(
                 text = initials,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Medium,
                 color = linkColor
             )
         }
 
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = channel.title,
-            style = MaterialTheme.typography.bodyMedium,
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Medium,
             color = ItirafTheme.colors.textPrimary,
-            fontWeight = FontWeight.Normal,
-            modifier = Modifier.weight(1f),
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 40.dp)
         )
 
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             onClick = onFollowClick,
@@ -102,8 +96,10 @@ fun ChannelCard(
                     if (isFollowed) ItirafTheme.colors.brandPrimary
                     else Color.White
             ),
-            modifier = Modifier.height(32.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp)
+            modifier = Modifier
+                .height(36.dp)
+                .fillMaxWidth(0.6f),
+            contentPadding = PaddingValues(horizontal = 40.dp, vertical = 0.dp)
         ) {
             Text(
                 text =
@@ -115,6 +111,10 @@ fun ChannelCard(
             )
         }
     }
+
+    HorizontalDivider(
+        color = ItirafTheme.colors.dividerColor
+    )
 }
 
 @Preview(showBackground = true)
@@ -124,28 +124,20 @@ fun ChannelCard(
     name = "Dark Mode"
 )
 @Composable
-fun PreviewChannelCard() {
+fun ChannelDetailHeaderPreview() {
     ItirafAppTheme {
-        val mockChannel = ChannelUiModel(
-            id = 1,
-            title = "Ankara Üniversitesi",
-            description = "Kampüs itirafları",
-            imageURL = null
-        )
-
         Column {
-            ChannelCard(
-                channel = mockChannel,
+            ChannelDetailHeader(
+                title = "Ankara Üniversitesi",
                 isFollowed = false,
-                onFollowClick = {},
-                onClick = {}
+                onFollowClick = {}
             )
-            ChannelCard(
-                channel = mockChannel.copy(title = "Hacettepe Üniversitesi"),
+            ChannelDetailHeader(
+                title = "Harran Üniversitesi",
                 isFollowed = true,
-                onFollowClick = {},
-                onClick = {}
+                onFollowClick = {}
             )
         }
     }
+
 }

@@ -22,6 +22,7 @@ import com.itirafapp.android.presentation.components.layout.BottomNavigation
 import com.itirafapp.android.presentation.components.layout.BottomSheetType
 import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.presentation.screens.channel.ChannelScreen
+import com.itirafapp.android.presentation.screens.channel.channel_detail.ChannelDetailScreen
 import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
@@ -98,8 +99,10 @@ fun MainScreen(
             // 2. CHANNEL TAB
             composable(Screen.Channel.route) {
                 ChannelScreen(
-                    onChannelClick = { channelId ->
-                        navController.navigate(Screen.ChannelDetail.createRoute(channelId))
+                    onChannelClick = { channelId, channelTitle ->
+                        navController.navigate(
+                            Screen.ChannelDetail.createRoute(channelId, channelTitle)
+                        )
                     }
                 )
             }
@@ -141,11 +144,19 @@ fun MainScreen(
             // CHANNEL DETAIL SCREEN
             animatedComposable(
                 route = Screen.ChannelDetail.route,
-                arguments = listOf(navArgument("channelId") { type = NavType.IntType })
+                arguments = listOf(
+                    navArgument("channelId") { type = NavType.IntType },
+                    navArgument("channelTitle") { type = NavType.StringType }
+                )
             ) {
-//                ChannelDetailScreen(
-//
-//                )
+                ChannelDetailScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onConfessionClick = { postId ->
+                        navController.navigate(Screen.Detail.createRoute(postId))
+                    },
+                )
             }
 
             // POST CONFESSION SCREEN

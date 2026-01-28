@@ -53,11 +53,11 @@ import com.itirafapp.android.util.state.UiText
 fun ConfessionCard(
     confession: ConfessionUiModel,
     onCardClick: (Int) -> Unit,
-    onChannelClick: (Int) -> Unit,
     onLikeClick: (Int) -> Unit,
     onCommentClick: (Int) -> Unit,
-    onDMRequestClick: (Int) -> Unit,
-    onShareClick: (Int) -> Unit
+    onChannelClick: ((Int) -> Unit)? = null,
+    onDMRequestClick: ((Int) -> Unit)? = null,
+    onShareClick: ((Int) -> Unit)? = null
 ) {
     val displayName = confession.owner.username.asString()
     val hasTitle = confession.title.isNotEmpty()
@@ -123,21 +123,23 @@ fun ConfessionCard(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(12.dp))
+                if (onChannelClick != null) {
+                    Spacer(modifier = Modifier.width(12.dp))
 
-                Text(
-                    text = confession.channel.title,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = ItirafTheme.colors.textSecondary,
-                    fontWeight = FontWeight.Normal,
-                    textDecoration = TextDecoration.Underline,
-                    textAlign = TextAlign.End,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .weight(0.7f, fill = false)
-                        .clickable { onChannelClick(confession.id) }
-                )
+                    Text(
+                        text = confession.channel.title,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = ItirafTheme.colors.textSecondary,
+                        fontWeight = FontWeight.Normal,
+                        textDecoration = TextDecoration.Underline,
+                        textAlign = TextAlign.End,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .weight(0.7f, fill = false)
+                            .clickable { onChannelClick(confession.id) }
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -172,8 +174,8 @@ fun ConfessionCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
+                // 1. LIKE
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    // 1. LIKE
                     Icon(
                         imageVector = if (confession.liked) Icons.Filled.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = if (confession.liked) "Unlike" else "Like",
@@ -189,10 +191,12 @@ fun ConfessionCard(
                         style = MaterialTheme.typography.bodyMedium,
                         color = ItirafTheme.colors.textSecondary
                     )
+                }
 
-                    Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
-                    // 2. COMMENT
+                // 2. COMMENT
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Outlined.ModeComment,
                         contentDescription = "Comment",
@@ -208,24 +212,26 @@ fun ConfessionCard(
                         style = MaterialTheme.typography.bodyMedium,
                         color = ItirafTheme.colors.textSecondary
                     )
+                }
 
-                    // 3. DM
-                    if (!confession.isMine) {
-                        Spacer(modifier = Modifier.width(16.dp))
+                // 3. DM
+                if (onDMRequestClick != null && !confession.isMine) {
+                    Spacer(modifier = Modifier.width(16.dp))
 
-                        Icon(
-                            imageVector = Icons.Outlined.QuestionAnswer,
-                            contentDescription = "DM",
-                            tint = ItirafTheme.colors.textSecondary,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .noRippleClickable { onDMRequestClick(confession.id) }
-                        )
-                    }
+                    Icon(
+                        imageVector = Icons.Outlined.QuestionAnswer,
+                        contentDescription = "DM",
+                        tint = ItirafTheme.colors.textSecondary,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .noRippleClickable { onDMRequestClick(confession.id) }
+                    )
+                }
 
-                    Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.weight(1f))
 
-                    // 4. SHARE
+                // 4. SHARE
+                if (onShareClick != null) {
                     Icon(
                         imageVector = Icons.Outlined.Share,
                         contentDescription = "Share",

@@ -1,5 +1,7 @@
 package com.itirafapp.android.presentation.navigation
 
+import android.net.Uri.encode
+
 sealed class Screen(val route: String) {
 
     // --- Root Path ---
@@ -27,8 +29,11 @@ sealed class Screen(val route: String) {
     object Detail : Screen("detail/{postId}") {
         fun createRoute(postId: String) = "detail/$postId"
     }
-    object ChannelDetail : Screen("channel_detail/{channelId}") {
-        fun createRoute(channelId: Int) = "channel_detail/$channelId"
+    object ChannelDetail : Screen("channel_detail/{channelId}/{channelTitle}") {
+        fun createRoute(channelId: Int, channelTitle: String): String {
+            val encodedTitle = encode(channelTitle)
+            return "channel_detail/$channelId/$encodedTitle"
+        }
     }
 
     object Notifications : Screen("notifications_screen")

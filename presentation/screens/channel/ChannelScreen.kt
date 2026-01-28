@@ -33,7 +33,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun ChannelScreen(
-    onChannelClick: (Int) -> Unit,
+    onChannelClick: (Int, String) -> Unit,
     viewModel: ChannelViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -43,12 +43,11 @@ fun ChannelScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is ChannelUiEvent.NavigateToDetail -> {
-                    onChannelClick(event.id)
+                    onChannelClick(event.id, event.title)
                 }
 
                 is ChannelUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-
                 }
             }
         }
@@ -66,7 +65,7 @@ fun ChannelScreen(
 fun ChannelContent(
     state: ChannelState,
     onEvent: (ChannelEvent) -> Unit,
-    onChannelClick: (Int) -> Unit
+    onChannelClick: (Int, String) -> Unit
 ) {
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
@@ -128,7 +127,7 @@ fun ChannelContent(
                             channel = channel,
                             isFollowed = channel.isFollowing,
                             onFollowClick = { onEvent(ChannelEvent.FollowClicked(channel.id)) },
-                            onClick = { onChannelClick(channel.id) }
+                            onClick = { onChannelClick(channel.id, channel.title) }
                         )
                     }
 

@@ -46,6 +46,20 @@ class ConfessionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getChannelConfession(
+        id: Int,
+        page: Int,
+        limit: Int
+    ): Resource<PaginatedResult<ConfessionData>> {
+        val apiResult: Resource<ConfessionResponse> = safeApiCall {
+            api.getChannelConfession(id, page = page, limit = limit)
+        }
+
+        return apiResult.map { response ->
+            response.toDomain()
+        }
+    }
+
     override suspend fun postReply(
         id: Int,
         message: String

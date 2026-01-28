@@ -7,6 +7,7 @@ import com.itirafapp.android.domain.model.ChannelData
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -23,14 +24,17 @@ interface ChannelService {
         @Query("query") query: String
     ): List<ChannelDataResponse>
 
+    @Headers("X-Auth-Restriction: NonAnonymous")
     @GET("users/me/channels")
     suspend fun getFollowedChannels(): List<ChannelData>
 
+    @Headers("X-Auth-Restriction: NonAnonymous")
     @POST("users/me/channels/follow")
     suspend fun followChannel(
         @Body body: FollowRequest
     ): Unit
 
+    @Headers("X-Auth-Restriction: NonAnonymous")
     @DELETE("users/me/channels/{id}")
     suspend fun unfollowChannel(
         @Path("id") id: Int

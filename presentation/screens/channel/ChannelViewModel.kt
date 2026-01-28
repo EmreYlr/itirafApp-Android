@@ -74,7 +74,7 @@ class ChannelViewModel @Inject constructor(
     fun onEvent(event: ChannelEvent) {
         when (event) {
             is ChannelEvent.ChannelClicked -> {
-                sendUiEvent(ChannelUiEvent.NavigateToDetail(event.id))
+                sendUiEvent(ChannelUiEvent.NavigateToDetail(event.id, event.title))
             }
 
             is ChannelEvent.Refresh -> {
