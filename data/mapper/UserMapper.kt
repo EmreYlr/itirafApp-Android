@@ -4,9 +4,9 @@ import com.itirafapp.android.data.remote.user.dto.RoleDto
 import com.itirafapp.android.data.remote.user.dto.SocialLinkResponse
 import com.itirafapp.android.data.remote.user.dto.UserResponse
 import com.itirafapp.android.domain.model.Role
-import com.itirafapp.android.domain.model.RoleType
 import com.itirafapp.android.domain.model.SocialLink
 import com.itirafapp.android.domain.model.User
+import com.itirafapp.android.domain.model.enums.RoleType
 
 fun UserResponse.toDomain(): User {
     return User(

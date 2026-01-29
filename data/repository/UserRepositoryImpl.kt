@@ -4,10 +4,14 @@ import com.itirafapp.android.data.mapper.toDomain
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.data.remote.user.UserService
 import com.itirafapp.android.data.remote.user.dto.BlockUserRequest
+import com.itirafapp.android.data.remote.user.dto.MyConfessionResponse
+import com.itirafapp.android.domain.model.MyConfessionData
+import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.model.User
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.manager.UserManager
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.map
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -25,6 +29,19 @@ class UserRepositoryImpl @Inject constructor(
             userManager.saveUser(user)
 
             user
+        }
+    }
+
+    override suspend fun getMyConfessions(
+        page: Int,
+        limit: Int
+    ): Resource<PaginatedResult<MyConfessionData>> {
+        val apiResult: Resource<MyConfessionResponse> = safeApiCall {
+            userApi.fetchMyConfessions(page = page, limit = limit)
+        }
+
+        return apiResult.map { response ->
+            response.toDomain()
         }
     }
 

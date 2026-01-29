@@ -26,6 +26,7 @@ import com.itirafapp.android.presentation.screens.channel.channel_detail.Channel
 import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
+import com.itirafapp.android.presentation.screens.myconfession.MyConfessionScreen
 import com.itirafapp.android.presentation.screens.post.PostScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
@@ -109,6 +110,20 @@ fun MainScreen(
                         navController.navigate(
                             Screen.ChannelDetail.createRoute(channelId, channelTitle)
                         )
+                    }
+                )
+            }
+
+            // 3. DM TAB
+            composable(Screen.DM.route) {
+
+            }
+
+            // 4. MY CONFESSION TAB
+            composable(Screen.MyConfession.route) {
+                MyConfessionScreen(
+                    onItemClick = {
+
                     }
                 )
             }

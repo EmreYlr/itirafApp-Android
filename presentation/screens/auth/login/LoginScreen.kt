@@ -184,17 +184,13 @@ fun LoginContent(
                 contentAlignment = Alignment.CenterEnd
             ) {
                 TextButton(
-                    onClick = { /* TODO: Forgot Password */ },
+                    onClick = { onForgotPasswordClick() },
                     contentPadding = PaddingValues(0.dp)
                 ) {
                     Text(
                         text = stringResource(R.string.forgot_password),
                         color = ItirafTheme.colors.textSecondary,
                         fontSize = 14.sp,
-                        modifier = Modifier
-                            .clickable {
-                                onForgotPasswordClick()
-                            }
                     )
                 }
             }

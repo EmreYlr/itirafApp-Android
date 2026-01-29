@@ -1,5 +1,7 @@
 package com.itirafapp.android.domain.model
 
+import com.itirafapp.android.domain.model.enums.RoleType
+
 data class User(
     val id: String?,
     val username: String?,
@@ -21,7 +23,3 @@ data class SocialLink(
 data class Role(
     val name: RoleType
 )
-
-enum class RoleType {
-    ADMIN, USER
-}

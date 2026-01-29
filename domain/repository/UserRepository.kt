@@ -1,11 +1,17 @@
 package com.itirafapp.android.domain.repository
 
+import com.itirafapp.android.domain.model.MyConfessionData
+import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.model.User
 import com.itirafapp.android.util.state.Resource
 
 interface UserRepository {
     suspend fun getUser(): Resource<User>
     suspend fun blockUser(targetUserId: String): Resource<Unit>
+    suspend fun getMyConfessions(
+        page: Int,
+        limit: Int
+    ): Resource<PaginatedResult<MyConfessionData>>
     fun getLocalUser(): User?
     fun clearUserData()
     fun isUserAuthenticated(): Boolean
