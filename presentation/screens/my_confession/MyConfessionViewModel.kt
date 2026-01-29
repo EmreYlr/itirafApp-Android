@@ -53,6 +53,13 @@ class MyConfessionViewModel @Inject constructor(
                     sendUiEvent(MyConfessionUiEvent.NavigateToDetail(it))
                 }
             }
+
+            is MyConfessionEvent.EditClicked -> {
+                val selectedItem = state.myConfession.find { it.id == event.id }
+                selectedItem?.let {
+                    sendUiEvent(MyConfessionUiEvent.NavigateToEdit(it))
+                }
+            }
         }
     }
 

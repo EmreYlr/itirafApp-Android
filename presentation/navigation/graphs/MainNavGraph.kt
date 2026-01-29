@@ -30,6 +30,7 @@ import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
 import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_detail.MyConfessionDetailScreen
+import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditConfessionScreen
 import com.itirafapp.android.presentation.screens.post.PostScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
@@ -133,6 +134,15 @@ fun MainScreen(
                         )
 
                         navController.navigate(Screen.MyConfessionDetail.route)
+                    },
+
+                    onEditClick = { confessionData ->
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "edit_confession",
+                            value = confessionData
+                        )
+
+                        navController.navigate(Screen.MyConfessionEditConfession.route)
                     }
                 )
             }
@@ -202,12 +212,43 @@ fun MainScreen(
                 if (confessionData != null) {
                     MyConfessionDetailScreen(
                         data = confessionData,
-                        onBackClick = { navController.popBackStack() }
+                        onBackClick = { navController.popBackStack() },
+                        onOpenReport = { target ->
+                            currentSheet = BottomSheetType.Report(target)
+                        },
+                        onEditClick = { data ->
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                key = "edit_confession",
+                                value = data
+                            )
+
+                            navController.navigate(Screen.MyConfessionEditConfession.route)
+                        }
                     )
                 } else {
                     LaunchedEffect(Unit) {
                         navController.popBackStack()
                     }
+                }
+            }
+
+            animatedComposable(Screen.MyConfessionEditConfession.route) {
+                val editData = remember {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.get<MyConfessionData>("edit_confession")
+                }
+
+                if (editData != null) {
+                    MyConfessionEditConfessionScreen(
+                        data = editData,
+                        onBackClick = { navController.popBackStack() },
+                        onSuccess = {
+                            navController.popBackStack(Screen.MyConfession.route, false)
+                        }
+                    )
+                } else {
+                    LaunchedEffect(Unit) { navController.popBackStack() }
                 }
             }
         }

@@ -20,6 +20,7 @@ import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.presentation.model.OwnerUiModel
 import com.itirafapp.android.presentation.model.ReplyUiModel
+import com.itirafapp.android.util.state.ActiveDialog
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel

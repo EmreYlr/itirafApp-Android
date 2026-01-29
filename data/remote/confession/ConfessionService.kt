@@ -13,6 +13,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -77,6 +78,13 @@ interface ConfessionService {
     @DELETE("messages/{id}")
     suspend fun deleteConfession(
         @Path("id") id: Int
+    ): Unit
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @PUT("messages/{id}")
+    suspend fun editConfession(
+        @Path("id") id: Int,
+        @Body request: PostRequest
     ): Unit
 
     @Headers("X-Auth-Restriction: NonAnonymous")

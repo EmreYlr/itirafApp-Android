@@ -34,6 +34,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 @Composable
 fun MyConfessionScreen(
     onItemClick: (MyConfessionData) -> Unit,
+    onEditClick: (MyConfessionData) -> Unit,
     viewModel: MyConfessionViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -44,6 +45,10 @@ fun MyConfessionScreen(
             when (event) {
                 is MyConfessionUiEvent.NavigateToDetail -> {
                     onItemClick(event.data)
+                }
+
+                is MyConfessionUiEvent.NavigateToEdit -> {
+                    onEditClick(event.data)
                 }
 
                 is MyConfessionUiEvent.ShowMessage -> {
@@ -110,9 +115,7 @@ fun MyConfessionContent(
                     MyConfessionCard(
                         confession = confession,
                         onCardClick = { onEvent(MyConfessionEvent.ItemClicked(confession.id)) },
-                        onEditClick = {
-
-                        }
+                        onEditClick = { onEvent(MyConfessionEvent.EditClicked(confession.id)) }
                     )
                 }
 

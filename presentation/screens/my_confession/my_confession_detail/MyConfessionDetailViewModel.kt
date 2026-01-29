@@ -8,11 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.Owner
 import com.itirafapp.android.domain.model.Reply
+import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
+import com.itirafapp.android.domain.usecase.confession.DeleteConfessionUseCase
+import com.itirafapp.android.domain.usecase.confession.DeleteReplyUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.PostReplyUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
+import com.itirafapp.android.domain.usecase.user.BlockUserUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
+import com.itirafapp.android.util.state.ActiveDialog
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -28,6 +33,9 @@ class MyConfessionDetailViewModel @Inject constructor(
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
     private val postReplyUseCase: PostReplyUseCase,
     private val createShortlinkUseCase: CreateShortlinkUseCase,
+    private val deleteConfessionUseCase: DeleteConfessionUseCase,
+    private val deleteReplyUseCase: DeleteReplyUseCase,
+    private val blockUserUseCase: BlockUserUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase
 ) : ViewModel() {
 
@@ -68,6 +76,58 @@ class MyConfessionDetailViewModel @Inject constructor(
 
             is MyConfessionDetailEvent.SendCommentClicked -> {
                 sendComment()
+            }
+
+            is MyConfessionDetailEvent.EditClicked -> {
+                val confession = state.confessions ?: return
+                sendUiEvent(MyConfessionDetailUiEvent.NavigateToEdit(confession))
+            }
+
+            is MyConfessionDetailEvent.DeleteItemClicked -> {
+                state = state.copy(
+                    activeDialog = ActiveDialog.DeleteItem(
+                        itemId = event.id,
+                        isReply = event.isReply
+                    )
+                )
+            }
+
+            is MyConfessionDetailEvent.BlockUserClicked -> {
+                state = state.copy(
+                    activeDialog = ActiveDialog.BlockUser(
+                        userId = event.userId,
+                        isReply = event.isReply
+                    )
+                )
+            }
+
+            is MyConfessionDetailEvent.ReportItemClicked -> {
+                val target = if (event.isReply) {
+                    ReportTarget.Comment(replyId = event.id)
+                } else {
+                    ReportTarget.Confession(confessionId = event.id)
+                }
+                sendUiEvent(MyConfessionDetailUiEvent.OpenReportSheet(target))
+            }
+
+            // --- DIALOG AKSİYONLARI ---
+            is MyConfessionDetailEvent.DismissDialog -> {
+                state = state.copy(activeDialog = null)
+            }
+
+            is MyConfessionDetailEvent.ConfirmAction -> {
+                when (val dialog = state.activeDialog) {
+                    is ActiveDialog.DeleteItem -> {
+                        deleteItem(dialog.itemId, dialog.isReply)
+                    }
+
+                    is ActiveDialog.BlockUser -> {
+                        blockUser(dialog.userId)
+                    }
+
+                    null -> {}
+                }
+                state = state.copy(activeDialog = null)
             }
         }
     }
@@ -182,6 +242,108 @@ class MyConfessionDetailViewModel @Inject constructor(
                     sendUiEvent(
                         MyConfessionDetailUiEvent.ShowMessage(
                             result.message ?: "Yorum gönderilemedi"
+                        )
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteItem(itemId: Int, isReply: Boolean) {
+        if (isReply) {
+            deleteReply(itemId)
+        } else {
+            deleteMyConfession(itemId)
+        }
+    }
+
+    private fun deleteReply(itemId: Int) {
+        deleteReplyUseCase(id = itemId).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
+
+                is Resource.Success -> {
+                    val currentConfession = state.confessions
+                    if (currentConfession != null) {
+                        val updatedReplies = currentConfession.reply.filter { it.id != itemId }
+
+                        state = state.copy(
+                            isLoading = false,
+                            confessions = currentConfession.copy(
+                                reply = updatedReplies,
+                                replyCount = updatedReplies.size
+                            )
+                        )
+                    } else {
+                        state = state.copy(isLoading = false)
+                    }
+                    sendUiEvent(MyConfessionDetailUiEvent.ShowMessage("Yorum silindi"))
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        MyConfessionDetailUiEvent.ShowMessage(
+                            result.message ?: "Yorum silinemedi"
+                        )
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteMyConfession(id: Int) {
+        deleteConfessionUseCase(id = id).onEach { result ->
+            when (result) {
+                is Resource.Loading -> state = state.copy(isLoading = true)
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(MyConfessionDetailUiEvent.ShowMessage("İtirafınız silindi"))
+                    sendUiEvent(MyConfessionDetailUiEvent.NavigateToBack)
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        MyConfessionDetailUiEvent.ShowMessage(
+                            result.message ?: "İtiraf silinemedi"
+                        )
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun blockUser(userId: String) {
+        blockUserUseCase(targetUserId = userId).onEach { result ->
+            when (result) {
+                is Resource.Loading -> state = state.copy(isLoading = true)
+                is Resource.Success -> {
+                    val currentConfession = state.confessions
+                    if (currentConfession != null) {
+                        val updatedReplies =
+                            currentConfession.reply.filter { it.owner.id != userId }
+
+                        state = state.copy(
+                            isLoading = false,
+                            confessions = currentConfession.copy(
+                                reply = updatedReplies,
+                                replyCount = updatedReplies.size
+                            )
+                        )
+                    } else {
+                        state = state.copy(isLoading = false)
+                    }
+                    sendUiEvent(MyConfessionDetailUiEvent.ShowMessage("Kullanıcı engellendi"))
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        MyConfessionDetailUiEvent.ShowMessage(
+                            result.message ?: "Kullanıcı engellenemedi"
                         )
                     )
                 }

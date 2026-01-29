@@ -13,9 +13,11 @@ sealed class MyConfessionEvent {
     object Refresh : MyConfessionEvent()
     object LoadMore : MyConfessionEvent()
     data class ItemClicked(val id: Int) : MyConfessionEvent()
+    data class EditClicked(val id: Int) : MyConfessionEvent()
 }
 
 sealed class MyConfessionUiEvent {
     data class NavigateToDetail(val data: MyConfessionData) : MyConfessionUiEvent()
+    data class NavigateToEdit(val data: MyConfessionData) : MyConfessionUiEvent()
     data class ShowMessage(val message: String) : MyConfessionUiEvent()
 }

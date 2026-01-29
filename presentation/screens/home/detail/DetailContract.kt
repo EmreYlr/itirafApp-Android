@@ -2,6 +2,7 @@ package com.itirafapp.android.presentation.screens.home.detail
 
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.presentation.model.ConfessionDetailUiModel
+import com.itirafapp.android.util.state.ActiveDialog
 
 data class DetailState(
     val isLoading: Boolean = false,
@@ -25,12 +26,6 @@ sealed class DetailEvent {
     object DismissDialog : DetailEvent()
     object ConfirmAction : DetailEvent()
 }
-
-sealed interface ActiveDialog {
-    data class BlockUser(val userId: String, val isReply: Boolean) : ActiveDialog
-    data class DeleteItem(val itemId: Int, val isReply: Boolean) : ActiveDialog
-}
-
 sealed class DetailUiEvent {
     object NavigateToBack : DetailUiEvent()
     data class OpenShareSheet(val link: String) : DetailUiEvent()

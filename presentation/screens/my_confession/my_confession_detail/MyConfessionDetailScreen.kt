@@ -16,10 +16,12 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.ModeComment
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -38,18 +40,23 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.MyConfessionData
+import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.presentation.components.core.CommentInputBar
+import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.core.ReplyCard
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.presentation.screens.my_confession.components.MyConfessionDetailHeader
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.state.ActiveDialog
 import com.itirafapp.android.util.state.shareLink
 
 @Composable
 fun MyConfessionDetailScreen(
     data: MyConfessionData,
     onBackClick: () -> Unit,
+    onEditClick: (MyConfessionData) -> Unit,
+    onOpenReport: (ReportTarget) -> Unit,
     viewModel: MyConfessionDetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -68,6 +75,14 @@ fun MyConfessionDetailScreen(
 
                 is MyConfessionDetailUiEvent.OpenShareSheet -> {
                     shareLink(context, event.link)
+                }
+
+                is MyConfessionDetailUiEvent.OpenReportSheet -> {
+                    onOpenReport(event.target)
+                }
+
+                is MyConfessionDetailUiEvent.NavigateToEdit -> {
+                    onEditClick(event.data)
                 }
 
                 is MyConfessionDetailUiEvent.ShowMessage -> {
@@ -92,13 +107,64 @@ fun MyConfessionDetailContent(
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
+    when (val dialog = state.activeDialog) {
+        is ActiveDialog.DeleteItem -> {
+            GenericAlertDialog(
+                onDismissRequest = { onEvent(MyConfessionDetailEvent.DismissDialog) },
+                title = if (dialog.isReply) stringResource(R.string.delete_reply_title)
+                else stringResource(R.string.delete_confession_title),
+                text = stringResource(R.string.delete_description),
+                confirmButtonText = stringResource(R.string.delete),
+                onConfirmClick = { onEvent(MyConfessionDetailEvent.ConfirmAction) },
+                dismissButtonText = stringResource(R.string.cancel),
+                onDismissClick = { onEvent(MyConfessionDetailEvent.DismissDialog) },
+                isDestructive = true
+            )
+        }
+
+        is ActiveDialog.BlockUser -> {
+            GenericAlertDialog(
+                onDismissRequest = { onEvent(MyConfessionDetailEvent.DismissDialog) },
+                title = stringResource(R.string.block_user_title),
+                text = stringResource(R.string.block_user_description),
+                confirmButtonText = stringResource(R.string.block),
+                onConfirmClick = { onEvent(MyConfessionDetailEvent.ConfirmAction) },
+                dismissButtonText = stringResource(R.string.cancel),
+                onDismissClick = { onEvent(MyConfessionDetailEvent.DismissDialog) },
+                isDestructive = true
+            )
+        }
+
+        null -> {}
+    }
+
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
         contentWindowInsets = WindowInsets.statusBars,
         topBar = {
             TopBar(
                 canNavigateBack = true,
-                onNavigateBack = { onEvent(MyConfessionDetailEvent.BackClicked) }
+                onNavigateBack = { onEvent(MyConfessionDetailEvent.BackClicked) },
+                actions = {
+                    state.confessions?.let { confession ->
+                        IconButton(
+                            onClick = {
+                                onEvent(
+                                    MyConfessionDetailEvent.DeleteItemClicked(
+                                        confession.id,
+                                        isReply = false
+                                    )
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Delete",
+                                tint = ItirafTheme.colors.statusError
+                            )
+                        }
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -141,7 +207,7 @@ fun MyConfessionDetailContent(
                                 focusRequester.requestFocus()
                             },
                             onShareClick = { onEvent(MyConfessionDetailEvent.ShareClicked(it)) },
-                            onEditClick = { /* Edit Eventi eklenebilir */ }
+                            onEditClick = { onEvent(MyConfessionDetailEvent.EditClicked) }
                         )
                     }
 
@@ -164,6 +230,7 @@ fun MyConfessionDetailContent(
                         key = { it.id }
                     ) { reply ->
                         val isReplyMine = reply.owner.id == state.currentUserId
+
                         val replyUiModel = remember(reply, isReplyMine) {
                             reply.toUiModel(isMine = isReplyMine)
                         }
@@ -171,9 +238,30 @@ fun MyConfessionDetailContent(
                         Box(modifier = Modifier.padding(horizontal = 16.dp)) {
                             ReplyCard(
                                 reply = replyUiModel,
-                                onDeleteClick = { },
-                                onReportClick = { },
-                                onBlockClick = { }
+                                onDeleteClick = { id ->
+                                    onEvent(
+                                        MyConfessionDetailEvent.DeleteItemClicked(
+                                            id,
+                                            isReply = true
+                                        )
+                                    )
+                                },
+                                onReportClick = { id ->
+                                    onEvent(
+                                        MyConfessionDetailEvent.ReportItemClicked(
+                                            id,
+                                            isReply = true
+                                        )
+                                    )
+                                },
+                                onBlockClick = { userId ->
+                                    onEvent(
+                                        MyConfessionDetailEvent.BlockUserClicked(
+                                            userId,
+                                            isReply = true
+                                        )
+                                    )
+                                }
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))

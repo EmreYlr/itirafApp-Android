@@ -116,6 +116,17 @@ class ConfessionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun editConfession(
+        id: Int,
+        title: String?,
+        message: String
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = PostRequest(title, message)
+            api.editConfession(id, request)
+        }
+    }
+
     override suspend fun deleteReply(id: Int): Resource<Unit> {
         return safeApiCall {
             api.deleteReply(id)
