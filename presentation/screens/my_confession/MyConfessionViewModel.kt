@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.screens.myconfession
+package com.itirafapp.android.presentation.screens.my_confession
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,7 +48,10 @@ class MyConfessionViewModel @Inject constructor(
             }
 
             is MyConfessionEvent.ItemClicked -> {
-                sendUiEvent(MyConfessionUiEvent.NavigateToDetail(event.id))
+                val selectedItem = state.myConfession.find { it.id == event.id }
+                selectedItem?.let {
+                    sendUiEvent(MyConfessionUiEvent.NavigateToDetail(it))
+                }
             }
         }
     }

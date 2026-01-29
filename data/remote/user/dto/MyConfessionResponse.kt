@@ -1,12 +1,10 @@
 package com.itirafapp.android.data.remote.user.dto
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.itirafapp.android.data.remote.channel.dto.ChannelDataResponse
 import com.itirafapp.android.data.remote.confession.dto.ReplyResponse
 import com.itirafapp.android.domain.model.enums.ModerationStatus
 import com.itirafapp.android.domain.model.enums.Violation
-import kotlinx.parcelize.Parcelize
 
 data class MyConfessionResponse(
     @SerializedName("page") val page: Int,
@@ -16,7 +14,6 @@ data class MyConfessionResponse(
     @SerializedName("data") val data: List<MyConfessionDataResponse>
 )
 
-@Parcelize
 data class MyConfessionDataResponse(
     @SerializedName("id") val id: Int,
     @SerializedName("title") val title: String?,
@@ -32,4 +29,4 @@ data class MyConfessionDataResponse(
     @SerializedName("violations") val violations: List<Violation>?,
     @SerializedName("moderationStatus") val moderationStatus: ModerationStatus,
     @SerializedName("isNsfw") val isNsfw: Boolean
-) : Parcelable
+)

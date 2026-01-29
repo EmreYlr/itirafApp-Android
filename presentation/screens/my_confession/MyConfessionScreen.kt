@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.screens.myconfession
+package com.itirafapp.android.presentation.screens.my_confession
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -26,13 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.presentation.components.layout.TopBar
-import com.itirafapp.android.presentation.screens.myconfession.components.MyConfessionCard
+import com.itirafapp.android.presentation.screens.my_confession.components.MyConfessionCard
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun MyConfessionScreen(
-    onItemClick: () -> Unit,
+    onItemClick: (MyConfessionData) -> Unit,
     viewModel: MyConfessionViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -42,7 +43,7 @@ fun MyConfessionScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is MyConfessionUiEvent.NavigateToDetail -> {
-                    onItemClick()
+                    onItemClick(event.data)
                 }
 
                 is MyConfessionUiEvent.ShowMessage -> {
@@ -54,8 +55,7 @@ fun MyConfessionScreen(
 
     MyConfessionContent(
         state = state,
-        onEvent = viewModel::onEvent,
-        onItemClick = onItemClick
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -63,8 +63,7 @@ fun MyConfessionScreen(
 @Composable
 fun MyConfessionContent(
     state: MyConfessionState,
-    onEvent: (MyConfessionEvent) -> Unit,
-    onItemClick: () -> Unit
+    onEvent: (MyConfessionEvent) -> Unit
 ) {
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
@@ -110,7 +109,7 @@ fun MyConfessionContent(
 
                     MyConfessionCard(
                         confession = confession,
-                        onCardClick = { onItemClick() },
+                        onCardClick = { onEvent(MyConfessionEvent.ItemClicked(confession.id)) },
                         onEditClick = {
 
                         }

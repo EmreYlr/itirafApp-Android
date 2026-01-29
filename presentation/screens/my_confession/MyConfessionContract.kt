@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.screens.myconfession
+package com.itirafapp.android.presentation.screens.my_confession
 
 import com.itirafapp.android.domain.model.MyConfessionData
 
@@ -16,6 +16,6 @@ sealed class MyConfessionEvent {
 }
 
 sealed class MyConfessionUiEvent {
-    data class NavigateToDetail(val id: Int) : MyConfessionUiEvent()
+    data class NavigateToDetail(val data: MyConfessionData) : MyConfessionUiEvent()
     data class ShowMessage(val message: String) : MyConfessionUiEvent()
 }

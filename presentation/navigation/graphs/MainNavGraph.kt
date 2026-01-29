@@ -6,6 +6,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.presentation.components.layout.BottomNavigation
 import com.itirafapp.android.presentation.components.layout.BottomSheetType
 import com.itirafapp.android.presentation.navigation.Screen
@@ -26,7 +28,8 @@ import com.itirafapp.android.presentation.screens.channel.channel_detail.Channel
 import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
-import com.itirafapp.android.presentation.screens.myconfession.MyConfessionScreen
+import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
+import com.itirafapp.android.presentation.screens.my_confession.my_confession_detail.MyConfessionDetailScreen
 import com.itirafapp.android.presentation.screens.post.PostScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
@@ -122,8 +125,14 @@ fun MainScreen(
             // 4. MY CONFESSION TAB
             composable(Screen.MyConfession.route) {
                 MyConfessionScreen(
-                    onItemClick = {
+                    onItemClick = { confessionData ->
 
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "selected_confession",
+                            value = confessionData
+                        )
+
+                        navController.navigate(Screen.MyConfessionDetail.route)
                     }
                 )
             }
@@ -181,6 +190,25 @@ fun MainScreen(
                         currentSheet = BottomSheetType.AddPost(channelId)
                     }
                 )
+            }
+
+            animatedComposable(Screen.MyConfessionDetail.route) {
+                val confessionData = remember {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.get<MyConfessionData>("selected_confession")
+                }
+
+                if (confessionData != null) {
+                    MyConfessionDetailScreen(
+                        data = confessionData,
+                        onBackClick = { navController.popBackStack() }
+                    )
+                } else {
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack()
+                    }
+                }
             }
         }
     }

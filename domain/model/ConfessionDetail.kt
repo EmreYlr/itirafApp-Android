@@ -1,5 +1,8 @@
 package com.itirafapp.android.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class ConfessionDetail(
     val id: Int,
     val title: String? = null,
@@ -16,9 +19,10 @@ data class ConfessionDetail(
     val isNsfw: Boolean,
 )
 
+@Parcelize
 data class Reply(
     val id: Int,
     val message: String,
     val owner: Owner,
     val createdAt: String,
-)
+) : Parcelable

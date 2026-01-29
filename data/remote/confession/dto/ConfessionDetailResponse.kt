@@ -1,9 +1,7 @@
 package com.itirafapp.android.data.remote.confession.dto
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.itirafapp.android.data.remote.channel.dto.ChannelDataResponse
-import kotlinx.parcelize.Parcelize
 
 data class ConfessionDetailResponse(
     val id: Int,
@@ -21,13 +19,12 @@ data class ConfessionDetailResponse(
     val isNsfw: Boolean,
 )
 
-@Parcelize
 data class ReplyResponse(
     @SerializedName("id") val id: Int,
     @SerializedName("message") val message: String,
     @SerializedName("owner") val owner: OwnerResponse,
     @SerializedName("createdAt") val createdAt: String,
-) : Parcelable
+)
 
 data class ShortlinkResponse(
     val url: String

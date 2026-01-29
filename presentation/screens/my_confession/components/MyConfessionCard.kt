@@ -1,4 +1,4 @@
-package com.itirafapp.android.presentation.screens.myconfession.components
+package com.itirafapp.android.presentation.screens.my_confession.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
