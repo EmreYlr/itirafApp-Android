@@ -16,6 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -73,12 +74,14 @@ fun MyConfessionContent(
             )
         }
     ) { paddingValues ->
-
-        Box(
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = { onEvent(MyConfessionEvent.Refresh) },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
+
             if (!state.isLoading && state.myConfession.isEmpty() && state.error == null) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -95,12 +98,7 @@ fun MyConfessionContent(
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = 16.dp,
-                    bottom = 16.dp
-                ),
+                contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 itemsIndexed(state.myConfession) { index, confession ->
@@ -113,7 +111,9 @@ fun MyConfessionContent(
                     MyConfessionCard(
                         confession = confession,
                         onCardClick = { onItemClick() },
-                        onEditClick = { }
+                        onEditClick = {
+
+                        }
                     )
                 }
 

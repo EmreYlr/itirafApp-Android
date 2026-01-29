@@ -1,11 +1,14 @@
 package com.itirafapp.android.presentation.screens.myconfession.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,11 +31,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.ChannelData
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.enums.ConfessionDisplayStatus
+import com.itirafapp.android.domain.model.enums.ModerationStatus
 import com.itirafapp.android.presentation.components.content.StatusBadge
+import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.extension.displayStatus
 import com.itirafapp.android.util.extension.toTruncatedAnnotatedString
@@ -56,10 +64,33 @@ fun MyConfessionCard(
     }
 
     val (statusText, statusColor) = when (confession.displayStatus) {
-        ConfessionDisplayStatus.APPROVED -> Pair("Aktif", ItirafTheme.colors.statusSuccess)
-        ConfessionDisplayStatus.REJECTED -> Pair("Reddedildi", ItirafTheme.colors.statusError)
-        ConfessionDisplayStatus.IN_REVIEW -> Pair("Onay Bekliyor", ItirafTheme.colors.statusPending)
-        else -> Pair("Bilinmiyor", ItirafTheme.colors.textSecondary)
+        ConfessionDisplayStatus.APPROVED -> {
+            Pair(
+                stringResource(R.string.confession_status_active),
+                ItirafTheme.colors.statusSuccess
+            )
+        }
+
+        ConfessionDisplayStatus.REJECTED -> {
+            Pair(
+                stringResource(R.string.confession_status_rejected),
+                ItirafTheme.colors.statusError
+            )
+        }
+
+        ConfessionDisplayStatus.IN_REVIEW -> {
+            Pair(
+                stringResource(R.string.confession_status_pending),
+                ItirafTheme.colors.statusPending
+            )
+        }
+
+        else -> {
+            Pair(
+                stringResource(R.string.confession_status_unknown),
+                ItirafTheme.colors.textSecondary
+            )
+        }
     }
 
     Card(
@@ -73,7 +104,7 @@ fun MyConfessionCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 8.dp, vertical = 12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -87,7 +118,7 @@ fun MyConfessionCard(
                 if (confession.isNsfw) {
                     Spacer(modifier = Modifier.width(8.dp))
                     StatusBadge(
-                        text = "Hassas İçerik",
+                        text = stringResource(R.string.confession_nsfw),
                         color = ItirafTheme.colors.sensitiveAccent
                     )
                 }
@@ -97,9 +128,10 @@ fun MyConfessionCard(
                 Text(
                     text = confession.createdAt,
                     style = MaterialTheme.typography.bodySmall,
-                    color = ItirafTheme.colors.textSecondary,
+                    color = ItirafTheme.colors.textTertiary,
                     fontWeight = FontWeight.Light,
-                    maxLines = 1
+                    maxLines = 1,
+                    fontSize = 10.sp
                 )
             }
 
@@ -149,7 +181,7 @@ fun MyConfessionCard(
                     color = ItirafTheme.colors.textSecondary
                 )
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(8.dp))
 
                 Icon(
                     imageVector = Icons.Outlined.ModeComment,
@@ -179,7 +211,7 @@ fun MyConfessionCard(
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
                         Text(
-                            text = "Düzenle",
+                            text = stringResource(R.string.edit),
                             style = MaterialTheme.typography.labelMedium,
                             color = ItirafTheme.colors.statusError,
                             fontWeight = FontWeight.SemiBold
@@ -187,6 +219,88 @@ fun MyConfessionCard(
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(
+    showBackground = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "Dark Mode"
+)
+@Composable
+fun MyConfessionCardPreview() {
+
+    val mockChannel = ChannelData(
+        id = 1,
+        title = "İtiraflar",
+        description = "Genel",
+        imageURL = null
+    )
+
+    val approvedConfession = MyConfessionData(
+        id = 1,
+        title = "Harika Bir Gün",
+        message = "Bugün hava çok güzeldi, sahilde yürüyüş yaparken eski bir dostumu gördüm. Hayat sürprizlerle dolu.",
+        isLiked = true,
+        likeCount = 120,
+        replyCount = 5,
+        shareCount = 0,
+        createdAt = "2 saat önce",
+        channel = mockChannel,
+        reply = emptyList(),
+        rejectionReason = null,
+        violations = null,
+        moderationStatus = ModerationStatus.HUMAN_APPROVED,
+        isNsfw = true
+    )
+
+    val rejectedConfession = approvedConfession.copy(
+        id = 2,
+        title = "Öfkeli Anım",
+        message = "Bu itiraf kurallara uymadığı için reddedildi. Lütfen düzenleyip tekrar gönderiniz.",
+        moderationStatus = ModerationStatus.HUMAN_REJECTED,
+        likeCount = 0,
+        replyCount = 0,
+        isNsfw = false
+    )
+
+    val pendingNsfwConfession = approvedConfession.copy(
+        id = 3,
+        title = null,
+        message = "Bu içerik hassas olabilir ve şu an moderatör onayı beklemektedir.",
+        moderationStatus = ModerationStatus.PENDING_REVIEW,
+        isNsfw = false,
+        likeCount = 0,
+        replyCount = 0
+    )
+
+    ItirafAppTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(ItirafTheme.colors.backgroundApp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            MyConfessionCard(
+                confession = approvedConfession,
+                onCardClick = {},
+                onEditClick = {}
+            )
+
+            MyConfessionCard(
+                confession = rejectedConfession,
+                onCardClick = {},
+                onEditClick = {}
+            )
+
+            MyConfessionCard(
+                confession = pendingNsfwConfession,
+                onCardClick = {},
+                onEditClick = {}
+            )
         }
     }
 }
