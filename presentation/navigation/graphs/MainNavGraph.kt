@@ -152,12 +152,18 @@ fun MainScreen(
                 ProfileScreen(
                     onNavigateToSettings = {
                         navController.navigate(Screen.Settings.route)
+                    },
+                    onNavigateToFollowChannel = {
+
+                    },
+                    onNavigateToSocial = { link ->
+
                     }
                 )
             }
 
             // SETTINGS SCREEN
-            composable(Screen.Settings.route) {
+            animatedComposable(Screen.Settings.route) {
                 SettingsScreen(
                     onNavigateToLogin = {
                         onLogOut()

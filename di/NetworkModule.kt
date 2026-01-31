@@ -13,6 +13,7 @@ import com.itirafapp.android.data.remote.network.interceptor.NetworkLoggerInterc
 import com.itirafapp.android.data.remote.network.interceptor.TokenInterceptor
 import com.itirafapp.android.data.remote.notification.NotificationService
 import com.itirafapp.android.data.remote.room.RoomService
+import com.itirafapp.android.data.remote.social_link.SocialLinkService
 import com.itirafapp.android.data.remote.user.UserService
 import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.data.repository.ChannelRepositoryImpl
@@ -20,6 +21,7 @@ import com.itirafapp.android.data.repository.ConfessionRepositoryImpl
 import com.itirafapp.android.data.repository.FollowRepositoryImpl
 import com.itirafapp.android.data.repository.NotificationRepositoryImpl
 import com.itirafapp.android.data.repository.RoomRepositoryImpl
+import com.itirafapp.android.data.repository.SocialLinkRepositoryImpl
 import com.itirafapp.android.data.repository.UserRepositoryImpl
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.ChannelRepository
@@ -27,6 +29,7 @@ import com.itirafapp.android.domain.repository.ConfessionRepository
 import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
 import com.itirafapp.android.domain.repository.RoomRepository
+import com.itirafapp.android.domain.repository.SocialLinkRepository
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.manager.FollowPreferencesManager
 import com.itirafapp.android.util.manager.SessionEventBus
@@ -180,6 +183,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideSocialLinkService(retrofit: Retrofit): SocialLinkService {
+        return retrofit.create(SocialLinkService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideAuthRepository(
         api: AuthService,
         tokenManager: TokenManager
@@ -235,6 +244,15 @@ object NetworkModule {
         preferencesManager: FollowPreferencesManager
     ): FollowRepository {
         return FollowRepositoryImpl(api, preferencesManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSocialLinkRepository(
+        api: SocialLinkService,
+        userManager: UserManager
+    ): SocialLinkRepository {
+        return SocialLinkRepositoryImpl(api, userManager)
     }
 
     @Provides

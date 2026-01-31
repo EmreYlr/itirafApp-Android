@@ -1,7 +1,7 @@
 package com.itirafapp.android.data.remote.user.dto
 
 import com.google.gson.annotations.SerializedName
-import com.itirafapp.android.domain.model.Role
+import com.itirafapp.android.data.remote.social_link.dto.LinkResponse
 
 data class UserResponse(
     val id: String,
@@ -10,17 +10,8 @@ data class UserResponse(
     @SerializedName("anonymous")
     val isAnonymous: Boolean,
     @SerializedName("social_links")
-    val socialLinks: List<SocialLinkResponse>?,
+    val socialLinks: List<LinkResponse>?,
     val roles: List<RoleDto>
-)
-
-data class SocialLinkResponse(
-    val id: String,
-    val platform: String,
-    val username: String,
-    val url: String,
-    val verified: Boolean,
-    val visible: Boolean
 )
 
 data class RoleDto(

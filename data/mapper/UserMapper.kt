@@ -1,10 +1,8 @@
 package com.itirafapp.android.data.mapper
 
 import com.itirafapp.android.data.remote.user.dto.RoleDto
-import com.itirafapp.android.data.remote.user.dto.SocialLinkResponse
 import com.itirafapp.android.data.remote.user.dto.UserResponse
 import com.itirafapp.android.domain.model.Role
-import com.itirafapp.android.domain.model.SocialLink
 import com.itirafapp.android.domain.model.User
 import com.itirafapp.android.domain.model.enums.RoleType
 
@@ -16,17 +14,6 @@ fun UserResponse.toDomain(): User {
         anonymous = isAnonymous,
         socialLinks = socialLinks?.map { it.toDomain() } ?: emptyList(),
         roles = roles.map { it.toDomain() }
-    )
-}
-
-fun SocialLinkResponse.toDomain(): SocialLink {
-    return SocialLink(
-        id = id,
-        platform = platform,
-        username = username,
-        url = url,
-        verified = verified,
-        visible = visible
     )
 }
 
