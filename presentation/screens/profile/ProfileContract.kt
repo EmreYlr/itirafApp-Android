@@ -6,10 +6,12 @@ import com.itirafapp.android.domain.model.User
 data class ProfileState(
     val user: User? = null,
     val isLoading: Boolean = false,
+    val isRefreshing: Boolean = false,
     val error: String? = null,
 )
 
 sealed class ProfileEvent {
+    object Refresh : ProfileEvent()
     object SettingsClicked : ProfileEvent()
     object FollowChannelClicked : ProfileEvent()
     object AddSocialClick : ProfileEvent()

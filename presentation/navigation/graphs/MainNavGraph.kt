@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.itirafapp.android.domain.model.Link
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.presentation.components.layout.BottomNavigation
 import com.itirafapp.android.presentation.components.layout.BottomSheetType
@@ -34,6 +35,7 @@ import com.itirafapp.android.presentation.screens.my_confession.my_confession_ed
 import com.itirafapp.android.presentation.screens.post.PostScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
+import com.itirafapp.android.presentation.screens.profile.social.SocialScreen
 import com.itirafapp.android.presentation.screens.report.ReportScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.extension.animatedComposable
@@ -157,7 +159,17 @@ fun MainScreen(
 
                     },
                     onNavigateToSocial = { link ->
+                        if (link != null) {
+                            navController.currentBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("social_data", link)
+                        } else {
+                            navController.currentBackStackEntry
+                                ?.savedStateHandle
+                                ?.remove<Link>("social_data")
+                        }
 
+                        navController.navigate(Screen.Social.route)
                     }
                 )
             }
@@ -208,6 +220,7 @@ fun MainScreen(
                 )
             }
 
+            // MY CONFESSION DETAIL SCREEN
             animatedComposable(Screen.MyConfessionDetail.route) {
                 val confessionData = remember {
                     navController.previousBackStackEntry
@@ -238,6 +251,7 @@ fun MainScreen(
                 }
             }
 
+            // EDIT CONFESSION SCREEN
             animatedComposable(Screen.MyConfessionEditConfession.route) {
                 val editData = remember {
                     navController.previousBackStackEntry
@@ -256,6 +270,22 @@ fun MainScreen(
                 } else {
                     LaunchedEffect(Unit) { navController.popBackStack() }
                 }
+            }
+
+            // SOCIAL SCREEN
+            animatedComposable(Screen.Social.route) {
+                val socialData = remember {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.get<Link>("social_data")
+                }
+
+                SocialScreen(
+                    data = socialData,
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
     }

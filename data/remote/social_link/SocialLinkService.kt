@@ -10,7 +10,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.PUT
-import retrofit2.http.Query
+import retrofit2.http.Path
 
 interface SocialLinkService {
     @Headers("X-Auth-Restriction: NonAnonymous")
@@ -26,20 +26,20 @@ interface SocialLinkService {
     @Headers("X-Auth-Restriction: NonAnonymous")
     @PUT("social-links/{id}")
     suspend fun updateUserSocialLink(
-        @Query("id") id: String,
+        @Path("id") id: String,
         @Body request: UpdateSocialLinkRequest
     )
 
     @Headers("X-Auth-Restriction: NonAnonymous")
     @PUT("social-links/{id}/visibility")
     suspend fun updateUserSocialLinkVisibility(
-        @Query("id") id: String,
+        @Path("id") id: String,
         @Body request: SocialLinkVisibilityRequest
     )
 
     @Headers("X-Auth-Restriction: NonAnonymous")
     @DELETE("social-links/{id}")
     suspend fun deleteUserSocialLink(
-        @Query("id") id: String
+        @Path("id") id: String
     )
 }

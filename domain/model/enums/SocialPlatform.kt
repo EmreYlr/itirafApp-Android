@@ -1,11 +1,14 @@
 package com.itirafapp.android.domain.model.enums
 
+import android.os.Parcelable
 import com.itirafapp.android.R
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class SocialPlatform(val rawValue: String) {
+@Parcelize
+enum class SocialPlatform(val rawValue: String) : Parcelable {
     @SerialName("twitter")
     TWITTER("twitter"),
 
@@ -31,7 +34,7 @@ enum class SocialPlatform(val rawValue: String) {
 
     val baseURL: String
         get() = when (this) {
-            TWITTER -> "https://twitter.com/"
+            TWITTER -> "https://x.com/"
             INSTAGRAM -> "https://www.instagram.com/"
             OTHER -> ""
         }
@@ -39,6 +42,10 @@ enum class SocialPlatform(val rawValue: String) {
     companion object {
         fun from(value: String?): SocialPlatform {
             return entries.find { it.rawValue.equals(value, ignoreCase = true) } ?: OTHER
+        }
+
+        fun getSelectablePlatforms(): List<SocialPlatform> {
+            return entries.filter { it != OTHER }
         }
     }
 }

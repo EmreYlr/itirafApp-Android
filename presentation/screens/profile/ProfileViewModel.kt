@@ -5,12 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.model.enums.SocialPlatform
 import com.itirafapp.android.domain.usecase.social_link.GetUserSocialLinksUseCase
 import com.itirafapp.android.domain.usecase.social_link.UpdateSocialLinkVisibilityUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -30,11 +32,7 @@ class ProfileViewModel @Inject constructor(
     private val _uiEvent = Channel<ProfileUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    init {
-        initializeProfile()
-    }
-
-    private fun initializeProfile() {
+    fun initializeProfile() {
         val localUser = getCurrentUserUseCase()
         state = state.copy(user = localUser)
 
@@ -45,12 +43,20 @@ class ProfileViewModel @Inject constructor(
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
+            is ProfileEvent.Refresh -> {
+                refreshProfile()
+            }
+
             is ProfileEvent.SettingsClicked -> {
                 sendUiEvent(ProfileUiEvent.NavigateToSettings)
             }
 
             is ProfileEvent.AddSocialClick -> {
-                sendUiEvent(ProfileUiEvent.NavigateToSocial(null))
+                if (canAddNewAccount()) {
+                    sendUiEvent(ProfileUiEvent.NavigateToSocial(null))
+                } else {
+                    sendUiEvent(ProfileUiEvent.ShowMessage("Tüm platformlarda zaten hesabınız var."))
+                }
             }
 
             is ProfileEvent.EditSocialClick -> {
@@ -120,6 +126,25 @@ class ProfileViewModel @Inject constructor(
                 else -> Unit
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun refreshProfile() {
+        viewModelScope.launch {
+            state = state.copy(isRefreshing = true)
+            initializeProfile()
+            delay(1000)
+            state = state.copy(isRefreshing = false)
+        }
+    }
+
+    private fun canAddNewAccount(): Boolean {
+        val userLinks = state.user?.socialLinks ?: emptyList()
+        val usedPlatforms = userLinks.map { it.platform }
+
+        val allSelectablePlatforms = SocialPlatform.getSelectablePlatforms()
+        val isAllFull = allSelectablePlatforms.all { usedPlatforms.contains(it) }
+
+        return !isAllFull
     }
 
     private fun sendUiEvent(event: ProfileUiEvent) {

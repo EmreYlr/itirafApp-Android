@@ -34,6 +34,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -63,6 +64,10 @@ fun ProfileScreen(
 ) {
     val state = viewModel.state
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.initializeProfile()
+    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
@@ -117,150 +122,157 @@ fun ProfileContent(
             )
         }
     ) { paddingValues ->
-
-        Column(
+        PullToRefreshBox(
+            isRefreshing = state.isRefreshing,
+            onRefresh = { onEvent(ProfileEvent.Refresh) },
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+                .padding(paddingValues),
+            contentAlignment = Alignment.TopCenter
         ) {
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(70.dp)
-                        .background(
-                            color = ItirafTheme.colors.backgroundCard,
-                            shape = CircleShape
-                        )
-                        .border(
-                            width = 1.dp,
-                            color = ItirafTheme.colors.dividerColor,
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
-                        tint = ItirafTheme.colors.textSecondary,
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(16.dp))
-
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Text(
-                        text = state.user?.username ?: "Anonymous",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold,
-                        color = ItirafTheme.colors.textPrimary
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Button(
-                        onClick = { onEvent(ProfileEvent.FollowChannelClicked) },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = ItirafTheme.colors.backgroundCard,
-                            contentColor = ItirafTheme.colors.textPrimary
-                        ),
-                        shape = CircleShape,
-                        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
-                        modifier = Modifier.height(30.dp)
+                    Box(
+                        modifier = Modifier
+                            .size(70.dp)
+                            .background(
+                                color = ItirafTheme.colors.backgroundCard,
+                                shape = CircleShape
+                            )
+                            .border(
+                                width = 1.dp,
+                                color = ItirafTheme.colors.dividerColor,
+                                shape = CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Group,
+                            imageVector = Icons.Default.Person,
                             contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = ItirafTheme.colors.brandPrimary
+                            tint = ItirafTheme.colors.textSecondary,
+                            modifier = Modifier.size(32.dp)
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                    ) {
                         Text(
-                            text = stringResource(R.string.followed_channels_title),
-                            style = MaterialTheme.typography.labelSmall,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
+                            text = state.user?.username ?: "Anonymous",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = ItirafTheme.colors.textPrimary
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Button(
+                            onClick = { onEvent(ProfileEvent.FollowChannelClicked) },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = ItirafTheme.colors.backgroundCard,
+                                contentColor = ItirafTheme.colors.textPrimary
+                            ),
+                            shape = CircleShape,
+                            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                            modifier = Modifier.height(30.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Group,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                                tint = ItirafTheme.colors.brandPrimary
+                            )
+                            Spacer(modifier = Modifier.width(6.dp))
+                            Text(
+                                text = stringResource(R.string.followed_channels_title),
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(
+                    color = ItirafTheme.colors.dividerColor,
+                    thickness = 1.dp
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = ItirafTheme.colors.brandPrimary.copy(alpha = 0.1f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(12.dp)
+                ) {
+                    Column {
+                        Text(
+                            text = stringResource(R.string.profile_social_info_title),
+                            style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
+                            color = ItirafTheme.colors.textPrimary
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = stringResource(R.string.profile_social_info_body),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = ItirafTheme.colors.textSecondary,
+                            fontSize = 11.sp
                         )
                     }
                 }
-            }
 
-            HorizontalDivider(
-                color = ItirafTheme.colors.dividerColor,
-                thickness = 1.dp
-            )
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = ItirafTheme.colors.brandPrimary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .padding(12.dp)
-            ) {
-                Column {
-                    Text(
-                        text = stringResource(R.string.profile_social_info_title),
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = ItirafTheme.colors.textPrimary
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = stringResource(R.string.profile_social_info_body),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = ItirafTheme.colors.textSecondary,
-                        fontSize = 11.sp
-                    )
-                }
-            }
-
-            ItirafButton(
-                text = stringResource(R.string.add_new_social_link),
-                onClick = { onEvent(ProfileEvent.AddSocialClick) },
-                containerColor = ItirafTheme.colors.brandSecondary,
-                contentColor = Color.White,
-                icon = Icons.Default.Add
-            )
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(0.dp)
-            ) {
-                state.user?.socialLinks?.forEach { link ->
-                    SocialCard(
-                        social = link,
-                        onEditClick = { selectedLink ->
-                            onEvent(ProfileEvent.EditSocialClick(selectedLink.id))
-                        },
-                        onVisibilityChange = { isVisible ->
-                            onEvent(ProfileEvent.SocialVisibilityChanged(link.id, isVisible))
-                        }
-                    )
-                }
-            }
-
-            if (state.user?.socialLinks.isNullOrEmpty()) {
-                Text(
-                    text = "Henüz ekli bir hesap yok.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = ItirafTheme.colors.textTertiary,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(top = 10.dp)
+                ItirafButton(
+                    text = stringResource(R.string.add_new_social_link),
+                    onClick = { onEvent(ProfileEvent.AddSocialClick) },
+                    containerColor = ItirafTheme.colors.brandSecondary,
+                    contentColor = Color.White,
+                    icon = Icons.Default.Add
                 )
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(0.dp)
+                ) {
+                    state.user?.socialLinks?.forEach { link ->
+                        SocialCard(
+                            social = link,
+                            onEditClick = { selectedLink ->
+                                onEvent(ProfileEvent.EditSocialClick(selectedLink.id))
+                            },
+                            onVisibilityChange = { isVisible ->
+                                onEvent(ProfileEvent.SocialVisibilityChanged(link.id, isVisible))
+                            }
+                        )
+                    }
+                }
+
+                if (state.user?.socialLinks.isNullOrEmpty()) {
+                    Text(
+                        text = "Henüz ekli bir hesap yok.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = ItirafTheme.colors.textTertiary,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 10.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+            }
         }
     }
 }
