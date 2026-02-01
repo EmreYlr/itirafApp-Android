@@ -34,6 +34,7 @@ import com.itirafapp.android.presentation.screens.my_confession.my_confession_de
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditConfessionScreen
 import com.itirafapp.android.presentation.screens.post.PostScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
+import com.itirafapp.android.presentation.screens.profile.follow_channel.FollowChannelScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
 import com.itirafapp.android.presentation.screens.profile.social.SocialScreen
 import com.itirafapp.android.presentation.screens.report.ReportScreen
@@ -155,9 +156,11 @@ fun MainScreen(
                     onNavigateToSettings = {
                         navController.navigate(Screen.Settings.route)
                     },
-                    onNavigateToFollowChannel = {
 
+                    onNavigateToFollowChannel = {
+                        navController.navigate(Screen.FollowChannel.route)
                     },
+
                     onNavigateToSocial = { link ->
                         if (link != null) {
                             navController.currentBackStackEntry
@@ -284,6 +287,18 @@ fun MainScreen(
                     data = socialData,
                     onNavigateBack = {
                         navController.popBackStack()
+                    }
+                )
+            }
+
+            //FOLLOW CHANNEL SCREEN
+            animatedComposable(Screen.FollowChannel.route) {
+                FollowChannelScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onChannelClick = { channelId, channelTitle ->
+                        navController.navigate(
+                            Screen.ChannelDetail.createRoute(channelId, channelTitle)
+                        )
                     }
                 )
             }

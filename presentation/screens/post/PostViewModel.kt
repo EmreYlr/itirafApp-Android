@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.confession.PostConfessionUseCase
-import com.itirafapp.android.domain.usecase.follow.GetFollowedChannelsUseCase
+import com.itirafapp.android.domain.usecase.follow.GetLocalFollowedChannelsUseCase
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
-    private val getFollowedChannelsUseCase: GetFollowedChannelsUseCase,
+    private val getLocalFollowedChannelsUseCase: GetLocalFollowedChannelsUseCase,
     private val postConfessionUseCase: PostConfessionUseCase
 ) : ViewModel() {
 
@@ -66,7 +66,7 @@ class PostViewModel @Inject constructor(
     }
 
     private fun loadFollowedChannels() {
-        getFollowedChannelsUseCase()
+        getLocalFollowedChannelsUseCase()
             .onEach { channels ->
                 var newState = state.copy(followedChannel = channels)
 

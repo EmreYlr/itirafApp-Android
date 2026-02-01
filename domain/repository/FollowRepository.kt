@@ -9,6 +9,8 @@ interface FollowRepository {
 
     suspend fun syncFollowedChannels(): Resource<Unit>
 
+    suspend fun getRemoteFollowedChannels(): Resource<List<ChannelData>>
+
     suspend fun followChannel(channel: ChannelData): Resource<Unit>
     suspend fun unfollowChannel(channel: ChannelData): Resource<Unit>
 

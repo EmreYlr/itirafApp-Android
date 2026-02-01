@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.ChannelData
 import com.itirafapp.android.domain.usecase.channel.GetChannelsUseCase
 import com.itirafapp.android.domain.usecase.channel.SearchChannelsUseCase
-import com.itirafapp.android.domain.usecase.follow.GetFollowedChannelsUseCase
+import com.itirafapp.android.domain.usecase.follow.GetLocalFollowedChannelsUseCase
 import com.itirafapp.android.domain.usecase.follow.ToggleFollowChannelUseCase
 import com.itirafapp.android.presentation.model.ChannelUiModel
 import com.itirafapp.android.util.state.Resource
@@ -25,7 +25,7 @@ class ChannelViewModel @Inject constructor(
     private val getChannelsUseCase: GetChannelsUseCase,
     private val searchChannelsUseCase: SearchChannelsUseCase,
     private val toggleFollowChannelUseCase: ToggleFollowChannelUseCase,
-    private val getFollowedChannelsUseCase: GetFollowedChannelsUseCase
+    private val getLocalFollowedChannelsUseCase: GetLocalFollowedChannelsUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(ChannelState())
@@ -48,7 +48,7 @@ class ChannelViewModel @Inject constructor(
     }
 
     private fun observeFollowedChannels() {
-        getFollowedChannelsUseCase()
+        getLocalFollowedChannelsUseCase()
             .onEach { followedList ->
                 currentFollowedIds = followedList.map { it.id }.toSet()
                 updateUiState()

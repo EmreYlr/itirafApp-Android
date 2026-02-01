@@ -25,6 +25,14 @@ class FollowRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getRemoteFollowedChannels(): Resource<List<ChannelData>> {
+        return safeApiCall {
+            val remoteChannels = channelService.getFollowedChannels()
+            preferencesManager.updateFollowedChannels(remoteChannels)
+            remoteChannels
+        }
+    }
+
     override suspend fun followChannel(channel: ChannelData): Resource<Unit> {
         preferencesManager.addChannel(channel)
 
