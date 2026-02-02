@@ -159,8 +159,8 @@ fun EditProfileContent(
             ItirafButton(
                 text = stringResource(R.string.delete_account),
                 onClick = { onEvent(EditProfileEvent.DeleteIconClicked) },
-                containerColor = Color.Red,
-                contentColor = Color.White,
+                containerColor = ItirafTheme.colors.statusError,
+                contentColor = ItirafTheme.colors.textPrimary,
                 isLoading = state.isLoading,
                 enabled = !state.isLoading
             )

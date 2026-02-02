@@ -37,6 +37,7 @@ import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.follow_channel.FollowChannelScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
 import com.itirafapp.android.presentation.screens.profile.settings.edit_profile.EditProfileScreen
+import com.itirafapp.android.presentation.screens.profile.settings.notification.NotificationScreen
 import com.itirafapp.android.presentation.screens.profile.social.SocialScreen
 import com.itirafapp.android.presentation.screens.report.ReportScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -191,7 +192,7 @@ fun MainScreen(
                         navController.navigate(Screen.EditProfile.route)
                     },
                     onNavigateToNotification = {
-
+                        navController.navigate(Screen.Notification.route)
                     }
                 )
             }
@@ -320,6 +321,13 @@ fun MainScreen(
                     onDeleteClick = {
                         onLogOut()
                     }
+                )
+            }
+
+            //NOTIFICATION SCREEN
+            animatedComposable(Screen.Notification.route) {
+                NotificationScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         }

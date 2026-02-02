@@ -145,9 +145,7 @@ class SettingsViewModel @Inject constructor(
             SettingActionType.RULES -> openUrl(Constants.RULES_URL)
             SettingActionType.PRIVACY_POLICY -> openUrl(Constants.PRIVACY_URL)
             SettingActionType.USER_AGREEMENT -> openUrl(Constants.TERMS_URL)
-            SettingActionType.HELP_CENTER -> {
-                openUrl(Constants.WEBSITE_URL)
-            }
+            SettingActionType.HELP_CENTER -> openUrl(Constants.WEBSITE_URL)
 
             SettingActionType.CONTACT_INFO -> {
                 sendUiEvent(
