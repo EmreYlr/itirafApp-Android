@@ -8,10 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.enums.SettingActionType
 import com.itirafapp.android.domain.usecase.auth.LogoutAnonymousUserUseCase
 import com.itirafapp.android.domain.usecase.auth.LogoutUserUseCase
+import com.itirafapp.android.domain.usecase.language.GetLanguageUseCase
+import com.itirafapp.android.domain.usecase.language.SetLanguageUseCase
 import com.itirafapp.android.domain.usecase.theme.GetAppThemeUseCase
 import com.itirafapp.android.domain.usecase.theme.SetAppThemeUseCase
 import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
 import com.itirafapp.android.util.constant.Constants
+import com.itirafapp.android.util.constant.LanguageConfig
 import com.itirafapp.android.util.constant.ThemeConfig
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +32,9 @@ class SettingsViewModel @Inject constructor(
     private val isUserAuthenticated: IsUserAuthenticatedUseCase,
     private val settingsMenuProvider: SettingsMenuProvider,
     private val getAppThemeUseCase: GetAppThemeUseCase,
-    private val setAppThemeUseCase: SetAppThemeUseCase
+    private val setAppThemeUseCase: SetAppThemeUseCase,
+    private val getLanguageUseCase: GetLanguageUseCase,
+    private val setLanguageUseCase: SetLanguageUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(SettingsState())
@@ -41,6 +46,7 @@ class SettingsViewModel @Inject constructor(
     init {
         initializeSettings()
         observeTheme()
+        getCurrentLanguage()
     }
 
     private fun initializeSettings() {
@@ -59,6 +65,11 @@ class SettingsViewModel @Inject constructor(
         getAppThemeUseCase().onEach { theme ->
             state = state.copy(currentTheme = theme)
         }.launchIn(viewModelScope)
+    }
+
+    private fun getCurrentLanguage() {
+        val currentLang = getLanguageUseCase()
+        state = state.copy(currentLanguage = currentLang)
     }
 
     fun onEvent(event: SettingsEvent) {
@@ -82,6 +93,14 @@ class SettingsViewModel @Inject constructor(
             is SettingsEvent.LogoutClicked -> {
                 logout()
             }
+
+            is SettingsEvent.DismissLanguageDialog -> {
+                state = state.copy(showLanguageDialog = false)
+            }
+
+            is SettingsEvent.LanguageSelected -> {
+                updateLanguage(event.language)
+            }
         }
     }
 
@@ -89,6 +108,19 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             setAppThemeUseCase(theme)
             state = state.copy(showThemeDialog = false)
+        }
+    }
+
+    private fun updateLanguage(language: LanguageConfig) {
+        state = state.copy(
+            showLanguageDialog = false,
+            currentLanguage = language
+        )
+
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(100)
+            setLanguageUseCase(language)
+            initializeSettings()
         }
     }
 
@@ -107,7 +139,7 @@ class SettingsViewModel @Inject constructor(
             }
 
             SettingActionType.LANGUAGE -> {
-                //TODO: Language
+                state = state.copy(showLanguageDialog = true)
             }
 
             SettingActionType.RULES -> openUrl(Constants.RULES_URL)

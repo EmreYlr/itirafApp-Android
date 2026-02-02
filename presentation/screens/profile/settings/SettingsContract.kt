@@ -2,6 +2,7 @@ package com.itirafapp.android.presentation.screens.profile.settings
 
 import com.itirafapp.android.domain.model.enums.SettingActionType
 import com.itirafapp.android.presentation.model.SectionUiModel
+import com.itirafapp.android.util.constant.LanguageConfig
 import com.itirafapp.android.util.constant.ThemeConfig
 
 data class SettingsState(
@@ -9,7 +10,9 @@ data class SettingsState(
     val sections: List<SectionUiModel> = emptyList(),
     val isAnonymous: Boolean = false,
     val showThemeDialog: Boolean = false,
-    val currentTheme: ThemeConfig = ThemeConfig.SYSTEM
+    val currentTheme: ThemeConfig = ThemeConfig.SYSTEM,
+    val showLanguageDialog: Boolean = false,
+    val currentLanguage: LanguageConfig = LanguageConfig.SYSTEM
 )
 
 sealed class SettingsEvent {
@@ -18,6 +21,8 @@ sealed class SettingsEvent {
     data class ItemClicked(val action: SettingActionType) : SettingsEvent()
     object DismissThemeDialog : SettingsEvent()
     data class ThemeSelected(val theme: ThemeConfig) : SettingsEvent()
+    object DismissLanguageDialog : SettingsEvent()
+    data class LanguageSelected(val language: LanguageConfig) : SettingsEvent()
 }
 
 sealed class SettingsUiEvent {

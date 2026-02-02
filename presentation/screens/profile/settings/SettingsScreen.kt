@@ -40,6 +40,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.components.layout.TopBar
+import com.itirafapp.android.presentation.screens.profile.components.LanguageSelectionContent
 import com.itirafapp.android.presentation.screens.profile.components.SettingsRow
 import com.itirafapp.android.presentation.screens.profile.components.ThemeSelectionContent
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -132,6 +133,23 @@ fun SettingsContent(
                     },
                     onDismiss = {
                         onEvent(SettingsEvent.DismissThemeDialog)
+                    }
+                )
+            }
+        }
+    }
+
+    if (state.showLanguageDialog) {
+        Dialog(onDismissRequest = { onEvent(SettingsEvent.DismissLanguageDialog) }) {
+            Surface(
+                shape = RoundedCornerShape(24.dp),
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                LanguageSelectionContent(
+                    currentLanguage = state.currentLanguage,
+                    onLanguageSelected = { selectedConfig ->
+                        onEvent(SettingsEvent.LanguageSelected(selectedConfig))
                     }
                 )
             }

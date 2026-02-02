@@ -19,6 +19,7 @@ import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.data.repository.ChannelRepositoryImpl
 import com.itirafapp.android.data.repository.ConfessionRepositoryImpl
 import com.itirafapp.android.data.repository.FollowRepositoryImpl
+import com.itirafapp.android.data.repository.LanguageRepositoryImpl
 import com.itirafapp.android.data.repository.NotificationRepositoryImpl
 import com.itirafapp.android.data.repository.RoomRepositoryImpl
 import com.itirafapp.android.data.repository.SocialLinkRepositoryImpl
@@ -28,12 +29,14 @@ import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.ChannelRepository
 import com.itirafapp.android.domain.repository.ConfessionRepository
 import com.itirafapp.android.domain.repository.FollowRepository
+import com.itirafapp.android.domain.repository.LanguageRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
 import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.domain.repository.SocialLinkRepository
 import com.itirafapp.android.domain.repository.ThemeRepository
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.manager.FollowPreferencesManager
+import com.itirafapp.android.util.manager.LanguageManager
 import com.itirafapp.android.util.manager.SessionEventBus
 import com.itirafapp.android.util.manager.ThemeManager
 import com.itirafapp.android.util.manager.TokenManager
@@ -264,6 +267,14 @@ object NetworkModule {
         themeManager: ThemeManager
     ): ThemeRepository {
         return ThemeRepositoryImpl(themeManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLanguageRepository(
+        languageManager: LanguageManager
+    ): LanguageRepository {
+        return LanguageRepositoryImpl(languageManager)
     }
 
     @Provides
