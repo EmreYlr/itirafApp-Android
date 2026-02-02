@@ -3,7 +3,6 @@ package com.itirafapp.android.presentation.screens.channel.components
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,7 +40,6 @@ fun ChannelDetailHeader(
     onFollowClick: () -> Unit
 ) {
     val initials = title.trim().take(2).uppercase()
-    val linkColor = if (isSystemInDarkTheme()) Color.White else Color.Black
 
     Column(
         modifier = Modifier
@@ -66,7 +64,7 @@ fun ChannelDetailHeader(
                 text = initials,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Medium,
-                color = linkColor
+                color = ItirafTheme.colors.pureContrast
             )
         }
 

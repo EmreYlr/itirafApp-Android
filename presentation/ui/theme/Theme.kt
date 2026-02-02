@@ -7,13 +7,13 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.compose.runtime.Immutable
-import androidx.compose.runtime.SideEffect
 
 private val DarkColorScheme = darkColorScheme(
     primary = DarkBrandPrimary,
@@ -56,7 +56,8 @@ data class ItirafColors(
     val statusSuccess: Color,
     val textPrimary: Color,
     val textSecondary: Color,
-    val textTertiary: Color
+    val textTertiary: Color,
+    val pureContrast: Color
 )
 
 val LightItirafColors = ItirafColors(
@@ -72,7 +73,8 @@ val LightItirafColors = ItirafColors(
     statusSuccess = Color(0xFF0D9448),
     textPrimary = Color(0xFF2D3436),
     textSecondary = Color(0xFF636E72),
-    textTertiary = Color(0xFF4B5563)
+    textTertiary = Color(0xFF4B5563),
+    pureContrast = Color.Black
 )
 
 val DarkItirafColors = ItirafColors(
@@ -88,7 +90,8 @@ val DarkItirafColors = ItirafColors(
     statusSuccess = Color(0xFF2ED573),
     textPrimary = Color(0xFFF1F2F6),
     textSecondary = Color(0xFFA4B0BE),
-    textTertiary = Color(0xFF9CA3AF)
+    textTertiary = Color(0xFF9CA3AF),
+    pureContrast = Color.White
 )
 
 val LocalItirafColors = staticCompositionLocalOf { LightItirafColors }

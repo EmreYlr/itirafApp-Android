@@ -1,7 +1,6 @@
 package com.itirafapp.android.presentation.components.layout
 
 import android.content.res.Configuration
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -113,7 +112,7 @@ fun BottomNavigation(
                 alwaysShowLabel = false,
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = if (isSystemInDarkTheme()) Color.White else Color.Black,
+                    unselectedIconColor = ItirafTheme.colors.pureContrast,
                     indicatorColor = Color.Transparent
                 )
             )

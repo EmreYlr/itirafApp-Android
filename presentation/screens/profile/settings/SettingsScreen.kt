@@ -23,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,11 +35,13 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.profile.components.SettingsRow
+import com.itirafapp.android.presentation.screens.profile.components.ThemeSelectionContent
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.extension.openUrlSafe
 import kotlinx.coroutines.flow.collectLatest
@@ -115,6 +118,26 @@ fun SettingsContent(
     onEvent: (SettingsEvent) -> Unit,
     onLogoutClick: () -> Unit
 ) {
+    if (state.showThemeDialog) {
+        Dialog(onDismissRequest = { onEvent(SettingsEvent.DismissThemeDialog) }) {
+            Surface(
+                shape = RoundedCornerShape(24.dp),
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                ThemeSelectionContent(
+                    currentTheme = state.currentTheme,
+                    onThemeSelected = { newTheme ->
+                        onEvent(SettingsEvent.ThemeSelected(newTheme))
+                    },
+                    onDismiss = {
+                        onEvent(SettingsEvent.DismissThemeDialog)
+                    }
+                )
+            }
+        }
+    }
+
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
         topBar = {

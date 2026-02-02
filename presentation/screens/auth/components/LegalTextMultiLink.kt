@@ -1,11 +1,9 @@
 package com.itirafapp.android.presentation.screens.auth.components
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
@@ -16,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withLink
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun LegalTextMultiLink(
@@ -27,11 +26,9 @@ fun LegalTextMultiLink(
     val termsText = stringResource(R.string.terms_conditions_link)
     val privacyText = stringResource(R.string.privacy_policy_link)
 
-    val linkColor = if (isSystemInDarkTheme()) Color.White else Color.Black
-
     val linkStyle = TextLinkStyles(
         style = SpanStyle(
-            color = linkColor,
+            color = ItirafTheme.colors.pureContrast,
             fontWeight = FontWeight.Bold,
             textDecoration = TextDecoration.Underline
         )

@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,8 +43,6 @@ fun ChannelCard(
     onFollowClick: () -> Unit,
     onClick: () -> Unit
 ) {
-    val linkColor = if (isSystemInDarkTheme()) Color.White else Color.Black
-
     val initials = channel.title.trim()
         .take(2)
         .uppercase()
@@ -73,7 +70,7 @@ fun ChannelCard(
                 text = initials,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Medium,
-                color = linkColor
+                color = ItirafTheme.colors.pureContrast
             )
         }
 

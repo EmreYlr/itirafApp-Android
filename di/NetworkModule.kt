@@ -22,6 +22,7 @@ import com.itirafapp.android.data.repository.FollowRepositoryImpl
 import com.itirafapp.android.data.repository.NotificationRepositoryImpl
 import com.itirafapp.android.data.repository.RoomRepositoryImpl
 import com.itirafapp.android.data.repository.SocialLinkRepositoryImpl
+import com.itirafapp.android.data.repository.ThemeRepositoryImpl
 import com.itirafapp.android.data.repository.UserRepositoryImpl
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.ChannelRepository
@@ -30,9 +31,11 @@ import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
 import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.domain.repository.SocialLinkRepository
+import com.itirafapp.android.domain.repository.ThemeRepository
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.manager.FollowPreferencesManager
 import com.itirafapp.android.util.manager.SessionEventBus
+import com.itirafapp.android.util.manager.ThemeManager
 import com.itirafapp.android.util.manager.TokenManager
 import com.itirafapp.android.util.manager.UserManager
 import dagger.Module
@@ -253,6 +256,14 @@ object NetworkModule {
         userManager: UserManager
     ): SocialLinkRepository {
         return SocialLinkRepositoryImpl(api, userManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideThemeRepository(
+        themeManager: ThemeManager
+    ): ThemeRepository {
+        return ThemeRepositoryImpl(themeManager)
     }
 
     @Provides

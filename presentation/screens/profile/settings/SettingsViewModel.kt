@@ -8,8 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.enums.SettingActionType
 import com.itirafapp.android.domain.usecase.auth.LogoutAnonymousUserUseCase
 import com.itirafapp.android.domain.usecase.auth.LogoutUserUseCase
+import com.itirafapp.android.domain.usecase.theme.GetAppThemeUseCase
+import com.itirafapp.android.domain.usecase.theme.SetAppThemeUseCase
 import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
 import com.itirafapp.android.util.constant.Constants
+import com.itirafapp.android.util.constant.ThemeConfig
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -24,7 +27,9 @@ class SettingsViewModel @Inject constructor(
     private val logoutUserUseCase: LogoutUserUseCase,
     private val logoutAnonymousUserUseCase: LogoutAnonymousUserUseCase,
     private val isUserAuthenticated: IsUserAuthenticatedUseCase,
-    private val settingsMenuProvider: SettingsMenuProvider
+    private val settingsMenuProvider: SettingsMenuProvider,
+    private val getAppThemeUseCase: GetAppThemeUseCase,
+    private val setAppThemeUseCase: SetAppThemeUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(SettingsState())
@@ -35,6 +40,7 @@ class SettingsViewModel @Inject constructor(
 
     init {
         initializeSettings()
+        observeTheme()
     }
 
     private fun initializeSettings() {
@@ -49,6 +55,12 @@ class SettingsViewModel @Inject constructor(
         )
     }
 
+    private fun observeTheme() {
+        getAppThemeUseCase().onEach { theme ->
+            state = state.copy(currentTheme = theme)
+        }.launchIn(viewModelScope)
+    }
+
     fun onEvent(event: SettingsEvent) {
         when (event) {
             is SettingsEvent.ItemClicked -> {
@@ -59,9 +71,24 @@ class SettingsViewModel @Inject constructor(
                 sendUiEvent(SettingsUiEvent.NavigateToBack)
             }
 
+            is SettingsEvent.DismissThemeDialog -> {
+                state = state.copy(showThemeDialog = false)
+            }
+
+            is SettingsEvent.ThemeSelected -> {
+                updateTheme(event.theme)
+            }
+
             is SettingsEvent.LogoutClicked -> {
                 logout()
             }
+        }
+    }
+
+    private fun updateTheme(theme: ThemeConfig) {
+        viewModelScope.launch {
+            setAppThemeUseCase(theme)
+            state = state.copy(showThemeDialog = false)
         }
     }
 
@@ -76,7 +103,7 @@ class SettingsViewModel @Inject constructor(
             }
 
             SettingActionType.THEME -> {
-                //TODO: Theme
+                state = state.copy(showThemeDialog = true)
             }
 
             SettingActionType.LANGUAGE -> {
