@@ -34,7 +34,9 @@ class ProfileViewModel @Inject constructor(
 
     fun initializeProfile() {
         val localUser = getCurrentUserUseCase()
-        state = state.copy(user = localUser)
+        val isAnonymous = localUser?.anonymous ?: false
+
+        state = state.copy(user = localUser, isAnonymous = isAnonymous)
 
         if (localUser?.socialLinks.isNullOrEmpty()) {
             fetchLatestSocialLinks()
@@ -75,6 +77,9 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun fetchLatestSocialLinks() {
+        if (state.isAnonymous) {
+            return
+        }
         getUserSocialLinksUseCase().onEach { result ->
             when (result) {
                 is Resource.Loading -> {
@@ -138,6 +143,8 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun canAddNewAccount(): Boolean {
+        if (state.isAnonymous) return false
+
         val userLinks = state.user?.socialLinks ?: emptyList()
         val usedPlatforms = userLinks.map { it.platform }
 

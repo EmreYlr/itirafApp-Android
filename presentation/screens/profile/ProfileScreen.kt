@@ -190,7 +190,8 @@ fun ProfileContent(
                             ),
                             shape = CircleShape,
                             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp),
-                            modifier = Modifier.height(30.dp)
+                            modifier = Modifier.height(30.dp),
+                            enabled = !state.isAnonymous
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Group,
@@ -246,7 +247,8 @@ fun ProfileContent(
                     onClick = { onEvent(ProfileEvent.AddSocialClick) },
                     containerColor = ItirafTheme.colors.brandSecondary,
                     contentColor = Color.White,
-                    icon = Icons.Default.Add
+                    icon = Icons.Default.Add,
+                    enabled = !state.isAnonymous
                 )
 
                 Column(
@@ -265,7 +267,7 @@ fun ProfileContent(
                     }
                 }
 
-                if (state.user?.socialLinks.isNullOrEmpty()) {
+                if (state.user?.socialLinks.isNullOrEmpty() && !state.isAnonymous) {
                     Text(
                         text = "Henüz ekli bir hesap yok.",
                         style = MaterialTheme.typography.bodyMedium,
