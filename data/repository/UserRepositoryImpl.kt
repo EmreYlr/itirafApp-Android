@@ -45,6 +45,12 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteAccount(): Resource<Unit> {
+        return safeApiCall {
+            userApi.deleteAccount()
+        }
+    }
+
     override suspend fun blockUser(targetUserId: String): Resource<Unit> {
         return safeApiCall {
             val request = BlockUserRequest(

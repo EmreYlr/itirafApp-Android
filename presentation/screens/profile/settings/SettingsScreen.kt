@@ -46,6 +46,9 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun SettingsScreen(
     onNavigateToLogin: () -> Unit,
+    onNavigateToEdit: () -> Unit,
+    onNavigateToNotification: () -> Unit,
+    onBackClick: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
@@ -63,6 +66,18 @@ fun SettingsScreen(
 
                 is SettingsUiEvent.NavigateToUrl -> {
                     openUrlSafe(context, event.url, colorParams)
+                }
+
+                is SettingsUiEvent.NavigateToEdit -> {
+                    onNavigateToEdit()
+                }
+
+                is SettingsUiEvent.NavigateToNotification -> {
+                    onNavigateToNotification()
+                }
+
+                is SettingsUiEvent.NavigateToBack -> {
+                    onBackClick()
                 }
 
                 is SettingsUiEvent.CopyToClipboard -> {
@@ -104,7 +119,9 @@ fun SettingsContent(
         containerColor = ItirafTheme.colors.backgroundApp,
         topBar = {
             TopBar(
-                title = stringResource(R.string.settings_title)
+                title = stringResource(R.string.settings_title),
+                canNavigateBack = true,
+                onNavigateBack = { onEvent(SettingsEvent.OnBackClicked) }
             )
         }
     ) { paddingValues ->

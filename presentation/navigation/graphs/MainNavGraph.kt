@@ -36,6 +36,7 @@ import com.itirafapp.android.presentation.screens.post.PostScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.follow_channel.FollowChannelScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
+import com.itirafapp.android.presentation.screens.profile.settings.edit_profile.EditProfileScreen
 import com.itirafapp.android.presentation.screens.profile.social.SocialScreen
 import com.itirafapp.android.presentation.screens.report.ReportScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -180,8 +181,17 @@ fun MainScreen(
             // SETTINGS SCREEN
             animatedComposable(Screen.Settings.route) {
                 SettingsScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
                     onNavigateToLogin = {
                         onLogOut()
+                    },
+                    onNavigateToEdit = {
+                        navController.navigate(Screen.EditProfile.route)
+                    },
+                    onNavigateToNotification = {
+
                     }
                 )
             }
@@ -299,6 +309,16 @@ fun MainScreen(
                         navController.navigate(
                             Screen.ChannelDetail.createRoute(channelId, channelTitle)
                         )
+                    }
+                )
+            }
+
+            //EDIT PROFILE SCREEN
+            animatedComposable(Screen.EditProfile.route) {
+                EditProfileScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onDeleteClick = {
+                        onLogOut()
                     }
                 )
             }

@@ -39,6 +39,7 @@ sealed class Screen(val route: String) {
     object MyConfessionEditConfession : Screen("my_confession_edit")
     object Social : Screen("social")
     object FollowChannel : Screen("follow_channel")
+    object EditProfile : Screen("edit_profile")
 
     object Notifications : Screen("notifications_screen")
     object Settings : Screen("settings_screen")

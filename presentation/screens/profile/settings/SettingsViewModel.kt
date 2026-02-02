@@ -55,6 +55,10 @@ class SettingsViewModel @Inject constructor(
                 handleItemAction(event.action)
             }
 
+            is SettingsEvent.OnBackClicked -> {
+                sendUiEvent(SettingsUiEvent.NavigateToBack)
+            }
+
             is SettingsEvent.LogoutClicked -> {
                 logout()
             }
@@ -64,7 +68,19 @@ class SettingsViewModel @Inject constructor(
     private fun handleItemAction(action: SettingActionType) {
         when (action) {
             SettingActionType.EDIT_PROFILE -> {
-                //sendUiEvent(SettingsUiEvent.NavigateToRoute)
+                sendUiEvent(SettingsUiEvent.NavigateToEdit)
+            }
+
+            SettingActionType.NOTIFICATIONS -> {
+                sendUiEvent(SettingsUiEvent.NavigateToNotification)
+            }
+
+            SettingActionType.THEME -> {
+                //TODO: Theme
+            }
+
+            SettingActionType.LANGUAGE -> {
+                //TODO: Language
             }
 
             SettingActionType.RULES -> openUrl(Constants.RULES_URL)
@@ -81,10 +97,6 @@ class SettingsViewModel @Inject constructor(
                         message = "Mail adresi kopyalandı"
                     )
                 )
-            }
-
-            else -> {
-                sendUiEvent(SettingsUiEvent.ShowMessage("Bu özellik yakında gelecek."))
             }
         }
     }

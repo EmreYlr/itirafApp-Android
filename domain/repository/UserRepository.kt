@@ -12,6 +12,8 @@ interface UserRepository {
         page: Int,
         limit: Int
     ): Resource<PaginatedResult<MyConfessionData>>
+
+    suspend fun deleteAccount(): Resource<Unit>
     fun getLocalUser(): User?
     fun clearUserData()
     fun isUserAuthenticated(): Boolean

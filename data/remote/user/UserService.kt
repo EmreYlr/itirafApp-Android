@@ -4,6 +4,7 @@ import com.itirafapp.android.data.remote.user.dto.BlockUserRequest
 import com.itirafapp.android.data.remote.user.dto.MyConfessionResponse
 import com.itirafapp.android.data.remote.user.dto.UserResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -25,4 +26,9 @@ interface UserService {
         @Query("page") page: Int,
         @Query("limit") limit: Int
     ): MyConfessionResponse
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @DELETE("users/me")
+    suspend fun deleteAccount(): Unit
+
 }

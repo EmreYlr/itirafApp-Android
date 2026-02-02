@@ -11,14 +11,16 @@ data class SettingsState(
 
 sealed class SettingsEvent {
     object LogoutClicked : SettingsEvent()
+    object OnBackClicked : SettingsEvent()
     data class ItemClicked(val action: SettingActionType) : SettingsEvent()
 }
 
 sealed class SettingsUiEvent {
     object NavigateToLogin : SettingsUiEvent()
+    object NavigateToBack : SettingsUiEvent()
+    object NavigateToEdit : SettingsUiEvent()
+    object NavigateToNotification : SettingsUiEvent()
     data class CopyToClipboard(val text: String, val message: String) : SettingsUiEvent()
-
-    //data class NavigateToRoute(val route: String) : SettingsUiEvent()
     data class NavigateToUrl(val url: String) : SettingsUiEvent()
     data class ShowMessage(val message: String) : SettingsUiEvent()
 }
