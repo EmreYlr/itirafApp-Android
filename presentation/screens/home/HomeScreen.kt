@@ -1,6 +1,8 @@
 package com.itirafapp.android.presentation.screens.home
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -89,13 +91,11 @@ fun HomeContent(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState.currentPage) {
-        if (state.selectedTabIndex != pagerState.currentPage) {
-            onEvent(HomeEvent.TabChanged(pagerState.currentPage))
-        }
+        onEvent(HomeEvent.TabChanged(pagerState.currentPage))
     }
 
     LaunchedEffect(state.selectedTabIndex) {
-        if (pagerState.currentPage != state.selectedTabIndex) {
+        if (pagerState.currentPage != state.selectedTabIndex && !pagerState.isScrollInProgress) {
             pagerState.animateScrollToPage(state.selectedTabIndex)
         }
     }
@@ -163,7 +163,15 @@ fun HomeContent(
                     }
 
                     onEvent(HomeEvent.TabChanged(newIndex))
-                    scope.launch { pagerState.animateScrollToPage(newIndex) }
+                    scope.launch {
+                        pagerState.animateScrollToPage(
+                            page = newIndex,
+                            animationSpec = tween(
+                                durationMillis = 500,
+                                easing = FastOutSlowInEasing
+                            )
+                        )
+                    }
                 }
             )
 

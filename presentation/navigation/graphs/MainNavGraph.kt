@@ -89,7 +89,7 @@ fun MainScreen(
             modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
             // 1. HOME TAB
-            animatedComposable(Screen.Home.route) {
+            composable(Screen.Home.route) {
                 HomeScreen(
                     onConfessionClick = { postId ->
                         navController.navigate(Screen.Detail.createRoute(postId))
