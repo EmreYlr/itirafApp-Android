@@ -15,6 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Login
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -159,16 +160,28 @@ fun SettingsContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            val buttonText =
+                if (state.isAnonymous) stringResource(R.string.login_button)
+                else stringResource(R.string.logout_button)
+
+            val baseColor =
+                if (state.isAnonymous) ItirafTheme.colors.brandPrimary
+                else ItirafTheme.colors.statusError
+
+            val buttonIcon =
+                if (state.isAnonymous) Icons.AutoMirrored.Filled.Login
+                else Icons.AutoMirrored.Filled.Logout
+
             ItirafButton(
-                text = stringResource(R.string.logout_button),
-                containerColor = ItirafTheme.colors.statusError.copy(alpha = 0.1f),
-                contentColor = ItirafTheme.colors.statusError,
-                borderColor = ItirafTheme.colors.statusError,
+                text = buttonText,
+                containerColor = baseColor.copy(alpha = 0.1f),
+                contentColor = baseColor,
+                borderColor = baseColor,
                 borderWidth = 1.dp,
                 onClick = onLogoutClick,
                 isLoading = state.isLoading,
-                icon = Icons.AutoMirrored.Filled.Logout,
-                iconTint = ItirafTheme.colors.statusError
+                icon = buttonIcon,
+                iconTint = baseColor
             )
 
             Spacer(modifier = Modifier.height(32.dp))

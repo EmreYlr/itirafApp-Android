@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.enums.SettingActionType
+import com.itirafapp.android.domain.usecase.auth.LogoutAnonymousUserUseCase
 import com.itirafapp.android.domain.usecase.auth.LogoutUserUseCase
 import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
 import com.itirafapp.android.util.constant.Constants
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val logoutUserUseCase: LogoutUserUseCase,
+    private val logoutAnonymousUserUseCase: LogoutAnonymousUserUseCase,
     private val isUserAuthenticated: IsUserAuthenticatedUseCase,
     private val settingsMenuProvider: SettingsMenuProvider
 ) : ViewModel() {
@@ -42,7 +44,8 @@ class SettingsViewModel @Inject constructor(
         val menuItems = settingsMenuProvider.getMenu(isAnonymous)
 
         state = state.copy(
-            sections = menuItems
+            sections = menuItems,
+            isAnonymous = isAnonymous
         )
     }
 
@@ -87,6 +90,14 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun logout() {
+        if (state.isAnonymous) {
+            viewModelScope.launch {
+                logoutAnonymousUserUseCase()
+                sendUiEvent(SettingsUiEvent.NavigateToLogin)
+            }
+            return
+        }
+
         logoutUserUseCase().onEach { result ->
             when (result) {
                 is Resource.Loading -> {

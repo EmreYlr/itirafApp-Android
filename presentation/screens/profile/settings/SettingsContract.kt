@@ -5,7 +5,8 @@ import com.itirafapp.android.presentation.model.SectionUiModel
 
 data class SettingsState(
     val isLoading: Boolean = false,
-    val sections: List<SectionUiModel> = emptyList()
+    val sections: List<SectionUiModel> = emptyList(),
+    val isAnonymous: Boolean = false
 )
 
 sealed class SettingsEvent {
