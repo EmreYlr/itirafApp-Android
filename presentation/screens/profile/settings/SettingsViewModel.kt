@@ -5,7 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.model.enums.SettingActionType
 import com.itirafapp.android.domain.usecase.auth.LogoutUserUseCase
+import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
+import com.itirafapp.android.util.constant.Constants
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -17,42 +20,98 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val logoutUserUseCase: LogoutUserUseCase
+    private val logoutUserUseCase: LogoutUserUseCase,
+    private val isUserAuthenticated: IsUserAuthenticatedUseCase,
+    private val settingsMenuProvider: SettingsMenuProvider
 ) : ViewModel() {
+
     var state by mutableStateOf(SettingsState())
         private set
 
     private val _uiEvent = Channel<SettingsUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
+    init {
+        initializeSettings()
+    }
+
+    private fun initializeSettings() {
+        val isRegisteredUser = isUserAuthenticated.invoke()
+        val isAnonymous = !isRegisteredUser
+
+        val menuItems = settingsMenuProvider.getMenu(isAnonymous)
+
+        state = state.copy(
+            sections = menuItems
+        )
+    }
+
     fun onEvent(event: SettingsEvent) {
         when (event) {
+            is SettingsEvent.ItemClicked -> {
+                handleItemAction(event.action)
+            }
+
             is SettingsEvent.LogoutClicked -> {
                 logout()
             }
         }
     }
 
+    private fun handleItemAction(action: SettingActionType) {
+        when (action) {
+            SettingActionType.EDIT_PROFILE -> {
+                //sendUiEvent(SettingsUiEvent.NavigateToRoute)
+            }
+
+            SettingActionType.RULES -> openUrl(Constants.RULES_URL)
+            SettingActionType.PRIVACY_POLICY -> openUrl(Constants.PRIVACY_URL)
+            SettingActionType.USER_AGREEMENT -> openUrl(Constants.TERMS_URL)
+            SettingActionType.HELP_CENTER -> {
+                openUrl(Constants.WEBSITE_URL)
+            }
+
+            SettingActionType.CONTACT_INFO -> {
+                sendUiEvent(
+                    SettingsUiEvent.CopyToClipboard(
+                        text = Constants.INFO_MAIL,
+                        message = "Mail adresi kopyalandı"
+                    )
+                )
+            }
+
+            else -> {
+                sendUiEvent(SettingsUiEvent.ShowMessage("Bu özellik yakında gelecek."))
+            }
+        }
+    }
+
     private fun logout() {
         logoutUserUseCase().onEach { result ->
-            when(result) {
+            when (result) {
                 is Resource.Loading -> {
                     state = state.copy(isLoading = true)
                 }
+
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(SettingsUiEvent.NavigateToLogin)
                 }
+
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
+                    sendUiEvent(SettingsUiEvent.ShowMessage(result.message ?: "Çıkış yapılamadı"))
                     sendUiEvent(SettingsUiEvent.NavigateToLogin)
                 }
             }
         }.launchIn(viewModelScope)
     }
 
+    private fun openUrl(url: String) {
+        sendUiEvent(SettingsUiEvent.NavigateToUrl(url))
+    }
+
     private fun sendUiEvent(event: SettingsUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }
     }
 }
-
