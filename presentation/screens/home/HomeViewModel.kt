@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.usecase.device.RegisterDeviceUseCase
 import com.itirafapp.android.domain.usecase.notification.FetchNotificationCountUseCase
 import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
 import com.itirafapp.android.util.state.Resource
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val fetchNotificationCountUseCase: FetchNotificationCountUseCase,
-    private val isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase
+    private val isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase,
+    private val registerDeviceUseCase: RegisterDeviceUseCase
 ): ViewModel() {
 
     var state by mutableStateOf(HomeState())
@@ -67,6 +69,20 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.NotificationClicked -> {
                 sendUiEvent(HomeUiEvent.NavigateToNotifications)
             }
+        }
+    }
+
+    fun onNotificationPermissionResult(isGranted: Boolean) {
+        if (isGranted) {
+            registerDevice(true)
+        } else {
+            registerDevice(false)
+        }
+    }
+
+    private fun registerDevice(isEnabled: Boolean) {
+        viewModelScope.launch {
+            registerDeviceUseCase(isEnabled)
         }
     }
 

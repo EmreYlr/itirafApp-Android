@@ -5,6 +5,7 @@ import com.itirafapp.android.BuildConfig
 import com.itirafapp.android.data.remote.auth.AuthService
 import com.itirafapp.android.data.remote.channel.ChannelService
 import com.itirafapp.android.data.remote.confession.ConfessionService
+import com.itirafapp.android.data.remote.device.DeviceService
 import com.itirafapp.android.data.remote.network.api.TokenRefreshApi
 import com.itirafapp.android.data.remote.network.interceptor.AuthGuardInterceptor
 import com.itirafapp.android.data.remote.network.interceptor.AuthInterceptor
@@ -18,6 +19,7 @@ import com.itirafapp.android.data.remote.user.UserService
 import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.data.repository.ChannelRepositoryImpl
 import com.itirafapp.android.data.repository.ConfessionRepositoryImpl
+import com.itirafapp.android.data.repository.DeviceRepositoryImpl
 import com.itirafapp.android.data.repository.FollowRepositoryImpl
 import com.itirafapp.android.data.repository.LanguageRepositoryImpl
 import com.itirafapp.android.data.repository.NotificationRepositoryImpl
@@ -28,6 +30,7 @@ import com.itirafapp.android.data.repository.UserRepositoryImpl
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.ChannelRepository
 import com.itirafapp.android.domain.repository.ConfessionRepository
+import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.LanguageRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
@@ -35,6 +38,7 @@ import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.domain.repository.SocialLinkRepository
 import com.itirafapp.android.domain.repository.ThemeRepository
 import com.itirafapp.android.domain.repository.UserRepository
+import com.itirafapp.android.util.manager.DeviceManager
 import com.itirafapp.android.util.manager.FollowPreferencesManager
 import com.itirafapp.android.util.manager.LanguageManager
 import com.itirafapp.android.util.manager.SessionEventBus
@@ -189,6 +193,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideDeviceService(retrofit: Retrofit): DeviceService {
+        return retrofit.create(DeviceService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideSocialLinkService(retrofit: Retrofit): SocialLinkService {
         return retrofit.create(SocialLinkService::class.java)
     }
@@ -275,6 +285,15 @@ object NetworkModule {
         languageManager: LanguageManager
     ): LanguageRepository {
         return LanguageRepositoryImpl(languageManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeviceRepository(
+        api: DeviceService,
+        manager: DeviceManager
+    ): DeviceRepository {
+        return DeviceRepositoryImpl(api, manager)
     }
 
     @Provides

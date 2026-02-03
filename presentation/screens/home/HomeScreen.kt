@@ -33,6 +33,7 @@ import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.SegmentedControl
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.home.components.NotificationIcon
+import com.itirafapp.android.presentation.screens.home.components.NotificationPermissionEffect
 import com.itirafapp.android.presentation.screens.home.feed.FeedScreen
 import com.itirafapp.android.presentation.screens.home.following.FollowingScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
@@ -49,6 +50,12 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+
+    NotificationPermissionEffect(
+        onResult = { isGranted ->
+            viewModel.onNotificationPermissionResult(isGranted)
+        }
+    )
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->

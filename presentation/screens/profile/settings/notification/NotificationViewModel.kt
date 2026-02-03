@@ -9,6 +9,8 @@ import com.itirafapp.android.domain.model.NotificationItemUpdate
 import com.itirafapp.android.domain.model.NotificationPreferences
 import com.itirafapp.android.domain.model.NotificationPreferencesUpdate
 import com.itirafapp.android.domain.model.enums.NotificationChannelType
+import com.itirafapp.android.domain.usecase.device.RegisterDeviceUseCase
+import com.itirafapp.android.domain.usecase.notification.CheckNotificationPermissionUseCase
 import com.itirafapp.android.domain.usecase.notification.FetchNotificationPreferencesUseCase
 import com.itirafapp.android.domain.usecase.notification.UpdateNotificationPreferencesUseCase
 import com.itirafapp.android.util.state.Resource
@@ -26,6 +28,8 @@ import javax.inject.Inject
 class NotificationViewModel @Inject constructor(
     private val fetchNotificationPreferencesUseCase: FetchNotificationPreferencesUseCase,
     private val updateNotificationPreferencesUseCase: UpdateNotificationPreferencesUseCase,
+    private val registerDeviceUseCase: RegisterDeviceUseCase,
+    private val checkNotificationPermissionUseCase: CheckNotificationPermissionUseCase,
     private val notificationMenuProvider: NotificationMenuProvider,
 ) : ViewModel() {
 
@@ -40,6 +44,7 @@ class NotificationViewModel @Inject constructor(
     init {
         showDefaultData()
         fetchNotificationPreferences()
+        syncWithSystemPermission()
     }
 
     private fun showDefaultData() {
@@ -56,8 +61,17 @@ class NotificationViewModel @Inject constructor(
                 is Resource.Loading -> state = state.copy(isLoading = true)
                 is Resource.Success -> {
                     result.data?.let { preferences ->
-                        initialPreferences = preferences
-                        updateUiStateWithApiData(preferences)
+                        val hasPermission = checkNotificationPermissionUseCase()
+
+                        val effectivePreferences = if (!hasPermission) {
+                            preferences.copy(pushEnabled = false)
+                        } else {
+                            preferences
+                        }
+
+                        initialPreferences = effectivePreferences
+                        updateUiStateWithApiData(effectivePreferences)
+
                     } ?: run {
                         state = state.copy(isLoading = false)
                     }
@@ -69,6 +83,14 @@ class NotificationViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun syncWithSystemPermission() {
+        val hasSystemPermission = checkNotificationPermissionUseCase()
+
+        if (!hasSystemPermission && state.isMasterEnabled) {
+            state = state.copy(isMasterEnabled = false)
+        }
     }
 
     private fun updateUiStateWithApiData(preferences: NotificationPreferences) {
@@ -101,7 +123,15 @@ class NotificationViewModel @Inject constructor(
             }
 
             is NotificationEvent.OnMasterSwitchChanged -> {
-                state = state.copy(isMasterEnabled = event.isEnabled)
+                if (event.isEnabled) {
+                    if (checkNotificationPermissionUseCase()) {
+                        state = state.copy(isMasterEnabled = true)
+                    } else {
+                        sendUiEvent(NotificationUiEvent.RequestSystemPermission("Bildirim ayarlarına erişmek için izin vermelisiniz."))
+                    }
+                } else {
+                    state = state.copy(isMasterEnabled = false)
+                }
             }
 
             is NotificationEvent.OnItemSwitchChanged -> {
@@ -118,6 +148,8 @@ class NotificationViewModel @Inject constructor(
     }
 
     private fun saveChangesAndExit() {
+        updateDeviceRegistrationStatus()
+
         val initial = initialPreferences ?: return sendUiEvent(NotificationUiEvent.NavigateToBack)
 
         val pushUpdate = state.isMasterEnabled.takeIf { it != initial.pushEnabled }
@@ -137,6 +169,15 @@ class NotificationViewModel @Inject constructor(
         )
 
         updateNotificationPreferences(updateModel)
+    }
+
+    private fun updateDeviceRegistrationStatus() {
+        val currentMasterStatus = state.isMasterEnabled
+        viewModelScope.launch {
+            withContext(NonCancellable) {
+                registerDeviceUseCase(pushEnabled = currentMasterStatus)
+            }
+        }
     }
 
     private fun getItemsUpdateIfChanged(initial: NotificationPreferences): List<NotificationItemUpdate>? {

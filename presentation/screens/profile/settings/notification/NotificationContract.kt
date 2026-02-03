@@ -18,5 +18,6 @@ sealed class NotificationEvent {
 
 sealed class NotificationUiEvent {
     object NavigateToBack : NotificationUiEvent()
+    data class RequestSystemPermission(val message: String) : NotificationUiEvent()
     data class ShowMessage(val message: String) : NotificationUiEvent()
 }

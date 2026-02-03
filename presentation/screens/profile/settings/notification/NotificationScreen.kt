@@ -29,10 +29,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.profile.components.NotificationRow
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.extension.openNotificationSettings
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -42,6 +45,10 @@ fun NotificationScreen(
 ) {
     val state = viewModel.state
     val context = LocalContext.current
+
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        viewModel.syncWithSystemPermission()
+    }
 
     BackHandler {
         viewModel.onEvent(NotificationEvent.OnBackClicked)
@@ -56,6 +63,11 @@ fun NotificationScreen(
 
                 is NotificationUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+
+                is NotificationUiEvent.RequestSystemPermission -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                    context.openNotificationSettings()
                 }
             }
         }
