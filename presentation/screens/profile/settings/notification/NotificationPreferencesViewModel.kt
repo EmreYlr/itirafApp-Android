@@ -25,18 +25,18 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class NotificationViewModel @Inject constructor(
+class NotificationPreferencesViewModel @Inject constructor(
     private val fetchNotificationPreferencesUseCase: FetchNotificationPreferencesUseCase,
     private val updateNotificationPreferencesUseCase: UpdateNotificationPreferencesUseCase,
     private val registerDeviceUseCase: RegisterDeviceUseCase,
     private val checkNotificationPermissionUseCase: CheckNotificationPermissionUseCase,
-    private val notificationMenuProvider: NotificationMenuProvider,
+    private val notificationPreferencesMenuProvider: NotificationPreferencesMenuProvider,
 ) : ViewModel() {
 
-    var state by mutableStateOf(NotificationState())
+    var state by mutableStateOf(NotificationPreferencesState())
         private set
 
-    private val _uiEvent = Channel<NotificationUiEvent>()
+    private val _uiEvent = Channel<NotificationPreferencesUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     private var initialPreferences: NotificationPreferences? = null
@@ -48,7 +48,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     private fun showDefaultData() {
-        val defaultItems = notificationMenuProvider.getMenu()
+        val defaultItems = notificationPreferencesMenuProvider.getMenu()
         state = state.copy(
             notificationItems = defaultItems,
             isMasterEnabled = true
@@ -79,7 +79,11 @@ class NotificationViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(NotificationUiEvent.ShowMessage(result.message ?: "Hata"))
+                    sendUiEvent(
+                        NotificationPreferencesUiEvent.ShowMessage(
+                            result.message ?: "Hata"
+                        )
+                    )
                 }
             }
         }.launchIn(viewModelScope)
@@ -95,7 +99,7 @@ class NotificationViewModel @Inject constructor(
 
     private fun updateUiStateWithApiData(preferences: NotificationPreferences) {
         val masterEnabled = preferences.pushEnabled
-        val defaultUiItems = notificationMenuProvider.getMenu()
+        val defaultUiItems = notificationPreferencesMenuProvider.getMenu()
         val apiPushItems = preferences.items.filter {
             it.notificationType == NotificationChannelType.PUSH
         }
@@ -116,25 +120,25 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-    fun onEvent(event: NotificationEvent) {
+    fun onEvent(event: NotificationPreferencesEvent) {
         when (event) {
-            is NotificationEvent.OnBackClicked -> {
+            is NotificationPreferencesEvent.OnBackClicked -> {
                 saveChangesAndExit()
             }
 
-            is NotificationEvent.OnMasterSwitchChanged -> {
+            is NotificationPreferencesEvent.OnMasterSwitchChanged -> {
                 if (event.isEnabled) {
                     if (checkNotificationPermissionUseCase()) {
                         state = state.copy(isMasterEnabled = true)
                     } else {
-                        sendUiEvent(NotificationUiEvent.RequestSystemPermission("Bildirim ayarlarına erişmek için izin vermelisiniz."))
+                        sendUiEvent(NotificationPreferencesUiEvent.RequestSystemPermission("Bildirim ayarlarına erişmek için izin vermelisiniz."))
                     }
                 } else {
                     state = state.copy(isMasterEnabled = false)
                 }
             }
 
-            is NotificationEvent.OnItemSwitchChanged -> {
+            is NotificationPreferencesEvent.OnItemSwitchChanged -> {
                 val updatedList = state.notificationItems.map { item ->
                     if (item.type == event.type) {
                         item.copy(isEnabled = event.isEnabled)
@@ -150,18 +154,19 @@ class NotificationViewModel @Inject constructor(
     private fun saveChangesAndExit() {
         updateDeviceRegistrationStatus()
 
-        val initial = initialPreferences ?: return sendUiEvent(NotificationUiEvent.NavigateToBack)
+        val initial =
+            initialPreferences ?: return sendUiEvent(NotificationPreferencesUiEvent.NavigateToBack)
 
         val pushUpdate = state.isMasterEnabled.takeIf { it != initial.pushEnabled }
 
         val itemsUpdate = getItemsUpdateIfChanged(initial)
 
         if (pushUpdate == null && itemsUpdate == null) {
-            sendUiEvent(NotificationUiEvent.NavigateToBack)
+            sendUiEvent(NotificationPreferencesUiEvent.NavigateToBack)
             return
         }
 
-        sendUiEvent(NotificationUiEvent.NavigateToBack)
+        sendUiEvent(NotificationPreferencesUiEvent.NavigateToBack)
 
         val updateModel = NotificationPreferencesUpdate(
             pushEnabled = pushUpdate,
@@ -206,7 +211,7 @@ class NotificationViewModel @Inject constructor(
         }
     }
 
-    private fun sendUiEvent(event: NotificationUiEvent) {
+    private fun sendUiEvent(event: NotificationPreferencesUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }
     }
 }

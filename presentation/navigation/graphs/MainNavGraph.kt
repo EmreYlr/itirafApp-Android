@@ -37,7 +37,7 @@ import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.follow_channel.FollowChannelScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
 import com.itirafapp.android.presentation.screens.profile.settings.edit_profile.EditProfileScreen
-import com.itirafapp.android.presentation.screens.profile.settings.notification.NotificationScreen
+import com.itirafapp.android.presentation.screens.profile.settings.notification.NotificationPreferencesScreen
 import com.itirafapp.android.presentation.screens.profile.social.SocialScreen
 import com.itirafapp.android.presentation.screens.report.ReportScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -326,7 +326,7 @@ fun MainScreen(
 
             //NOTIFICATION SCREEN
             animatedComposable(Screen.Notification.route) {
-                NotificationScreen(
+                NotificationPreferencesScreen(
                     onBackClick = { navController.popBackStack() }
                 )
             }

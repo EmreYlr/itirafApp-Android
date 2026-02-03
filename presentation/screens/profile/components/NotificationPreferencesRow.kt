@@ -23,14 +23,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itirafapp.android.domain.model.NotificationEventType
-import com.itirafapp.android.presentation.model.NotificationUiModel
+import com.itirafapp.android.presentation.model.NotificationPreferencesUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.state.UiText
 
 @Composable
 fun NotificationRow(
-    item: NotificationUiModel,
+    item: NotificationPreferencesUiModel,
     isMasterEnabled: Boolean,
     onSwitchChanged: (Boolean) -> Unit
 ) {
@@ -96,7 +96,7 @@ fun NotificationRow(
 fun NotificationRowPreview() {
     ItirafAppTheme() {
         NotificationRow(
-            item = NotificationUiModel(
+            item = NotificationPreferencesUiModel(
                 type = NotificationEventType.CONFESSION,
                 title = UiText.DynamicString("İtiraf"),
                 description = UiText.DynamicString("İtiraflarından haberdar ol"),

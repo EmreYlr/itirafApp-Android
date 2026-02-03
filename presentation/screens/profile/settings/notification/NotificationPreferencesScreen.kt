@@ -39,9 +39,9 @@ import com.itirafapp.android.util.extension.openNotificationSettings
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun NotificationScreen(
+fun NotificationPreferencesScreen(
     onBackClick: () -> Unit,
-    viewModel: NotificationViewModel = hiltViewModel()
+    viewModel: NotificationPreferencesViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
     val context = LocalContext.current
@@ -51,21 +51,21 @@ fun NotificationScreen(
     }
 
     BackHandler {
-        viewModel.onEvent(NotificationEvent.OnBackClicked)
+        viewModel.onEvent(NotificationPreferencesEvent.OnBackClicked)
     }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
-                is NotificationUiEvent.NavigateToBack -> {
+                is NotificationPreferencesUiEvent.NavigateToBack -> {
                     onBackClick()
                 }
 
-                is NotificationUiEvent.ShowMessage -> {
+                is NotificationPreferencesUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
 
-                is NotificationUiEvent.RequestSystemPermission -> {
+                is NotificationPreferencesUiEvent.RequestSystemPermission -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
                     context.openNotificationSettings()
                 }
@@ -73,20 +73,20 @@ fun NotificationScreen(
         }
     }
 
-    NotificationContent(
+    NotificationPreferencesContent(
         state = state,
         onEvent = viewModel::onEvent,
         onBackClick = {
-            viewModel.onEvent(NotificationEvent.OnBackClicked)
+            viewModel.onEvent(NotificationPreferencesEvent.OnBackClicked)
         }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationContent(
-    state: NotificationState,
-    onEvent: (NotificationEvent) -> Unit,
+fun NotificationPreferencesContent(
+    state: NotificationPreferencesState,
+    onEvent: (NotificationPreferencesEvent) -> Unit,
     onBackClick: () -> Unit
 ) {
     val switchColors = SwitchDefaults.colors(
@@ -134,7 +134,7 @@ fun NotificationContent(
                 Switch(
                     checked = state.isMasterEnabled,
                     onCheckedChange = { isChecked ->
-                        onEvent(NotificationEvent.OnMasterSwitchChanged(isChecked))
+                        onEvent(NotificationPreferencesEvent.OnMasterSwitchChanged(isChecked))
                     },
                     colors = switchColors
                 )
@@ -154,7 +154,12 @@ fun NotificationContent(
                     item = item,
                     isMasterEnabled = state.isMasterEnabled,
                     onSwitchChanged = { isChecked ->
-                        onEvent(NotificationEvent.OnItemSwitchChanged(item.type, isChecked))
+                        onEvent(
+                            NotificationPreferencesEvent.OnItemSwitchChanged(
+                                item.type,
+                                isChecked
+                            )
+                        )
                     }
                 )
             }
