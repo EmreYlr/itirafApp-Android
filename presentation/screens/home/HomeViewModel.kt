@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.device.RegisterDeviceUseCase
+import com.itirafapp.android.domain.usecase.device.SyncDeviceStateUseCase
 import com.itirafapp.android.domain.usecase.notification.FetchNotificationCountUseCase
 import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
 import com.itirafapp.android.util.state.Resource
@@ -21,7 +22,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val fetchNotificationCountUseCase: FetchNotificationCountUseCase,
     private val isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase,
-    private val registerDeviceUseCase: RegisterDeviceUseCase
+    private val registerDeviceUseCase: RegisterDeviceUseCase,
+    private val syncDeviceStateUseCase: SyncDeviceStateUseCase
 ): ViewModel() {
 
     var state by mutableStateOf(HomeState())
@@ -72,19 +74,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onNotificationPermissionResult(isGranted: Boolean) {
-        if (isGranted) {
-            registerDevice(true)
-        } else {
-            registerDevice(false)
+    fun onNotificationPermissionResult(isSystemGranted: Boolean) {
+        viewModelScope.launch {
+            syncDeviceStateUseCase(isSystemGranted)
         }
     }
 
-    private fun registerDevice(isEnabled: Boolean) {
-        viewModelScope.launch {
-            registerDeviceUseCase(isEnabled)
-        }
-    }
 
     private fun sendUiEvent(event: HomeUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }

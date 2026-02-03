@@ -1,11 +1,13 @@
 package com.itirafapp.android.data.repository
 
+import com.google.firebase.messaging.FirebaseMessaging
 import com.itirafapp.android.data.remote.device.DeviceService
 import com.itirafapp.android.data.remote.device.dto.DeviceRegisterRequest
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.util.manager.DeviceManager
 import com.itirafapp.android.util.state.Resource
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class DeviceRepositoryImpl @Inject constructor(
@@ -14,10 +16,11 @@ class DeviceRepositoryImpl @Inject constructor(
 ) : DeviceRepository {
 
     override suspend fun registerOrUpdateDevice(
-        token: String,
         pushEnabled: Boolean
     ): Resource<Unit> {
         return try {
+            val token = FirebaseMessaging.getInstance().token.await()
+
             val savedToken = deviceManager.getSavedToken()
             val savedPushEnabled = deviceManager.getSavedPushEnabled()
 
@@ -44,6 +47,18 @@ class DeviceRepositoryImpl @Inject constructor(
 
         } catch (e: Exception) {
             Resource.Error(e.message ?: "Beklenmeyen hata")
+        }
+    }
+
+    override suspend fun syncDeviceState(isSystemPermissionGranted: Boolean): Resource<Unit> {
+        return try {
+            val userPrefEnabled = deviceManager.getSavedPushEnabled()
+
+            val finalState = isSystemPermissionGranted && userPrefEnabled
+            registerOrUpdateDevice(finalState)
+
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Senkronizasyon hatası")
         }
     }
 
