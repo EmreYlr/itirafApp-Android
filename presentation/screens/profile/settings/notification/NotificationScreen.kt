@@ -1,6 +1,7 @@
 package com.itirafapp.android.presentation.screens.profile.settings.notification
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,6 +43,10 @@ fun NotificationScreen(
     val state = viewModel.state
     val context = LocalContext.current
 
+    BackHandler {
+        viewModel.onEvent(NotificationEvent.OnBackClicked)
+    }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
@@ -59,7 +64,9 @@ fun NotificationScreen(
     NotificationContent(
         state = state,
         onEvent = viewModel::onEvent,
-        onBackClick = onBackClick
+        onBackClick = {
+            viewModel.onEvent(NotificationEvent.OnBackClicked)
+        }
     )
 }
 
@@ -107,7 +114,7 @@ fun NotificationContent(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = stringResource(R.string.all_notifications),
+                    text = stringResource(R.string.notification_all_title),
                     style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                     color = ItirafTheme.colors.textPrimary
                 )

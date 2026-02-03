@@ -1,7 +1,9 @@
 package com.itirafapp.android.presentation.screens.profile.settings.notification
 
-import com.itirafapp.android.domain.model.enums.NotificationEventType
+import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.NotificationEventType
 import com.itirafapp.android.presentation.model.NotificationUiModel
+import com.itirafapp.android.util.state.UiText
 import javax.inject.Inject
 
 class NotificationMenuProvider @Inject constructor() {
@@ -10,50 +12,50 @@ class NotificationMenuProvider @Inject constructor() {
         return listOf(
             NotificationUiModel(
                 type = NotificationEventType.CONFESSION,
-                title = "İtiraf",
-                description = "İtiraflarından haberdar ol",
+                title = UiText.StringResource(R.string.notification_confession_title),
+                description = UiText.StringResource(R.string.notification_confession_desc),
                 isEnabled = true
             ),
 
             NotificationUiModel(
                 type = NotificationEventType.MESSAGE,
-                title = "Mesajlar",
-                description = "Yeni bir mesaj aldığında haberdar ol",
+                title = UiText.StringResource(R.string.notification_message_title),
+                description = UiText.StringResource(R.string.notification_message_desc),
                 isEnabled = true
             ),
 
             NotificationUiModel(
                 type = NotificationEventType.COMMENT,
-                title = "Yorumlar",
-                description = "İtiraflarına gelen yeni yorumları gör",
+                title = UiText.StringResource(R.string.notification_comment_title),
+                description = UiText.StringResource(R.string.notification_comment_desc),
                 isEnabled = true
             ),
 
             NotificationUiModel(
                 type = NotificationEventType.LIKE,
-                title = "Beğeniler",
-                description = "İtirafların beğenildiğinde bildirim al",
+                title = UiText.StringResource(R.string.notification_like_title),
+                description = UiText.StringResource(R.string.notification_like_desc),
                 isEnabled = true
             ),
 
             NotificationUiModel(
                 type = NotificationEventType.MESSAGE_REQUEST,
-                title = "Mesaj İstekleri",
-                description = "Sana gelen mesaj isteklerini gör",
+                title = UiText.StringResource(R.string.notification_request_title),
+                description = UiText.StringResource(R.string.notification_request_desc),
                 isEnabled = true
             ),
 
             NotificationUiModel(
                 type = NotificationEventType.MESSAGE_REQUEST_RESULT,
-                title = "Mesaj İstek Sonuçları",
-                description = "Gönderdiğin isteklerin sonuçlarını gör",
+                title = UiText.StringResource(R.string.notification_request_result_title),
+                description = UiText.StringResource(R.string.notification_request_result_desc),
                 isEnabled = true
             ),
 
             NotificationUiModel(
                 type = NotificationEventType.MODERATOR,
-                title = "Moderatör",
-                description = "İtiraflarının durum bilgilerininin bildirimini al",
+                title = UiText.StringResource(R.string.notification_moderator_title),
+                description = UiText.StringResource(R.string.notification_moderator_desc),
                 isEnabled = true
             )
         )

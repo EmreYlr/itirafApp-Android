@@ -22,10 +22,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.itirafapp.android.domain.model.enums.NotificationEventType
+import com.itirafapp.android.domain.model.NotificationEventType
 import com.itirafapp.android.presentation.model.NotificationUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.state.UiText
 
 @Composable
 fun NotificationRow(
@@ -60,7 +61,7 @@ fun NotificationRow(
                 .alpha(rowAlpha)
         ) {
             Text(
-                text = item.title,
+                text = item.title.asString(),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Medium
                 ),
@@ -70,7 +71,7 @@ fun NotificationRow(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = item.description,
+                text = item.description.asString(),
                 style = MaterialTheme.typography.bodySmall,
                 color = ItirafTheme.colors.textSecondary,
                 lineHeight = 16.sp
@@ -97,8 +98,8 @@ fun NotificationRowPreview() {
         NotificationRow(
             item = NotificationUiModel(
                 type = NotificationEventType.CONFESSION,
-                title = "İtiraf",
-                description = "İtiraflarından haberdar ol",
+                title = UiText.DynamicString("İtiraf"),
+                description = UiText.DynamicString("İtiraflarından haberdar ol"),
                 isEnabled = true
             ),
             isMasterEnabled = true,
