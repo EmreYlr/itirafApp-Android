@@ -23,5 +23,8 @@ enum class NotificationApiEventType {
     @SerializedName("DM_REQUEST_RESPONDED")
     DM_REQUEST_RESPONDED,
     @SerializedName("CONFESSION_MODERATED")
-    CONFESSION_MODERATED
+    CONFESSION_MODERATED,
+
+    @SerializedName("ADMIN_REVIEW_REQUIRED")
+    ADMIN_REVIEW_REQUIRED
 }

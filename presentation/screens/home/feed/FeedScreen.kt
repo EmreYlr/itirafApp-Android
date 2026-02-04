@@ -32,6 +32,7 @@ fun FeedScreen(
     onItemClick: (String) -> Unit,
     onOpenDM: (Int) -> Unit,
     onChannelClick: (Int, String) -> Unit,
+    onHomeRefresh: () -> Unit,
     viewModel: FeedViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -63,7 +64,13 @@ fun FeedScreen(
 
     FeedContent(
         state = state,
-        onEvent = viewModel::onEvent
+        onEvent = { event ->
+            viewModel.onEvent(event)
+
+            if (event is FeedEvent.Refresh) {
+                onHomeRefresh()
+            }
+        }
     )
 }
 

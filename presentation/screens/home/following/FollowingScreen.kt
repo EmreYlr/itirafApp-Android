@@ -32,6 +32,7 @@ fun FollowingScreen(
     onItemClick: (String) -> Unit,
     onOpenDM: (Int) -> Unit,
     onChannelClick: (Int, String) -> Unit,
+    onHomeRefresh: () -> Unit,
     viewModel: FollowingViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -63,7 +64,13 @@ fun FollowingScreen(
 
     FollowingScreen(
         state = state,
-        onEvent = viewModel::onEvent
+        onEvent = { event ->
+            viewModel.onEvent(event)
+
+            if (event is FollowingEvent.Refresh) {
+                onHomeRefresh()
+            }
+        }
     )
 }
 

@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itirafapp.android.domain.usecase.device.RegisterDeviceUseCase
 import com.itirafapp.android.domain.usecase.device.SyncDeviceStateUseCase
 import com.itirafapp.android.domain.usecase.notification.FetchNotificationCountUseCase
 import com.itirafapp.android.domain.usecase.user.IsUserAuthenticatedUseCase
@@ -22,7 +21,6 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val fetchNotificationCountUseCase: FetchNotificationCountUseCase,
     private val isUserAuthenticatedUseCase: IsUserAuthenticatedUseCase,
-    private val registerDeviceUseCase: RegisterDeviceUseCase,
     private val syncDeviceStateUseCase: SyncDeviceStateUseCase
 ): ViewModel() {
 
@@ -70,6 +68,10 @@ class HomeViewModel @Inject constructor(
 
             is HomeEvent.NotificationClicked -> {
                 sendUiEvent(HomeUiEvent.NavigateToNotifications)
+            }
+
+            is HomeEvent.RefreshNotifications -> {
+                checkNotifications()
             }
         }
     }

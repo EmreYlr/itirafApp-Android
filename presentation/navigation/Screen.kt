@@ -40,7 +40,7 @@ sealed class Screen(val route: String) {
     object Social : Screen("social")
     object FollowChannel : Screen("follow_channel")
     object EditProfile : Screen("edit_profile")
-    object Notification : Screen("notification")
+    object NotificationPreferences : Screen("notification_preferences")
 
     object Notifications : Screen("notifications_screen")
     object Settings : Screen("settings_screen")

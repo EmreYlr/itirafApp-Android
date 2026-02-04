@@ -29,6 +29,7 @@ import com.itirafapp.android.presentation.screens.channel.channel_detail.Channel
 import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
+import com.itirafapp.android.presentation.screens.home.notification.NotificationScreen
 import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_detail.MyConfessionDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditConfessionScreen
@@ -192,7 +193,7 @@ fun MainScreen(
                         navController.navigate(Screen.EditProfile.route)
                     },
                     onNavigateToNotification = {
-                        navController.navigate(Screen.Notification.route)
+                        navController.navigate(Screen.NotificationPreferences.route)
                     }
                 )
             }
@@ -324,9 +325,16 @@ fun MainScreen(
                 )
             }
 
-            //NOTIFICATION SCREEN
-            animatedComposable(Screen.Notification.route) {
+            //NOTIFICATION PREFERENCES SCREEN
+            animatedComposable(Screen.NotificationPreferences.route) {
                 NotificationPreferencesScreen(
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            //NOTIFICATION SCREEN
+            animatedComposable(Screen.Notifications.route) {
+                NotificationScreen(
                     onBackClick = { navController.popBackStack() }
                 )
             }

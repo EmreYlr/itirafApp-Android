@@ -6,10 +6,10 @@ data class NotificationPreferences(
     val id: String,
     val pushEnabled: Boolean,
     val emailEnabled: Boolean,
-    val items: List<NotificationItem>
+    val items: List<NotificationPreferencesItem>
 )
 
-data class NotificationItem(
+data class NotificationPreferencesItem(
     val notificationType: NotificationChannelType,
     val eventType: NotificationEventType,
     val enabled: Boolean
@@ -22,7 +22,8 @@ enum class NotificationEventType {
     LIKE,
     MESSAGE_REQUEST,
     MESSAGE_REQUEST_RESULT,
-    MODERATOR
+    MODERATOR,
+    ADMIN_REVIEW_REQUIRED
 }
 
 data class NotificationPreferencesUpdate(

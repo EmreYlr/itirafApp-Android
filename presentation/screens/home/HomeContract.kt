@@ -10,7 +10,7 @@ data class HomeState(
 sealed class HomeEvent {
     data class TabChanged(val index: Int) : HomeEvent()
     object NotificationClicked : HomeEvent()
-
+    object RefreshNotifications : HomeEvent()
 }
 
 sealed class HomeUiEvent {

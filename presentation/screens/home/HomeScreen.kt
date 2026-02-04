@@ -196,7 +196,10 @@ fun HomeContent(
                         FeedScreen(
                             onItemClick = onConfessionClick,
                             onOpenDM = onOpenDM,
-                            onChannelClick = onChannelClick
+                            onChannelClick = onChannelClick,
+                            onHomeRefresh = {
+                                onEvent(HomeEvent.RefreshNotifications)
+                            }
                         )
                     }
 
@@ -204,7 +207,10 @@ fun HomeContent(
                         FollowingScreen(
                             onItemClick = onConfessionClick,
                             onOpenDM = onOpenDM,
-                            onChannelClick = onChannelClick
+                            onChannelClick = onChannelClick,
+                            onHomeRefresh = {
+                                onEvent(HomeEvent.RefreshNotifications)
+                            }
                         )
                     }
                 }
