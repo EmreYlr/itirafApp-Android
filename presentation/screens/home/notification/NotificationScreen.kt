@@ -45,6 +45,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 @Composable
 fun NotificationScreen(
     onBackClick: () -> Unit,
+    onNavigate: (String) -> Unit,
     viewModel: NotificationViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -58,7 +59,7 @@ fun NotificationScreen(
                 }
 
                 is NotificationUiEvent.NavigateToDetail -> {
-                    //TODO: Route
+                    onNavigate(event.url)
                 }
 
                 is NotificationUiEvent.ShowMessage -> {

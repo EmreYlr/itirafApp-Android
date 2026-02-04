@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.NotificationItem
+import com.itirafapp.android.domain.usecase.navigation.GetNotificationRouteUseCase
 import com.itirafapp.android.domain.usecase.notification.DeleteAllNotificationUseCase
 import com.itirafapp.android.domain.usecase.notification.DeleteNotificationUseCase
 import com.itirafapp.android.domain.usecase.notification.FetchNotificationsUseCase
@@ -26,7 +27,8 @@ class NotificationViewModel @Inject constructor(
     private val markNotificationSeenUseCase: MarkNotificationSeenUseCase,
     private val markAllNotificationsSeenUseCase: MarkAllNotificationsSeenUseCase,
     private val deleteNotificationUseCase: DeleteNotificationUseCase,
-    private val deleteAllNotificationUseCase: DeleteAllNotificationUseCase
+    private val deleteAllNotificationUseCase: DeleteAllNotificationUseCase,
+    private val getNotificationRouteUseCase: GetNotificationRouteUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(NotificationState())
@@ -213,6 +215,12 @@ class NotificationViewModel @Inject constructor(
     private fun handleNotificationClick(notification: NotificationItem) {
         if (!notification.seen) {
             markAsSeen(listOf(notification.id))
+        }
+
+        val route = getNotificationRouteUseCase(notification)
+
+        if (route != null) {
+            sendUiEvent(NotificationUiEvent.NavigateToDetail(route))
         }
     }
 

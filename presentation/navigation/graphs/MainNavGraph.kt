@@ -335,7 +335,14 @@ fun MainScreen(
             //NOTIFICATION SCREEN
             animatedComposable(Screen.Notifications.route) {
                 NotificationScreen(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
+                    onNavigate = { route ->
+                        if (route == Screen.Home.route) {
+                            navController.popBackStack(Screen.Home.route, inclusive = false)
+                        } else {
+                            navController.navigate(route)
+                        }
+                    }
                 )
             }
         }
