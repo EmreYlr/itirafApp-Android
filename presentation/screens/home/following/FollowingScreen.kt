@@ -111,7 +111,7 @@ fun FollowingScreen(
 
                         HorizontalDivider(
                             color = ItirafTheme.colors.dividerColor,
-                            thickness = 0.5.dp
+                            thickness = 1.dp
                         )
                     }
 

@@ -13,7 +13,7 @@ class GetChannelsUseCase @Inject constructor(
 ) {
     operator fun invoke(
         page: Int,
-        limit: Int = 10
+        limit: Int = 15
     ): Flow<Resource<PaginatedResult<ChannelData>>> = flow {
         emit(Resource.Loading())
 
