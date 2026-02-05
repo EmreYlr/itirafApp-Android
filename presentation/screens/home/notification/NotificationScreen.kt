@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.home.components.NotificationItemRow
 import com.itirafapp.android.presentation.screens.home.components.NotificationSelectionTopBar
@@ -84,6 +85,19 @@ fun NotificationContent(
     onEvent: (NotificationEvent) -> Unit,
     onBackClick: () -> Unit
 ) {
+    if (state.showDeleteDialog) {
+        GenericAlertDialog(
+            onDismissRequest = { onEvent(NotificationEvent.DeleteDialogDismissed) },
+            title = stringResource(R.string.delete_all_notification),
+            text = stringResource(R.string.delete_description),
+            confirmButtonText = stringResource(R.string.delete),
+            onConfirmClick = { onEvent(NotificationEvent.DeleteAllNotifications) },
+            dismissButtonText = stringResource(R.string.cancel),
+            onDismissClick = { onEvent(NotificationEvent.DeleteDialogDismissed) },
+            isDestructive = true
+        )
+    }
+
     BackHandler(enabled = state.isSelectionMode) {
         onEvent(NotificationEvent.ClearSelection)
     }
@@ -105,7 +119,7 @@ fun NotificationContent(
                     onNavigateBack = { onBackClick() },
                     actions = {
                         if (state.notifications.isNotEmpty()) {
-                            TextButton(onClick = { onEvent(NotificationEvent.DeleteAllNotifications) }) {
+                            TextButton(onClick = { onEvent(NotificationEvent.DeleteIconClicked) }) {
                                 Text(
                                     text = stringResource(R.string.delete_all),
                                     color = ItirafTheme.colors.actionLike,

@@ -83,6 +83,14 @@ class NotificationViewModel @Inject constructor(
                 }
             }
 
+            is NotificationEvent.DeleteIconClicked -> {
+                state = state.copy(showDeleteDialog = true)
+            }
+
+            is NotificationEvent.DeleteDialogDismissed -> {
+                state = state.copy(showDeleteDialog = false)
+            }
+
             is NotificationEvent.MarkAsSeen -> markAsSeen(event.ids)
             is NotificationEvent.MarkAllAsSeen -> markAllAsSeen()
             is NotificationEvent.DeleteNotification -> deleteNotifications(event.ids)
@@ -186,7 +194,10 @@ class NotificationViewModel @Inject constructor(
     }
 
     private fun deleteAllNotifications() {
-        state = state.copy(notifications = emptyList())
+        state = state.copy(
+            notifications = emptyList(),
+            showDeleteDialog = false
+        )
         viewModelScope.launch {
             val result = deleteAllNotificationUseCase()
             if (result is Resource.Error) {

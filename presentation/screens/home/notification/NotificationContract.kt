@@ -11,7 +11,8 @@ data class NotificationState(
     val isSelectionMode: Boolean = false,
     val currentPage: Int = 1,
     val hasNextPage: Boolean = false,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val showDeleteDialog: Boolean = false,
 ) {
     val unreadList: List<NotificationItem>
         get() = notifications.filter { !it.seen }
@@ -26,6 +27,8 @@ sealed class NotificationEvent {
 
     data class DeleteNotification(val ids: List<String>) : NotificationEvent()
     object DeleteAllNotifications : NotificationEvent()
+    object DeleteIconClicked : NotificationEvent()
+    object DeleteDialogDismissed : NotificationEvent()
     data class MarkAsSeen(val ids: List<String>) : NotificationEvent()
     object MarkAllAsSeen : NotificationEvent()
     data class OnNotificationClick(val notification: NotificationItem) : NotificationEvent()
