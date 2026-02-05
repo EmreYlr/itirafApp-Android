@@ -71,7 +71,7 @@ fun EditProfileContent(
         GenericAlertDialog(
             onDismissRequest = { onEvent(EditProfileEvent.DeleteDialogDismissed) },
             title = stringResource(R.string.delete_account),
-            text = stringResource(R.string.delete_account_confirmation),
+            text = stringResource(R.string.profile_delete_account_confirmation_message),
             confirmButtonText = stringResource(R.string.delete),
             onConfirmClick = { onEvent(EditProfileEvent.DeleteConfirmed) },
             dismissButtonText = stringResource(R.string.cancel),

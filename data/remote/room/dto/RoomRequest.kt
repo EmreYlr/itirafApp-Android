@@ -5,3 +5,7 @@ data class DMRequest(
     val initialMessage: String,
     val shareSocialLinks: Boolean
 )
+
+data class DeleteRoomRequest(
+    val blockUser: Boolean
+)

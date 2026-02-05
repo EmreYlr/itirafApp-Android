@@ -1,8 +1,11 @@
 package com.itirafapp.android.data.repository
 
+import com.itirafapp.android.data.mapper.toDomain
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.data.remote.room.RoomService
 import com.itirafapp.android.data.remote.room.dto.DMRequest
+import com.itirafapp.android.data.remote.room.dto.DeleteRoomRequest
+import com.itirafapp.android.domain.model.DirectMessage
 import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.util.state.Resource
 import javax.inject.Inject
@@ -10,6 +13,24 @@ import javax.inject.Inject
 class RoomRepositoryImpl @Inject constructor(
     private val api: RoomService
 ) : RoomRepository {
+    override suspend fun getAllDirectMessages(): Resource<List<DirectMessage>> {
+        return safeApiCall {
+            api.getAllRooms().map { it.toDomain() }
+        }
+    }
+
+    override suspend fun deleteRoom(
+        roomId: String,
+        blockUser: Boolean
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = DeleteRoomRequest(
+                blockUser = blockUser
+            )
+            api.deleteRoom(roomId, request)
+        }
+    }
+
     override suspend fun requestCreateRoom(
         channelMessageId: Int,
         initialMessage: String,

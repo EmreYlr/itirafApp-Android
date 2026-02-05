@@ -1,11 +1,18 @@
 package com.itirafapp.android.presentation.components.core
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -16,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
@@ -29,7 +37,10 @@ fun GenericAlertDialog(
     dismissButtonText: String? = null,
     onDismissClick: (() -> Unit)? = null,
     confirmButtonColor: Color = ItirafTheme.colors.brandPrimary,
-    isDestructive: Boolean = false
+    isDestructive: Boolean = false,
+    checkboxText: String? = null,
+    isCheckboxChecked: Boolean = false,
+    onCheckboxCheckedChange: ((Boolean) -> Unit)? = null
 ) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
@@ -44,13 +55,43 @@ fun GenericAlertDialog(
             )
         },
         text = {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = ItirafTheme.colors.textSecondary,
-                textAlign = TextAlign.Start,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = ItirafTheme.colors.textSecondary,
+                    textAlign = TextAlign.Start,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (checkboxText != null && onCheckboxCheckedChange != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                onCheckboxCheckedChange(!isCheckboxChecked)
+                            }
+                    ) {
+                        Checkbox(
+                            checked = isCheckboxChecked,
+                            onCheckedChange = onCheckboxCheckedChange,
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = ItirafTheme.colors.brandPrimary,
+                                uncheckedColor = ItirafTheme.colors.textTertiary
+                            )
+                        )
+
+                        Text(
+                            text = checkboxText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = ItirafTheme.colors.textPrimary
+                        )
+                    }
+                }
+            }
         },
         confirmButton = {
             val buttonContent = @Composable {
@@ -136,7 +177,10 @@ private fun PreviewDestructiveAlert() {
             onConfirmClick = {},
             dismissButtonText = "Vazgeç",
             onDismissClick = {},
-            isDestructive = true, // Kırmızı buton yapar
+            isDestructive = true,
+            checkboxText = "Bu itirafi gizle",
+            isCheckboxChecked = false,
+            onCheckboxCheckedChange = {}
         )
     }
 }
