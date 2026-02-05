@@ -29,6 +29,7 @@ import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.SegmentedControl
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.message.direct_message.DirectMessageScreen
+import com.itirafapp.android.presentation.screens.message.inbox.InboxScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import kotlinx.coroutines.launch
 
@@ -138,7 +139,7 @@ fun MessageContent(
                     }
 
                     1 -> {
-                        //InboxScreen()
+                        InboxScreen()
                     }
                 }
             }
