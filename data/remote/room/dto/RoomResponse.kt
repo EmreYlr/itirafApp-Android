@@ -24,3 +24,14 @@ data class InboxMessageResponse(
     val channelMessageId: Int,
     val createdAt: String,
 )
+
+data class SentMessageResponse(
+    val requestId: String,
+    val confessionAuthorUsername: String,
+    val initialMessage: String,
+    val confessionTitle: String,
+    val confessionMessage: String,
+    val channelMessageId: Long,
+    val createdAt: String,
+    val status: String
+)

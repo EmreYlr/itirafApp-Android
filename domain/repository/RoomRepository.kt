@@ -2,6 +2,7 @@ package com.itirafapp.android.domain.repository
 
 import com.itirafapp.android.domain.model.DirectMessage
 import com.itirafapp.android.domain.model.InboxMessage
+import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.util.state.Resource
 
 interface RoomRepository {
@@ -11,6 +12,7 @@ interface RoomRepository {
     suspend fun approvePendingMessage(requestId: String): Resource<Unit>
     suspend fun rejectPendingMessage(requestId: String): Resource<Unit>
 
+    suspend fun getSentMessages(): Resource<List<SentMessage>>
     suspend fun requestCreateRoom(
         channelMessageId: Int,
         initialMessage: String,

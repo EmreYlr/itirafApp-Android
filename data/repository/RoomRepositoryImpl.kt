@@ -7,6 +7,7 @@ import com.itirafapp.android.data.remote.room.dto.DMRequest
 import com.itirafapp.android.data.remote.room.dto.DeleteRoomRequest
 import com.itirafapp.android.domain.model.DirectMessage
 import com.itirafapp.android.domain.model.InboxMessage
+import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.util.state.Resource
 import javax.inject.Inject
@@ -47,6 +48,12 @@ class RoomRepositoryImpl @Inject constructor(
     override suspend fun rejectPendingMessage(requestId: String): Resource<Unit> {
         return safeApiCall {
             api.rejectMessageRequest(requestId)
+        }
+    }
+
+    override suspend fun getSentMessages(): Resource<List<SentMessage>> {
+        return safeApiCall {
+            api.getSentMessage().map { it.toDomain() }
         }
     }
 
