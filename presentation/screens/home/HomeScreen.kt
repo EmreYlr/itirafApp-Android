@@ -71,9 +71,6 @@ fun HomeScreen(
         state = state,
         onEvent = viewModel::onEvent,
         onConfessionClick = onConfessionClick,
-        onNotificationClick = {
-            viewModel.onEvent(HomeEvent.NotificationClicked)
-        },
         onOpenDM = onOpenDM,
         onPostConfessionClick = onPostConfessionClick,
         onChannelClick = onChannelClick
@@ -86,7 +83,6 @@ fun HomeContent(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit,
     onConfessionClick: (String) -> Unit,
-    onNotificationClick: () -> Unit,
     onOpenDM: (Int) -> Unit,
     onPostConfessionClick: () -> Unit,
     onChannelClick: (Int, String) -> Unit,
@@ -146,7 +142,7 @@ fun HomeContent(
                         hasUnread = state.hasUnread,
                         notificationCount = state.notificationCount,
                         onClick = {
-                            onNotificationClick()
+                            onEvent(HomeEvent.NotificationClicked)
                         }
                     )
                 }
@@ -232,7 +228,6 @@ fun HomeScreenPreview() {
             state = HomeState(),
             onEvent = {},
             onConfessionClick = {},
-            onNotificationClick = {},
             onOpenDM = {},
             onPostConfessionClick = {},
             onChannelClick = { _, _ -> }

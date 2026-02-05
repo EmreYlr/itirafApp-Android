@@ -15,5 +15,4 @@ sealed class HomeEvent {
 
 sealed class HomeUiEvent {
     object NavigateToNotifications : HomeUiEvent()
-
 }

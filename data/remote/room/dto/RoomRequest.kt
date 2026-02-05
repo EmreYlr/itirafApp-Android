@@ -5,7 +5,3 @@ data class DMRequest(
     val initialMessage: String,
     val shareSocialLinks: Boolean
 )
-
-data class BlockRoomRequest(
-    val userId: String
-)

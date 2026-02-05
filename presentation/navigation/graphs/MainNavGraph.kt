@@ -30,6 +30,8 @@ import com.itirafapp.android.presentation.screens.home.HomeScreen
 import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
 import com.itirafapp.android.presentation.screens.home.notification.NotificationScreen
+import com.itirafapp.android.presentation.screens.message.MessageScreen
+import com.itirafapp.android.presentation.screens.message.sent.SentMessageScreen
 import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_detail.MyConfessionDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditConfessionScreen
@@ -126,7 +128,11 @@ fun MainScreen(
 
             // 3. MESSAGE TAB
             composable(Screen.Message.route) {
-
+                MessageScreen(
+                    onSentMessageClick = {
+                        navController.navigate(Screen.SentMessage.route)
+                    }
+                )
             }
 
             // 4. MY CONFESSION TAB
@@ -343,6 +349,13 @@ fun MainScreen(
                             navController.navigate(route)
                         }
                     }
+                )
+            }
+
+            //SENT MESSAGE SCREEN
+            animatedComposable(Screen.SentMessage.route) {
+                SentMessageScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         }
