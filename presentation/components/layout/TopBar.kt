@@ -43,7 +43,7 @@ fun TopBar(
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBackIosNew,
-                            contentDescription = "Geri",
+                            contentDescription = "Back",
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }

@@ -1,5 +1,9 @@
 package com.itirafapp.android.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class InboxMessage(
     val requestId: String,
     val roomId: String,
@@ -11,4 +15,4 @@ data class InboxMessage(
     val confessionMessage: String,
     val channelMessageId: Int,
     val createdAt: String
-)
+) : Parcelable

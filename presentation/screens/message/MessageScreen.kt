@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.InboxMessage
 import com.itirafapp.android.presentation.components.core.SegmentedControl
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.message.direct_message.DirectMessageScreen
@@ -36,6 +37,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MessageScreen(
     onSentMessageClick: () -> Unit,
+    onInboxDetailClick: (InboxMessage) -> Unit,
     viewModel: MessageViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -52,7 +54,8 @@ fun MessageScreen(
 
     MessageContent(
         state = state,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        onInboxDetailClick = onInboxDetailClick
     )
 }
 
@@ -60,7 +63,8 @@ fun MessageScreen(
 @Composable
 fun MessageContent(
     state: MessageState,
-    onEvent: (MessageEvent) -> Unit
+    onEvent: (MessageEvent) -> Unit,
+    onInboxDetailClick: (InboxMessage) -> Unit
 ) {
     val titles =
         listOf(
@@ -139,7 +143,9 @@ fun MessageContent(
                     }
 
                     1 -> {
-                        InboxScreen()
+                        InboxScreen(
+                            onDetailClick = onInboxDetailClick
+                        )
                     }
                 }
             }

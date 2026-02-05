@@ -17,6 +17,6 @@ sealed class InboxEvent {
 }
 
 sealed class InboxUiEvent {
-    data class NavigateToDetail(val id: String) : InboxUiEvent()
+    data class NavigateToDetail(val data: InboxMessage) : InboxUiEvent()
     data class ShowMessage(val message: String) : InboxUiEvent()
 }

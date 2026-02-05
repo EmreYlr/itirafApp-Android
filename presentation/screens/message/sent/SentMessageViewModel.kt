@@ -23,6 +23,9 @@ class SentMessageViewModel @Inject constructor(
     var state by mutableStateOf(SentMessageState())
         private set
 
+    init {
+        loadSentMessage()
+    }
     private val _uiEvent = Channel<SentMessageUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 

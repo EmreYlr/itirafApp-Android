@@ -19,6 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.itirafapp.android.domain.model.InboxMessage
 import com.itirafapp.android.domain.model.Link
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.SentMessage
@@ -32,6 +33,7 @@ import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
 import com.itirafapp.android.presentation.screens.home.notification.NotificationScreen
 import com.itirafapp.android.presentation.screens.message.MessageScreen
+import com.itirafapp.android.presentation.screens.message.inbox.inbox_detail.InboxDetailScreen
 import com.itirafapp.android.presentation.screens.message.sent.SentMessageScreen
 import com.itirafapp.android.presentation.screens.message.sent.sent_detail.SentMessageDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
@@ -133,6 +135,13 @@ fun MainScreen(
                 MessageScreen(
                     onSentMessageClick = {
                         navController.navigate(Screen.SentMessage.route)
+                    },
+                    onInboxDetailClick = { inboxData ->
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "inbox_detail_data",
+                            value = inboxData
+                        )
+                        navController.navigate(Screen.InboxDetail.route)
                     }
                 )
             }
@@ -385,8 +394,24 @@ fun MainScreen(
                 } else {
                     LaunchedEffect(Unit) { navController.popBackStack() }
                 }
+            }
 
+            //INBOX DETAIL SCREEN
+            animatedComposable(Screen.InboxDetail.route) {
+                val inboxData = remember {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.get<InboxMessage>("inbox_detail_data")
+                }
 
+                if (inboxData != null) {
+                    InboxDetailScreen(
+                        data = inboxData,
+                        onBackClick = { navController.popBackStack() }
+                    )
+                } else {
+                    LaunchedEffect(Unit) { navController.popBackStack() }
+                }
             }
         }
     }

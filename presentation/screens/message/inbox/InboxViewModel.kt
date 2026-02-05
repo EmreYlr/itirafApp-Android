@@ -41,7 +41,10 @@ class InboxViewModel @Inject constructor(
             }
 
             is InboxEvent.InboxClicked -> {
-                sendUiEvent(InboxUiEvent.NavigateToDetail(event.id))
+                val selectedItem = state.inboxMessage.find { it.requestId == event.id }
+                selectedItem?.let {
+                    sendUiEvent(InboxUiEvent.NavigateToDetail(it))
+                }
             }
 
             is InboxEvent.ApproveClicked -> {

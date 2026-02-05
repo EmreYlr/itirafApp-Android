@@ -25,11 +25,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.itirafapp.android.domain.model.InboxMessage
 import com.itirafapp.android.presentation.screens.message.components.InboxRow
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun InboxScreen(
+    onDetailClick: (InboxMessage) -> Unit,
     viewModel: InboxViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -39,7 +41,7 @@ fun InboxScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is InboxUiEvent.NavigateToDetail -> {
-
+                    onDetailClick(event.data)
                 }
 
                 is InboxUiEvent.ShowMessage -> {

@@ -29,8 +29,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.presentation.components.layout.TopBar
@@ -45,10 +43,6 @@ fun SentMessageScreen(
 ) {
     val state = viewModel.state
     val localContext = LocalContext.current
-
-    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
-        viewModel.loadSentMessage()
-    }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->

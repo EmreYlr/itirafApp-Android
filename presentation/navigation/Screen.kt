@@ -43,6 +43,7 @@ sealed class Screen(val route: String) {
     object NotificationPreferences : Screen("notification_preferences")
     object SentMessage : Screen("sent_message")
     object SentMessageDetail : Screen("sent_message_detail")
+    object InboxDetail : Screen("inbox_detail")
 
     object Notifications : Screen("notifications_screen")
     object Settings : Screen("settings_screen")

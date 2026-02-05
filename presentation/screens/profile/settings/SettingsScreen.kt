@@ -60,7 +60,6 @@ fun SettingsScreen(
     val focusManager = LocalFocusManager.current
     val colorParams = ItirafTheme.colors.brandPrimary.toArgb()
 
-
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
