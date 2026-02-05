@@ -26,10 +26,6 @@ class SentMessageViewModel @Inject constructor(
     private val _uiEvent = Channel<SentMessageUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    init {
-        loadSentMessage()
-    }
-
     fun onEvent(event: SentMessageEvent) {
         when (event) {
             is SentMessageEvent.Refresh -> {
@@ -45,7 +41,7 @@ class SentMessageViewModel @Inject constructor(
         }
     }
 
-    private fun loadSentMessage(isRefresh: Boolean = false) {
+    fun loadSentMessage(isRefresh: Boolean = false) {
         getSentMessagesUseCase()
             .onEach { result ->
                 when (result) {

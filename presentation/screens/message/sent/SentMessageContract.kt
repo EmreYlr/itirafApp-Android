@@ -4,7 +4,7 @@ import com.itirafapp.android.domain.model.SentMessage
 
 data class SentMessageState(
     val sentMessage: List<SentMessage> = emptyList(),
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: String = "",
     val isRefreshing: Boolean = false
 )
