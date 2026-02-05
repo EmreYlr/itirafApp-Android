@@ -62,7 +62,7 @@ fun MainScreen(
     val showBottomBar = currentRoute in listOf(
         Screen.Home.route,
         Screen.Channel.route,
-        Screen.DM.route,
+        Screen.Message.route,
         Screen.MyConfession.route,
         Screen.Profile.route
     )
@@ -124,8 +124,8 @@ fun MainScreen(
                 )
             }
 
-            // 3. DM TAB
-            composable(Screen.DM.route) {
+            // 3. MESSAGE TAB
+            composable(Screen.Message.route) {
 
             }
 

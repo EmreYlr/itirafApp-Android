@@ -53,7 +53,7 @@ fun BottomNavigation(
             unselectedIcon = Icons.Outlined.Explore
         ),
         BottomNavItem(
-            route = Screen.DM.route,
+            route = Screen.Message.route,
             selectedIcon = Icons.AutoMirrored.Filled.Send,
             unselectedIcon = Icons.AutoMirrored.Outlined.Send
         ),

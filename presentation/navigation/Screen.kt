@@ -20,7 +20,7 @@ sealed class Screen(val route: String) {
     // --- Main (Tab) Screens ---
     object Home : Screen("home_screen")
     object Channel : Screen("channel_screen")
-    object DM : Screen("dm_screen")
+    object Message : Screen("message_screen")
     object MyConfession : Screen("my_confession_screen")
     object Profile : Screen("profile_screen")
 

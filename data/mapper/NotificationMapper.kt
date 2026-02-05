@@ -7,6 +7,7 @@ import com.itirafapp.android.domain.model.NotificationData
 import com.itirafapp.android.domain.model.NotificationEventStatus
 import com.itirafapp.android.domain.model.NotificationItem
 import com.itirafapp.android.domain.model.PaginatedResult
+import com.itirafapp.android.util.extension.formatToRelativeTime
 
 fun NotificationResponse.toDomain(): PaginatedResult<NotificationItem> {
     return PaginatedResult(
@@ -29,7 +30,7 @@ fun NotificationItemResponse.toDomain(): NotificationItem? {
         eventType = domainEventType,
         seen = this.seen,
         data = this.data.toDomain(),
-        createdAt = this.createdAt
+        createdAt = formatToRelativeTime(this.createdAt)
     )
 }
 
