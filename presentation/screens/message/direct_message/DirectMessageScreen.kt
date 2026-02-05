@@ -98,11 +98,11 @@ fun DirectMessageContent(
             onRefresh = { onEvent(DirectMessageEvent.Refresh) },
             modifier = Modifier.fillMaxSize()
         ) {
-            if (state.directMessages.isNotEmpty()) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 16.dp)
-                ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 16.dp)
+            ) {
+                if (state.directMessages.isNotEmpty()) {
                     items(
                         items = state.directMessages,
                         key = { it.roomId }
@@ -117,27 +117,27 @@ fun DirectMessageContent(
                             }
                         )
                     }
-                }
-            } else if (!state.isLoading && state.error.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 50.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(
-                            imageVector = Icons.Default.MailOutline,
-                            contentDescription = null,
-                            tint = ItirafTheme.colors.textTertiary,
-                            modifier = Modifier.size(64.dp)
-                        )
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Henüz mesajınız yok",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = ItirafTheme.colors.textSecondary
-                        )
+                } else if (!state.isLoading && state.error.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillParentMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Icon(
+                                    imageVector = Icons.Default.MailOutline,
+                                    contentDescription = null,
+                                    tint = ItirafTheme.colors.textTertiary,
+                                    modifier = Modifier.size(64.dp)
+                                )
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Text(
+                                    text = "Henüz mesajınız yok",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = ItirafTheme.colors.textSecondary
+                                )
+                            }
+                        }
                     }
                 }
             }
