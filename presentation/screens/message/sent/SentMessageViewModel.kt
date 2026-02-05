@@ -37,7 +37,10 @@ class SentMessageViewModel @Inject constructor(
             }
 
             is SentMessageEvent.ItemClicked -> {
-                sendUiEvent(SentMessageUiEvent.NavigateToDetail(event.id))
+                val selectedItem = state.sentMessage.find { it.requestId == event.id }
+                selectedItem?.let {
+                    sendUiEvent(SentMessageUiEvent.NavigateToDetail(it))
+                }
             }
         }
     }
@@ -56,7 +59,7 @@ class SentMessageViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(
-                            inboxMessage = result.data ?: emptyList(),
+                            sentMessage = result.data ?: emptyList(),
                             isLoading = false,
                             isRefreshing = false,
                             error = ""

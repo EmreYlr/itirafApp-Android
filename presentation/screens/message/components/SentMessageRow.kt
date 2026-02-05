@@ -147,7 +147,7 @@ fun SentMessageRowPreview() {
         initialMessage = "Selam, yazdığın itiraf çok ilgimi çekti.",
         confessionTitle = "Okul Hakkında",
         confessionMessage = "...",
-        channelMessageId = 123L,
+        channelMessageId = 123,
         createdAt = "2024-02-05",
         status = SentMessageStatus.PENDING
     )
@@ -158,7 +158,7 @@ fun SentMessageRowPreview() {
         initialMessage = "Merhaba, tanışabilir miyiz?",
         confessionTitle = "Kahve",
         confessionMessage = "...",
-        channelMessageId = 124L,
+        channelMessageId = 124,
         createdAt = "2024-02-04",
         status = SentMessageStatus.REJECTED
     )

@@ -21,6 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.itirafapp.android.domain.model.Link
 import com.itirafapp.android.domain.model.MyConfessionData
+import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.presentation.components.layout.BottomNavigation
 import com.itirafapp.android.presentation.components.layout.BottomSheetType
 import com.itirafapp.android.presentation.navigation.Screen
@@ -32,6 +33,7 @@ import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScree
 import com.itirafapp.android.presentation.screens.home.notification.NotificationScreen
 import com.itirafapp.android.presentation.screens.message.MessageScreen
 import com.itirafapp.android.presentation.screens.message.sent.SentMessageScreen
+import com.itirafapp.android.presentation.screens.message.sent.sent_detail.SentMessageDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_detail.MyConfessionDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditConfessionScreen
@@ -355,8 +357,36 @@ fun MainScreen(
             //SENT MESSAGE SCREEN
             animatedComposable(Screen.SentMessage.route) {
                 SentMessageScreen(
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
+                    onDetailClick = { sentMessage ->
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "sent_message_data",
+                            value = sentMessage
+                        )
+
+                        navController.navigate(Screen.SentMessageDetail.route)
+                    }
                 )
+            }
+
+            //SENT MESSAGE DETAIL SCREEN
+            animatedComposable(Screen.SentMessageDetail.route) {
+                val sentMessageData = remember {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.get<SentMessage>("sent_message_data")
+                }
+
+                if (sentMessageData != null) {
+                    SentMessageDetailScreen(
+                        data = sentMessageData,
+                        onBackClick = { navController.popBackStack() }
+                    )
+                } else {
+                    LaunchedEffect(Unit) { navController.popBackStack() }
+                }
+
+
             }
         }
     }

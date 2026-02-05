@@ -30,6 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.message.components.SentMessageRow
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -37,6 +38,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 @Composable
 fun SentMessageScreen(
     onBackClick: () -> Unit,
+    onDetailClick: (SentMessage) -> Unit,
     viewModel: SentMessageViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -46,7 +48,7 @@ fun SentMessageScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is SentMessageUiEvent.NavigateToDetail -> {
-
+                    onDetailClick(event.data)
                 }
 
                 is SentMessageUiEvent.ShowMessage -> {
@@ -98,9 +100,9 @@ fun SentMessageContent(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    if (state.inboxMessage.isNotEmpty()) {
+                    if (state.sentMessage.isNotEmpty()) {
                         items(
-                            items = state.inboxMessage,
+                            items = state.sentMessage,
                             key = { it.requestId }
                         ) { item ->
                             SentMessageRow(
@@ -139,7 +141,7 @@ fun SentMessageContent(
                 CircularProgressIndicator(color = ItirafTheme.colors.brandPrimary)
             }
 
-            if (state.error.isNotEmpty() && !state.isLoading && state.inboxMessage.isEmpty()) {
+            if (state.error.isNotEmpty() && !state.isLoading && state.sentMessage.isEmpty()) {
                 Text(
                     text = state.error,
                     color = ItirafTheme.colors.statusError,

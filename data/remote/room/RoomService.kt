@@ -6,6 +6,7 @@ import com.itirafapp.android.data.remote.room.dto.DirectMessageResponse
 import com.itirafapp.android.data.remote.room.dto.InboxMessageResponse
 import com.itirafapp.android.data.remote.room.dto.SentMessageResponse
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Headers
@@ -43,6 +44,12 @@ interface RoomService {
     @Headers("X-Auth-Restriction: NonAnonymous")
     @GET("rooms/requests/sent")
     suspend fun getSentMessage(): List<SentMessageResponse>
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @DELETE("rooms/requests/{id}")
+    suspend fun deleteSentMessageRequest(
+        @Path("id") id: String
+    ): Unit
 
     @Headers("X-Auth-Restriction: NonAnonymous")
     @POST("rooms/request")

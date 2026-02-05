@@ -11,8 +11,8 @@ interface RoomRepository {
     suspend fun getPendingMessages(): Resource<List<InboxMessage>>
     suspend fun approvePendingMessage(requestId: String): Resource<Unit>
     suspend fun rejectPendingMessage(requestId: String): Resource<Unit>
-
     suspend fun getSentMessages(): Resource<List<SentMessage>>
+    suspend fun deleteSentMessageRequest(requestId: String): Resource<Unit>
     suspend fun requestCreateRoom(
         channelMessageId: Int,
         initialMessage: String,

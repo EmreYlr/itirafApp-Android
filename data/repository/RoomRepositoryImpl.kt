@@ -57,6 +57,14 @@ class RoomRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteSentMessageRequest(
+        requestId: String
+    ): Resource<Unit> {
+        return safeApiCall {
+            api.deleteSentMessageRequest(requestId)
+        }
+    }
+
     override suspend fun requestCreateRoom(
         channelMessageId: Int,
         initialMessage: String,

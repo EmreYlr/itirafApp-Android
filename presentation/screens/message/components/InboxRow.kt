@@ -159,7 +159,6 @@ fun InboxRowPreview() {
                     .padding(vertical = 10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                // Normal Görünüm
                 InboxRow(
                     item = mockMessage,
                     onRowClick = {},
@@ -167,7 +166,6 @@ fun InboxRowPreview() {
                     onRejectClick = {}
                 )
 
-                // Uzun İsimli Görünüm
                 InboxRow(
                     item = longNameMessage,
                     onRowClick = {},

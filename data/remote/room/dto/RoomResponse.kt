@@ -31,7 +31,7 @@ data class SentMessageResponse(
     val initialMessage: String,
     val confessionTitle: String,
     val confessionMessage: String,
-    val channelMessageId: Long,
+    val channelMessageId: Int,
     val createdAt: String,
     val status: String
 )
