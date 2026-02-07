@@ -2,21 +2,23 @@ package com.itirafapp.android.presentation.screens.message.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -25,8 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.itirafapp.android.R
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
@@ -36,14 +40,22 @@ fun ChatInputBar(
     onTextChange: (String) -> Unit,
     onSendClick: () -> Unit
 ) {
-    Surface(
-        color = ItirafTheme.colors.backgroundCard,
-        shadowElevation = 8.dp
+    val isMessageValid = text.isNotBlank()
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(ItirafTheme.colors.backgroundApp)
     ) {
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = ItirafTheme.colors.dividerColor
+        )
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(horizontal = 8.dp, vertical = 4.dp)
                 .navigationBarsPadding()
                 .imePadding(),
             verticalAlignment = Alignment.CenterVertically
@@ -52,32 +64,50 @@ fun ChatInputBar(
                 value = text,
                 onValueChange = onTextChange,
                 modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(ItirafTheme.colors.backgroundApp),
-                placeholder = { Text("Mesaj yaz...") },
+                    .weight(1f),
+                placeholder = {
+                    Text(
+                        "${stringResource(R.string.write_message_placeholder)}...",
+                        color = ItirafTheme.colors.textSecondary,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = ItirafTheme.colors.backgroundApp,
                     unfocusedContainerColor = ItirafTheme.colors.backgroundApp,
+
                     focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
+                    unfocusedIndicatorColor = Color.Transparent,
+
+                    cursorColor = ItirafTheme.colors.brandPrimary,
+                    focusedTextColor = ItirafTheme.colors.textPrimary,
+                    unfocusedTextColor = ItirafTheme.colors.textPrimary
                 ),
-                maxLines = 4
+                maxLines = 5,
+                textStyle = MaterialTheme.typography.bodyMedium
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
-            IconButton(
-                onClick = onSendClick,
-                enabled = text.isNotBlank(),
+            Box(
                 modifier = Modifier
-                    .size(48.dp)
-                    .background(ItirafTheme.colors.brandPrimary, CircleShape)
+                    .height(36.dp)
+                    .clip(CircleShape)
+                    .background(
+                        if (isMessageValid) ItirafTheme.colors.brandPrimary
+                        else Color.Gray.copy(alpha = 0.5f)
+                    )
+                    .clickable(
+                        enabled = isMessageValid,
+                        onClick = onSendClick
+                    ),
+                contentAlignment = Alignment.Center,
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Rounded.Send,
-                    contentDescription = "Send",
-                    tint = Color.White
+                    contentDescription = "Gönder",
+                    tint = Color.White,
+                    modifier = Modifier.padding(horizontal = 16.dp)
                 )
             }
         }
@@ -90,7 +120,7 @@ fun ChatInputBar(
 fun ChatUnputBarPreview() {
     ItirafAppTheme {
         ChatInputBar(
-            text = "Emre",
+            text = "",
             onTextChange = {},
             onSendClick = {}
         )

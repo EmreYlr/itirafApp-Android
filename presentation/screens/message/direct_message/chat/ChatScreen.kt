@@ -15,12 +15,20 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.ReportTarget
+import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.layout.TopBar
+import com.itirafapp.android.presentation.screens.message.components.ChatActions
 import com.itirafapp.android.presentation.screens.message.components.ChatBubble
 import com.itirafapp.android.presentation.screens.message.components.ChatInputBar
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -28,6 +36,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 @Composable
 fun ChatScreen(
     onBackClick: () -> Unit,
+    onOpenReport: (ReportTarget) -> Unit,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -40,6 +49,10 @@ fun ChatScreen(
             when (uiEvent) {
                 is ChatUiEvent.NavigateToBack -> {
                     onBackClick()
+                }
+
+                is ChatUiEvent.OpenReportSheet -> {
+                    onOpenReport(uiEvent.target)
                 }
 
                 is ChatUiEvent.ScrollToBottom -> {
@@ -68,6 +81,40 @@ fun ChatContent(
     onEvent: (ChatEvent) -> Unit,
     onBackClick: () -> Unit,
 ) {
+    if (state.showBlockDialog) {
+        GenericAlertDialog(
+            onDismissRequest = { onEvent(ChatEvent.DismissBlockDialog) },
+            title = stringResource(R.string.block_user_title),
+            text = stringResource(R.string.block_user_description),
+            confirmButtonText = stringResource(R.string.block),
+            isDestructive = true,
+            onConfirmClick = {
+                onEvent(ChatEvent.BlockUserConfirmed)
+            },
+            dismissButtonText = stringResource(R.string.cancel),
+            onDismissClick = { onEvent(ChatEvent.DismissBlockDialog) }
+        )
+    }
+
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val totalItemsCount = listState.layoutInfo.totalItemsCount
+            val lastVisibleItemIndex =
+                listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            !state.isLoadingMore && !state.isLoading && state.hasNextPage &&
+                    (totalItemsCount > 0 && lastVisibleItemIndex >= totalItemsCount - 3)
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore) {
+        snapshotFlow { shouldLoadMore.value }
+            .collect { doit ->
+                if (doit) {
+                    onEvent(ChatEvent.LoadMoreMessage)
+                }
+            }
+    }
+
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
         topBar = {
@@ -75,7 +122,12 @@ fun ChatContent(
                 title = state.roomName,
                 canNavigateBack = true,
                 onNavigateBack = { onBackClick() },
-                actions = { }
+                actions = {
+                    ChatActions(
+                        onBlockUserClick = { onEvent(ChatEvent.BlockUserClicked) },
+                        onReportUserClick = { onEvent(ChatEvent.ReportUserClicked) },
+                    )
+                }
             )
         },
         bottomBar = {

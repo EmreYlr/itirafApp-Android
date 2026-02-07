@@ -7,6 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.MessageData
+import com.itirafapp.android.domain.model.ReportTarget
+import com.itirafapp.android.domain.usecase.room.DeleteRoomUseCase
 import com.itirafapp.android.domain.usecase.room.GetRoomMessagesUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.presentation.model.ChatUiItem
@@ -22,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val getRoomMessagesUseCase: GetRoomMessagesUseCase,
+    private val deleteRoomUseCase: DeleteRoomUseCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val roomId: String = checkNotNull(savedStateHandle.get<String>("roomId"))
@@ -45,25 +48,28 @@ class ChatViewModel @Inject constructor(
 
     fun onEvent(event: ChatEvent) {
         when (event) {
-            is ChatEvent.SetInitialData -> {
-                if (state.roomId != event.roomId) {
-                    state = state.copy(
-                        roomId = event.roomId,
-                        roomName = event.roomName,
-                        messages = emptyList(),
-                        page = 1,
-                        hasNextPage = false
-                    )
-                    loadMessages(isLoadMore = false)
-                }
-            }
-
             is ChatEvent.MessageInputChanged -> {
                 state = state.copy(messageInput = event.input)
             }
 
             is ChatEvent.SendMessage -> {
                 sendMessage()
+            }
+
+            is ChatEvent.BlockUserClicked -> {
+                state = state.copy(showBlockDialog = true)
+            }
+
+            is ChatEvent.DismissBlockDialog -> {
+                state = state.copy(showBlockDialog = false)
+            }
+
+            is ChatEvent.BlockUserConfirmed -> {
+                blockRoom(state.roomId)
+            }
+
+            is ChatEvent.ReportUserClicked -> {
+                sendUiEvent(ChatUiEvent.OpenReportSheet(ReportTarget.Room(state.roomId)))
             }
 
             is ChatEvent.LoadMoreMessage -> {
@@ -152,6 +158,40 @@ class ChatViewModel @Inject constructor(
 
         state = state.copy(messageInput = "")
     }
+
+    private fun blockRoom(roomId: String) {
+        deleteRoomUseCase(roomId, true)
+            .onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        state = state.copy(isLoading = true)
+                    }
+
+                    is Resource.Success -> {
+                        state = state.copy(
+                            isLoading = false,
+                            showBlockDialog = false
+                        )
+
+                        sendUiEvent(ChatUiEvent.ShowMessage("Kullanıcı Engellendi."))
+                        sendUiEvent(ChatUiEvent.NavigateToBack)
+                    }
+
+                    is Resource.Error -> {
+                        state = state.copy(
+                            isLoading = false,
+                            showBlockDialog = false,
+                        )
+                        sendUiEvent(
+                            ChatUiEvent.ShowMessage(
+                                result.message ?: "Kullanıcı Engellenemedi"
+                            )
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
 
     private fun sendUiEvent(event: ChatUiEvent) {
         viewModelScope.launch {

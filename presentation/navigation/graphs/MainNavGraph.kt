@@ -431,6 +431,9 @@ fun MainScreen(
                 ChatScreen(
                     onBackClick = {
                         navController.popBackStack()
+                    },
+                    onOpenReport = { target ->
+                        currentSheet = BottomSheetType.Report(target)
                     }
                 )
             }
