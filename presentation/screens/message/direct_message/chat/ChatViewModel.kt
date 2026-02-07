@@ -173,14 +173,16 @@ class ChatViewModel @Inject constructor(
     private fun mapToUiModels(messages: List<MessageData>): List<ChatUiItem> {
         return messages.mapIndexed { index, message ->
             val messageBelow = messages.getOrNull(index - 1)
-
             val showTime = if (messageBelow != null) {
                 message.isMyMessage != messageBelow.isMyMessage
             } else {
                 true
             }
 
-            message.toUiModel(showTime = showTime)
+            val showProfileImage = !message.isMyMessage &&
+                    (messageBelow == null || messageBelow.isMyMessage)
+
+            message.toUiModel(showTime = showTime, showProfileImage = showProfileImage)
         }
     }
 
