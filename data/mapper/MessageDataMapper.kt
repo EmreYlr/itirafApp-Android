@@ -4,7 +4,6 @@ import com.itirafapp.android.data.remote.room.dto.MessageDataResponse
 import com.itirafapp.android.data.remote.room.dto.RoomMessagesResponse
 import com.itirafapp.android.domain.model.MessageData
 import com.itirafapp.android.domain.model.PaginatedResult
-import com.itirafapp.android.util.extension.formatToRelativeTime
 
 fun RoomMessagesResponse.toDomain(): PaginatedResult<MessageData> {
     return PaginatedResult(
@@ -21,7 +20,7 @@ fun MessageDataResponse.toDomain(): MessageData {
     return MessageData(
         id = this.id,
         content = this.content,
-        createdAt = formatToRelativeTime(this.createdAt),
+        createdAt = this.createdAt,
         isMyMessage = this.isMyMessage,
         isSeen = this.seenAt != null,
         seenAt = this.seenAt

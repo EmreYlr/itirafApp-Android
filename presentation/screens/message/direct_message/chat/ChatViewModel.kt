@@ -8,6 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.MessageData
 import com.itirafapp.android.domain.model.ReportTarget
+import com.itirafapp.android.domain.usecase.chat.ConnectChatUseCase
+import com.itirafapp.android.domain.usecase.chat.DisconnectChatUseCase
+import com.itirafapp.android.domain.usecase.chat.ObserveChatMessagesUseCase
+import com.itirafapp.android.domain.usecase.chat.SendMessageUseCase
 import com.itirafapp.android.domain.usecase.room.DeleteRoomUseCase
 import com.itirafapp.android.domain.usecase.room.GetRoomMessagesUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
@@ -19,12 +23,17 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val getRoomMessagesUseCase: GetRoomMessagesUseCase,
     private val deleteRoomUseCase: DeleteRoomUseCase,
+    connectChatUseCase: ConnectChatUseCase,
+    private val disconnectChatUseCase: DisconnectChatUseCase,
+    private val sendMessageUseCase: SendMessageUseCase,
+    private val observeChatMessagesUseCase: ObserveChatMessagesUseCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
     private val roomId: String = checkNotNull(savedStateHandle.get<String>("roomId"))
@@ -43,7 +52,17 @@ class ChatViewModel @Inject constructor(
             roomId = roomId,
             roomName = roomTitle
         )
+
         loadMessages()
+
+        connectChatUseCase(roomId)
+
+        observeLiveMessages()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disconnectChatUseCase()
     }
 
     fun onEvent(event: ChatEvent) {
@@ -78,6 +97,21 @@ class ChatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun observeLiveMessages() {
+        observeChatMessagesUseCase()
+            .onEach { newMessage ->
+                val updatedList = listOf(newMessage) + rawMessages
+                rawMessages = updatedList
+
+                val uiMessages = mapToUiModels(rawMessages)
+
+                state = state.copy(messages = uiMessages)
+
+                sendUiEvent(ChatUiEvent.ScrollToBottom)
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun loadMessages(isLoadMore: Boolean = false) {
@@ -154,9 +188,26 @@ class ChatViewModel @Inject constructor(
         val textToSend = state.messageInput.trim()
         if (textToSend.isBlank()) return
 
-        // TODO: Burada Websockete messaj gönderilecek
+        val tempMessage = MessageData(
+            id = System.currentTimeMillis().toInt(),
+            content = textToSend,
+            createdAt = Instant.now().toString(),
+            isMyMessage = true,
+            isSeen = false,
+            seenAt = null
+        )
 
-        state = state.copy(messageInput = "")
+        val updatedList = listOf(tempMessage) + rawMessages
+        rawMessages = updatedList
+
+        state = state.copy(
+            messages = mapToUiModels(rawMessages),
+            messageInput = ""
+        )
+
+        sendUiEvent(ChatUiEvent.ScrollToBottom)
+
+        sendMessageUseCase(textToSend)
     }
 
     private fun blockRoom(roomId: String) {

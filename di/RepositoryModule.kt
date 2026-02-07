@@ -2,6 +2,7 @@ package com.itirafapp.android.di
 
 import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.data.repository.ChannelRepositoryImpl
+import com.itirafapp.android.data.repository.ChatSocketRepositoryImpl
 import com.itirafapp.android.data.repository.ConfessionRepositoryImpl
 import com.itirafapp.android.data.repository.DeviceRepositoryImpl
 import com.itirafapp.android.data.repository.FollowRepositoryImpl
@@ -13,6 +14,7 @@ import com.itirafapp.android.data.repository.ThemeRepositoryImpl
 import com.itirafapp.android.data.repository.UserRepositoryImpl
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.ChannelRepository
+import com.itirafapp.android.domain.repository.ChatSocketRepository
 import com.itirafapp.android.domain.repository.ConfessionRepository
 import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.domain.repository.FollowRepository
@@ -97,4 +99,10 @@ abstract class RepositoryModule {
     abstract fun bindDeviceRepository(
         deviceRepositoryImpl: DeviceRepositoryImpl
     ): DeviceRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindChatSocketRepository(
+        chatSocketRepositoryImpl: ChatSocketRepositoryImpl
+    ): ChatSocketRepository
 }
