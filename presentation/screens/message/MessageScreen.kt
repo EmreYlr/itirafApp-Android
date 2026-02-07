@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
 fun MessageScreen(
     onSentMessageClick: () -> Unit,
     onInboxDetailClick: (InboxMessage) -> Unit,
+    onChatClick: (String, String) -> Unit,
     viewModel: MessageViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -55,7 +56,8 @@ fun MessageScreen(
     MessageContent(
         state = state,
         onEvent = viewModel::onEvent,
-        onInboxDetailClick = onInboxDetailClick
+        onInboxDetailClick = onInboxDetailClick,
+        onChatClick = onChatClick
     )
 }
 
@@ -64,7 +66,8 @@ fun MessageScreen(
 fun MessageContent(
     state: MessageState,
     onEvent: (MessageEvent) -> Unit,
-    onInboxDetailClick: (InboxMessage) -> Unit
+    onInboxDetailClick: (InboxMessage) -> Unit,
+    onChatClick: (String, String) -> Unit
 ) {
     val titles =
         listOf(
@@ -139,7 +142,9 @@ fun MessageContent(
             ) { pageIndex ->
                 when (pageIndex) {
                     0 -> {
-                        DirectMessageScreen()
+                        DirectMessageScreen(
+                            onChatClick = onChatClick
+                        )
                     }
 
                     1 -> {

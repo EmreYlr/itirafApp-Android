@@ -13,13 +13,13 @@ data class DirectMessageState(
 
 sealed class DirectMessageEvent {
     object Refresh : DirectMessageEvent()
-    data class DirectMessageClicked(val id: String) : DirectMessageEvent()
+    data class DirectMessageClicked(val id: String, val title: String) : DirectMessageEvent()
     data class OnLongClick(val id: String) : DirectMessageEvent()
     object DismissDeleteDialog : DirectMessageEvent()
     data class DeleteRoom(val blockUser: Boolean) : DirectMessageEvent()
 }
 
 sealed class DirectMessageUiEvent {
-    data class NavigateToDetail(val id: String) : DirectMessageUiEvent()
+    data class NavigateToDetail(val id: String, val title: String) : DirectMessageUiEvent()
     data class ShowMessage(val message: String) : DirectMessageUiEvent()
 }

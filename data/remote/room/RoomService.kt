@@ -4,6 +4,7 @@ import com.itirafapp.android.data.remote.room.dto.DMRequest
 import com.itirafapp.android.data.remote.room.dto.DeleteRoomRequest
 import com.itirafapp.android.data.remote.room.dto.DirectMessageResponse
 import com.itirafapp.android.data.remote.room.dto.InboxMessageResponse
+import com.itirafapp.android.data.remote.room.dto.RoomMessagesResponse
 import com.itirafapp.android.data.remote.room.dto.SentMessageResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -12,6 +13,7 @@ import retrofit2.http.HTTP
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface RoomService {
     @Headers("X-Auth-Restriction: NonAnonymous")
@@ -50,6 +52,15 @@ interface RoomService {
     suspend fun deleteSentMessageRequest(
         @Path("id") id: String
     ): Unit
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @GET("rooms/{id}/messages")
+    suspend fun getRoomMessages(
+        @Path("id") id: String,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): RoomMessagesResponse
+
 
     @Headers("X-Auth-Restriction: NonAnonymous")
     @POST("rooms/request")

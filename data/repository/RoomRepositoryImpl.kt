@@ -5,11 +5,15 @@ import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.data.remote.room.RoomService
 import com.itirafapp.android.data.remote.room.dto.DMRequest
 import com.itirafapp.android.data.remote.room.dto.DeleteRoomRequest
+import com.itirafapp.android.data.remote.room.dto.RoomMessagesResponse
 import com.itirafapp.android.domain.model.DirectMessage
 import com.itirafapp.android.domain.model.InboxMessage
+import com.itirafapp.android.domain.model.MessageData
+import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.map
 import javax.inject.Inject
 
 class RoomRepositoryImpl @Inject constructor(
@@ -62,6 +66,20 @@ class RoomRepositoryImpl @Inject constructor(
     ): Resource<Unit> {
         return safeApiCall {
             api.deleteSentMessageRequest(requestId)
+        }
+    }
+
+    override suspend fun getRoomMessages(
+        roomId: String,
+        page: Int,
+        limit: Int
+    ): Resource<PaginatedResult<MessageData>> {
+        val apiResult: Resource<RoomMessagesResponse> = safeApiCall {
+            api.getRoomMessages(roomId, page = page, limit = limit)
+        }
+
+        return apiResult.map { response ->
+            response.toDomain()
         }
     }
 

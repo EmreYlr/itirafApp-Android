@@ -33,6 +33,7 @@ import com.itirafapp.android.presentation.screens.home.detail.DetailScreen
 import com.itirafapp.android.presentation.screens.home.dm_request.DMRequestScreen
 import com.itirafapp.android.presentation.screens.home.notification.NotificationScreen
 import com.itirafapp.android.presentation.screens.message.MessageScreen
+import com.itirafapp.android.presentation.screens.message.direct_message.chat.ChatScreen
 import com.itirafapp.android.presentation.screens.message.inbox.inbox_detail.InboxDetailScreen
 import com.itirafapp.android.presentation.screens.message.sent.SentMessageScreen
 import com.itirafapp.android.presentation.screens.message.sent.sent_detail.SentMessageDetailScreen
@@ -142,6 +143,11 @@ fun MainScreen(
                             value = inboxData
                         )
                         navController.navigate(Screen.InboxDetail.route)
+                    },
+                    onChatClick = { id, title ->
+                        navController.navigate(
+                            Screen.Chat.createRoute(id, title)
+                        )
                     }
                 )
             }
@@ -412,6 +418,21 @@ fun MainScreen(
                 } else {
                     LaunchedEffect(Unit) { navController.popBackStack() }
                 }
+            }
+
+            //CHAT SCREEN
+            animatedComposable(
+                route = Screen.Chat.route,
+                arguments = listOf(
+                    navArgument("roomId") { type = NavType.StringType },
+                    navArgument("roomTitle") { type = NavType.StringType }
+                )
+            ) {
+                ChatScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
     }

@@ -39,7 +39,7 @@ class DirectMessageViewModel @Inject constructor(
             }
 
             is DirectMessageEvent.DirectMessageClicked -> {
-                sendUiEvent(DirectMessageUiEvent.NavigateToDetail(event.id))
+                sendUiEvent(DirectMessageUiEvent.NavigateToDetail(event.id, event.title))
             }
 
             is DirectMessageEvent.OnLongClick -> {

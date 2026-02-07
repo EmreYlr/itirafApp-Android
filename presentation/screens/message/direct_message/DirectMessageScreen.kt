@@ -38,6 +38,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun DirectMessageScreen(
+    onChatClick: (String, String) -> Unit,
     viewModel: DirectMessageViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -47,7 +48,7 @@ fun DirectMessageScreen(
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is DirectMessageUiEvent.NavigateToDetail -> {
-
+                    onChatClick(event.id, event.title)
                 }
 
                 is DirectMessageUiEvent.ShowMessage -> {
@@ -110,7 +111,12 @@ fun DirectMessageContent(
                         DirectMessageRow(
                             item = item,
                             onClick = {
-                                onEvent(DirectMessageEvent.DirectMessageClicked(item.roomId))
+                                onEvent(
+                                    DirectMessageEvent.DirectMessageClicked(
+                                        item.roomId,
+                                        item.username
+                                    )
+                                )
                             },
                             onLongClick = {
                                 onEvent(DirectMessageEvent.OnLongClick(item.roomId))

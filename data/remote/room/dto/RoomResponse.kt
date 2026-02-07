@@ -35,3 +35,19 @@ data class SentMessageResponse(
     val createdAt: String,
     val status: String
 )
+
+data class RoomMessagesResponse(
+    val page: Int,
+    val limit: Int,
+    val totalRows: Int,
+    val totalPages: Int,
+    val data: List<MessageDataResponse>,
+)
+
+data class MessageDataResponse(
+    val id: Int,
+    val content: String,
+    val createdAt: String,
+    val isMyMessage: Boolean,
+    val seenAt: String?
+)

@@ -35,6 +35,13 @@ sealed class Screen(val route: String) {
         }
     }
 
+    object Chat : Screen("chat/{roomId}/{roomTitle}") {
+        fun createRoute(roomId: String, roomTitle: String): String {
+            val encodedTitle = encode(roomTitle)
+            return "chat/$roomId/$encodedTitle"
+        }
+    }
+
     object MyConfessionDetail : Screen("my_confession_detail")
     object MyConfessionEditConfession : Screen("my_confession_edit")
     object Social : Screen("social")
