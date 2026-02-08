@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -70,7 +71,7 @@ fun BottomNavigation(
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
+    val currentDestination = navBackStackEntry?.destination
     val dividerColor = ItirafTheme.colors.dividerColor
 
     NavigationBar(
@@ -88,17 +89,25 @@ fun BottomNavigation(
         containerColor = ItirafTheme.colors.backgroundCard
     ) {
         items.forEach { item ->
-            val isSelected = currentRoute == item.route
+            val isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true
 
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                    if (isSelected) {
+                        navController.popBackStack(item.route, inclusive = false)
+                    } else {
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            if (item.route == Screen.Home.route) {
+                                restoreState = false
+                            } else {
+                                restoreState = true
+                            }
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
                 },
                 icon = {
@@ -119,6 +128,7 @@ fun BottomNavigation(
         }
     }
 }
+
 @Preview(showBackground = true, name = "Light Mode")
 @Preview(
     showBackground = true,

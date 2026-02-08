@@ -132,7 +132,16 @@ fun MainScreen(
             }
 
             // 3. MESSAGE TAB
-            composable(Screen.Message.route) {
+            composable(
+                route = Screen.Message.route,
+                arguments = listOf(
+                    navArgument("tabIndex") {
+                        type = NavType.StringType
+                        defaultValue = "0"
+                        nullable = true
+                    }
+                )
+            ) {
                 MessageScreen(
                     onSentMessageClick = {
                         navController.navigate(Screen.SentMessage.route)

@@ -20,7 +20,9 @@ sealed class Screen(val route: String) {
     // --- Main (Tab) Screens ---
     object Home : Screen("home_screen")
     object Channel : Screen("channel_screen")
-    object Message : Screen("message_screen")
+    object Message : Screen("message?tabIndex={tabIndex}") {
+        fun createRoute(tabIndex: Int = 0) = "message?tabIndex=$tabIndex"
+    }
     object MyConfession : Screen("my_confession_screen")
     object Profile : Screen("profile_screen")
 

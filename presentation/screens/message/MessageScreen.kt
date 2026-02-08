@@ -75,17 +75,14 @@ fun MessageContent(
             stringResource(R.string.inbox_title)
         )
 
-    val pagerState = rememberPagerState(pageCount = { titles.size })
+    val pagerState = rememberPagerState(
+        initialPage = state.selectedTabIndex,
+        pageCount = { titles.size }
+    )
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(pagerState.currentPage) {
         onEvent(MessageEvent.TabChanged(pagerState.currentPage))
-    }
-
-    LaunchedEffect(state.selectedTabIndex) {
-        if (pagerState.currentPage != state.selectedTabIndex && !pagerState.isScrollInProgress) {
-            pagerState.animateScrollToPage(state.selectedTabIndex)
-        }
     }
 
     Scaffold(

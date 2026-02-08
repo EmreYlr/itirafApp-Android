@@ -1,7 +1,6 @@
 package com.itirafapp.android.util.manager
 
-// data/manager/ChatWebSocketManager.kt
-
+import android.util.Log
 import com.google.gson.Gson
 import com.itirafapp.android.data.remote.auth.dto.RefreshTokenRequest
 import com.itirafapp.android.data.remote.network.api.TokenRefreshApi
@@ -35,6 +34,7 @@ class ChatWebSocketManager @Inject constructor(
 
     private var webSocket: WebSocket? = null
     private var currentRoomId: String? = null
+    private var lastAttemptedMessage: String? = null //Birden fazla mesaj gelme durumu
 
     private val _incomingMessages = MutableSharedFlow<String>(replay = 0)
     val incomingMessages = _incomingMessages.asSharedFlow()
@@ -74,13 +74,17 @@ class ChatWebSocketManager @Inject constructor(
 
         val jsonMessage = gson.toJson(messageMap)
 
+        lastAttemptedMessage = jsonMessage
+
         if (_connectionState.value is SocketConnectionState.Connected) {
             val sent = webSocket?.send(jsonMessage) ?: false
             if (!sent) {
                 messageQueue.add(jsonMessage)
+                lastAttemptedMessage = null
             }
         } else {
             messageQueue.add(jsonMessage)
+            lastAttemptedMessage = null
         }
     }
 
@@ -94,7 +98,7 @@ class ChatWebSocketManager @Inject constructor(
         }
 
         val request = Request.Builder()
-            .url("$wsUrl/chat/$roomId")
+            .url("${wsUrl}chat/$roomId")
             .addHeader("Authorization", "Bearer $token")
             .build()
 
@@ -109,7 +113,9 @@ class ChatWebSocketManager @Inject constructor(
 
             while (messageQueue.isNotEmpty()) {
                 val msg = messageQueue.poll()
-                msg?.let { webSocket.send(it) }
+                msg?.let {
+                    webSocket.send(it)
+                }
             }
         }
     }
@@ -121,24 +127,39 @@ class ChatWebSocketManager @Inject constructor(
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+        Log.w("SocketManager", "Kapanıyor: $code")
         if (code == 4402 || code == 401) {
+            lastAttemptedMessage?.let { lostMessage ->
+                Log.d(
+                    "SocketManager",
+                    "Token hatası yüzünden gitmeyen mesaj kurtarıldı ve kuyruğa eklendi."
+                )
+                messageQueue.add(lostMessage)
+                lastAttemptedMessage = null
+            }
+
             scope.launch { handleExpiredToken() }
         } else {
             webSocket.close(1000, null)
             _connectionState.value = SocketConnectionState.Disconnected
+            lastAttemptedMessage = null
         }
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         scope.launch {
-            _connectionState.emit(
-                SocketConnectionState.Error(
-                    t.localizedMessage ?: "Connection Error"
-                )
-            )
-
             if (response?.code == 401) {
+                lastAttemptedMessage?.let { lostMessage ->
+                    messageQueue.add(lostMessage)
+                    lastAttemptedMessage = null
+                }
                 handleExpiredToken()
+            } else {
+                _connectionState.emit(
+                    SocketConnectionState.Error(
+                        t.localizedMessage ?: "Connection Error"
+                    )
+                )
             }
         }
     }
