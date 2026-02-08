@@ -9,7 +9,6 @@ import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.util.state.AuthState
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -33,8 +32,6 @@ class SplashViewModel @Inject constructor(
 
     private fun checkStartDestination() {
         viewModelScope.launch {
-            delay(1500)
-
 //            if (!getOnboardingStatusUseCase()) {
 //                _destination.value = Screen.Onboarding.route
 //                return@launch

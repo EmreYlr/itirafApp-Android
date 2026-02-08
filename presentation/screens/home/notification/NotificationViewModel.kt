@@ -100,7 +100,7 @@ class NotificationViewModel @Inject constructor(
     }
 
     private fun loadNotifications(isRefresh: Boolean = false) {
-        fetchNotificationsUseCase(page = currentPage, limit = 20)
+        fetchNotificationsUseCase(page = currentPage, limit = 10)
             .onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
@@ -130,7 +130,8 @@ class NotificationViewModel @Inject constructor(
                                 isLoading = false,
                                 isRefreshing = false,
                                 isLoadingMore = false,
-                                notifications = combinedList
+                                notifications = combinedList,
+                                hasNextPage = paginatedResult.hasNextPage
                             )
                         } else {
                             state = state.copy(

@@ -91,19 +91,18 @@ fun NotificationContent(
 ) {
     val listState = rememberLazyListState()
 
-    val shouldLoadMore by remember {
+    val isScrolledToEnd by remember {
         derivedStateOf {
             val layoutInfo = listState.layoutInfo
             val totalItems = layoutInfo.totalItemsCount
             val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
 
-            !state.isLoading && !state.isLoadingMore && totalItems > 0 &&
-                    (lastVisibleItemIndex >= totalItems - 3)
+            totalItems > 0 && lastVisibleItemIndex >= totalItems - 3
         }
     }
 
-    LaunchedEffect(shouldLoadMore) {
-        if (shouldLoadMore) {
+    LaunchedEffect(isScrolledToEnd, state.isLoadingMore, state.isLoading, state.hasNextPage) {
+        if (isScrolledToEnd && !state.isLoadingMore && !state.isLoading && state.hasNextPage) {
             onEvent(NotificationEvent.LoadMore)
         }
     }
