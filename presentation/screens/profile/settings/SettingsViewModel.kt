@@ -19,6 +19,7 @@ import com.itirafapp.android.util.constant.ThemeConfig
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -118,7 +119,7 @@ class SettingsViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            kotlinx.coroutines.delay(100)
+            delay(100)
             setLanguageUseCase(language)
             initializeSettings()
         }

@@ -5,18 +5,25 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.media.RingtoneManager
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.random.Random
 
 @AndroidEntryPoint
 class PushNotificationService : FirebaseMessagingService() {
+    @Inject
+    lateinit var deviceRepository: DeviceRepository
 
     companion object {
         private const val CHANNEL_ID = "itiraf_app_channel_v1"
@@ -25,9 +32,10 @@ class PushNotificationService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d("FCM", "Yeni Token: $token")
-        // TODO: Eğer token değişirse Backend'e yeni token'ı gönderme işlemini burada yapabilirsin.
-
+        CoroutineScope(Dispatchers.IO).launch {
+            val hasPermission = deviceRepository.hasSystemNotificationPermission()
+            deviceRepository.syncDeviceState(hasPermission)
+        }
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -75,8 +83,12 @@ class PushNotificationService : FirebaseMessagingService() {
 
         notificationManager.createNotificationChannel(channel)
 
+        val largeIcon = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
+            .setLargeIcon(largeIcon)
+            .setColor(resources.getColor(R.color.brandPrimary, theme))
             .setContentTitle(title)
             .setContentText(messageBody)
             .setAutoCancel(true)
