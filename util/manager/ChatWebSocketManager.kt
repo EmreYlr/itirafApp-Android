@@ -34,7 +34,7 @@ class ChatWebSocketManager @Inject constructor(
 
     private var webSocket: WebSocket? = null
     private var currentRoomId: String? = null
-    private var lastAttemptedMessage: String? = null //Birden fazla mesaj gelme durumu
+    private var lastAttemptedMessage: String? = null //TODO: Birden fazla mesaj gelme durumu
 
     private val _incomingMessages = MutableSharedFlow<String>(replay = 0)
     val incomingMessages = _incomingMessages.asSharedFlow()

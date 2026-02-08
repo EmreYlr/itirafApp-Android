@@ -33,7 +33,7 @@ interface NotificationService {
     ): Unit
 
     @Headers("X-Auth-Restriction: NonAnonymous")
-    @PUT("notifications/seen")
+    @PUT("notifications/seen/all")
     suspend fun updateNotificationSeenAll(): Unit
 
     @Headers("X-Auth-Restriction: NonAnonymous")

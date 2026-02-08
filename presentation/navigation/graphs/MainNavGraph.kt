@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +26,7 @@ import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.presentation.components.layout.BottomNavigation
 import com.itirafapp.android.presentation.components.layout.BottomSheetType
+import com.itirafapp.android.presentation.main.MainViewModel
 import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.presentation.screens.channel.ChannelScreen
 import com.itirafapp.android.presentation.screens.channel.channel_detail.ChannelDetailScreen
@@ -50,14 +52,17 @@ import com.itirafapp.android.presentation.screens.profile.social.SocialScreen
 import com.itirafapp.android.presentation.screens.report.ReportScreen
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.extension.animatedComposable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    onLogOut: () -> Unit
+    onLogOut: () -> Unit,
+    mainViewModel: MainViewModel
 ) {
     val navController = rememberNavController()
+    val pendingRoute by mainViewModel.pendingRoute.collectAsStateWithLifecycle()
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var currentSheet by remember { mutableStateOf<BottomSheetType>(BottomSheetType.None) }
@@ -80,6 +85,23 @@ fun MainScreen(
         }.invokeOnCompletion {
             if (!sheetState.isVisible) {
                 currentSheet = BottomSheetType.None
+            }
+        }
+    }
+
+    LaunchedEffect(pendingRoute) {
+        pendingRoute?.let { route ->
+            delay(50)
+
+            try {
+                val currentRoute = navController.currentBackStackEntry?.destination?.route
+                if (currentRoute != route) {
+                    navController.navigate(route)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            } finally {
+                mainViewModel.clearPendingRoute()
             }
         }
     }

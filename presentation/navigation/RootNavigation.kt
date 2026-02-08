@@ -10,6 +10,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.itirafapp.android.presentation.main.MainViewModel
 import com.itirafapp.android.presentation.navigation.components.SessionDialogHandler
 import com.itirafapp.android.presentation.navigation.graphs.MainScreen
 import com.itirafapp.android.presentation.navigation.graphs.authNavGraph
@@ -18,7 +19,8 @@ import com.itirafapp.android.util.manager.SessionEvent
 
 @Composable
 fun RootNavigation(
-    viewModel: RootViewModel = hiltViewModel()
+    viewModel: RootViewModel = hiltViewModel(),
+    mainViewModel: MainViewModel
 ) {
     val navController = rememberNavController()
     var activeSessionEvent by remember { mutableStateOf<SessionEvent?>(null) }
@@ -60,7 +62,7 @@ fun RootNavigation(
 
         // MAIN APP
         composable(Screen.MainGraph.route) {
-            MainScreen(onLogOut = navigateToAuth)
+            MainScreen(onLogOut = navigateToAuth, mainViewModel)
         }
 
         authNavGraph(navController)

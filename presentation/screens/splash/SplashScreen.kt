@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -20,6 +19,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.navigation.Screen
@@ -29,9 +29,8 @@ fun SplashScreen(
     navController: NavController,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
-    val destination by viewModel.destination.collectAsState()
-
-    val scale = remember { Animatable(0f) }
+    val destination by viewModel.destination.collectAsStateWithLifecycle()
+    val scale = remember { Animatable(0.5f) }
 
     LaunchedEffect(key1 = true) {
         scale.animateTo(

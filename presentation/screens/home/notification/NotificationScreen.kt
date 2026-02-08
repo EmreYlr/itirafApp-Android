@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NotificationsOff
 import androidx.compose.material3.CircularProgressIndicator
@@ -28,6 +29,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -85,6 +89,25 @@ fun NotificationContent(
     onEvent: (NotificationEvent) -> Unit,
     onBackClick: () -> Unit
 ) {
+    val listState = rememberLazyListState()
+
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val totalItems = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+
+            !state.isLoading && !state.isLoadingMore && totalItems > 0 &&
+                    (lastVisibleItemIndex >= totalItems - 3)
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore) {
+        if (shouldLoadMore) {
+            onEvent(NotificationEvent.LoadMore)
+        }
+    }
+
     if (state.showDeleteDialog) {
         GenericAlertDialog(
             onDismissRequest = { onEvent(NotificationEvent.DeleteDialogDismissed) },
@@ -141,6 +164,7 @@ fun NotificationContent(
                 .padding(paddingValues),
         ) {
             LazyColumn(
+                state = listState,
                 modifier = Modifier
                     .fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 24.dp)
