@@ -52,6 +52,7 @@ import com.itirafapp.android.util.extension.openUrlSafe
 @Composable
 fun InboxDetailScreen(
     data: InboxMessage,
+    onApproveClick: (String, String) -> Unit,
     onBackClick: () -> Unit,
     viewModel: InboxDetailViewModel = hiltViewModel()
 ) {
@@ -68,6 +69,10 @@ fun InboxDetailScreen(
             when (event) {
                 is InboxDetailUiEvent.NavigateToBack -> {
                     onBackClick()
+                }
+
+                is InboxDetailUiEvent.NavigateToChat -> {
+                    onApproveClick(event.roomId, event.roomName)
                 }
 
                 is InboxDetailUiEvent.NavigateToUrl -> {

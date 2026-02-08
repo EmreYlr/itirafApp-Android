@@ -20,5 +20,6 @@ sealed class InboxDetailEvent {
 sealed class InboxDetailUiEvent {
     object NavigateToBack : InboxDetailUiEvent()
     data class NavigateToUrl(val url: String) : InboxDetailUiEvent()
+    data class NavigateToChat(val roomId: String, val roomName: String) : InboxDetailUiEvent()
     data class ShowMessage(val message: String) : InboxDetailUiEvent()
 }

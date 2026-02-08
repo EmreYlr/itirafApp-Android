@@ -413,7 +413,14 @@ fun MainScreen(
                 if (inboxData != null) {
                     InboxDetailScreen(
                         data = inboxData,
-                        onBackClick = { navController.popBackStack() }
+                        onBackClick = { navController.popBackStack() },
+                        onApproveClick = { id, title ->
+                            navController.navigate(Screen.Chat.createRoute(id, title)) {
+                                popUpTo(Screen.InboxDetail.route) {
+                                    inclusive = true
+                                }
+                            }
+                        }
                     )
                 } else {
                     LaunchedEffect(Unit) { navController.popBackStack() }

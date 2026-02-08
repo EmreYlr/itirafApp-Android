@@ -64,9 +64,9 @@ class InboxDetailViewModel @Inject constructor(
     }
 
     private fun approveMessage() {
-        val requestId = state.inboxMessage?.requestId ?: return
+        val inboxMessage = state.inboxMessage ?: return
 
-        approveMessageRequestUseCase(requestId)
+        approveMessageRequestUseCase(inboxMessage.requestId)
             .onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
@@ -75,7 +75,12 @@ class InboxDetailViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(isLoading = false)
-                        // TODO: Burası daha sonra Chat ekranına yönlendirme ile dolacak.
+                        sendUiEvent(
+                            InboxDetailUiEvent.NavigateToChat(
+                                inboxMessage.roomId,
+                                inboxMessage.requesterUsername
+                            )
+                        )
                     }
 
                     is Resource.Error -> {
