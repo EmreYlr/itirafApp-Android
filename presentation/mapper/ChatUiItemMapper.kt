@@ -6,11 +6,10 @@ import com.itirafapp.android.util.extension.formatDateSeparator
 import com.itirafapp.android.util.extension.formatToTime
 import com.itirafapp.android.util.extension.parseToLocalDate
 
-fun MessageData.toUiModel(showTime: Boolean, showProfileImage: Boolean): ChatUiItem.MessageItem {
+fun MessageData.toUiModel(showProfileImage: Boolean): ChatUiItem.MessageItem {
     val formattedTime = formatToTime(this.createdAt)
     return ChatUiItem.MessageItem(
         message = this.copy(createdAt = formattedTime),
-        showTime = showTime,
         showProfileImage = showProfileImage
     )
 }
@@ -29,16 +28,10 @@ fun List<MessageData>.toUiItemsWithDateSeparators(): List<ChatUiItem> {
         val isDateChangeAfterThis = nextMessage != null &&
                 currentDate != null && nextDate != null && currentDate != nextDate
 
-        val showTime = if (messageBelow != null) {
-            message.isMyMessage != messageBelow.isMyMessage
-        } else {
-            true
-        }
-
         val showProfileImage = !message.isMyMessage &&
                 (messageBelow == null || messageBelow.isMyMessage || isDateChangeAfterThis)
 
-        result.add(message.toUiModel(showTime = showTime, showProfileImage = showProfileImage))
+        result.add(message.toUiModel(showProfileImage = showProfileImage))
 
         val isLastMessage = index == size - 1
         if (isDateChangeAfterThis || isLastMessage) {

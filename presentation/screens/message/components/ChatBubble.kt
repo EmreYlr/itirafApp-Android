@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -42,13 +41,12 @@ fun ChatBubble(
     item: ChatUiItem.MessageItem
 ) {
     val message = item.message
-    val showTime = item.showTime
     val isFromMe = message.isMyMessage
     val showProfileImage = item.showProfileImage
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val maxBubbleWidth = screenWidth * 0.7f
+    val maxBubbleWidth = screenWidth * 0.8f
 
     val iconContainerSize = 32.dp
 
@@ -60,7 +58,7 @@ fun ChatBubble(
             topStart = cornerRadius,
             topEnd = cornerRadius,
             bottomStart = cornerRadius,
-            bottomEnd = if (showTime) tailRadius else cornerRadius
+            bottomEnd = tailRadius
         )
     } else {
         RoundedCornerShape(
@@ -112,21 +110,27 @@ fun ChatBubble(
                 shadowElevation = 1.dp,
                 modifier = Modifier.widthIn(max = maxBubbleWidth)
             ) {
-                Text(
-                    text = message.content,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-
-            if (showTime) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = message.createdAt,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = ItirafTheme.colors.textTertiary,
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                )
+                Row(
+                    modifier = Modifier.padding(
+                        start = 12.dp,
+                        end = 8.dp,
+                        top = 8.dp,
+                        bottom = 6.dp
+                    ),
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    Text(
+                        text = message.content,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = message.createdAt,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (isFromMe) Color.White.copy(alpha = 0.7f) else ItirafTheme.colors.textTertiary
+                    )
+                }
             }
         }
     }
@@ -140,23 +144,21 @@ fun ChatBubblePreview() {
         message = MessageData(
             id = 1,
             content = "Merhaba nasılsın",
-            createdAt = "1 saat önce",
+            createdAt = "10:30",
             isMyMessage = true,
             isSeen = false,
             seenAt = null
-        ),
-        showTime = true
+        )
     )
     val chatUiItem2 = ChatUiItem.MessageItem(
         message = MessageData(
             id = 1,
             content = "Merhaba nasılsın",
-            createdAt = "1 saat önce",
+            createdAt = "12:25",
             isMyMessage = false,
             isSeen = false,
             seenAt = null
-        ),
-        showTime = true
+        )
     )
     ItirafAppTheme {
         Column {

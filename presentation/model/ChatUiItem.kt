@@ -5,7 +5,6 @@ import com.itirafapp.android.domain.model.MessageData
 sealed class ChatUiItem {
     data class MessageItem(
         val message: MessageData,
-        val showTime: Boolean,
         val showProfileImage: Boolean = false
     ) : ChatUiItem()
 
