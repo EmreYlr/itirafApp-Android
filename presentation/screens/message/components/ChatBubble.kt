@@ -39,7 +39,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 @SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun ChatBubble(
-    item: ChatUiItem
+    item: ChatUiItem.MessageItem
 ) {
     val message = item.message
     val showTime = item.showTime
@@ -136,7 +136,7 @@ fun ChatBubble(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun ChatBubblePreview() {
-    val chatUiItem = ChatUiItem(
+    val chatUiItem = ChatUiItem.MessageItem(
         message = MessageData(
             id = 1,
             content = "Merhaba nasılsın",
@@ -147,7 +147,7 @@ fun ChatBubblePreview() {
         ),
         showTime = true
     )
-    val chatUiItem2 = ChatUiItem(
+    val chatUiItem2 = ChatUiItem.MessageItem(
         message = MessageData(
             id = 1,
             content = "Merhaba nasılsın",

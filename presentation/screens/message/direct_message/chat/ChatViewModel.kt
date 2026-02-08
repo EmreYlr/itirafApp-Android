@@ -14,7 +14,7 @@ import com.itirafapp.android.domain.usecase.chat.ObserveChatMessagesUseCase
 import com.itirafapp.android.domain.usecase.chat.SendMessageUseCase
 import com.itirafapp.android.domain.usecase.room.DeleteRoomUseCase
 import com.itirafapp.android.domain.usecase.room.GetRoomMessagesUseCase
-import com.itirafapp.android.presentation.mapper.toUiModel
+import com.itirafapp.android.presentation.mapper.toUiItemsWithDateSeparators
 import com.itirafapp.android.presentation.model.ChatUiItem
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -171,19 +171,7 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun mapToUiModels(messages: List<MessageData>): List<ChatUiItem> {
-        return messages.mapIndexed { index, message ->
-            val messageBelow = messages.getOrNull(index - 1)
-            val showTime = if (messageBelow != null) {
-                message.isMyMessage != messageBelow.isMyMessage
-            } else {
-                true
-            }
-
-            val showProfileImage = !message.isMyMessage &&
-                    (messageBelow == null || messageBelow.isMyMessage)
-
-            message.toUiModel(showTime = showTime, showProfileImage = showProfileImage)
-        }
+        return messages.toUiItemsWithDateSeparators()
     }
 
     private fun sendMessage() {

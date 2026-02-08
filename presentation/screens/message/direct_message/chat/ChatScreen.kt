@@ -28,9 +28,11 @@ import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.layout.TopBar
+import com.itirafapp.android.presentation.model.ChatUiItem
 import com.itirafapp.android.presentation.screens.message.components.ChatActions
 import com.itirafapp.android.presentation.screens.message.components.ChatBubble
 import com.itirafapp.android.presentation.screens.message.components.ChatInputBar
+import com.itirafapp.android.presentation.screens.message.components.DateSeparator
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
@@ -144,7 +146,10 @@ fun ChatContent(
             contentPadding = PaddingValues(vertical = 16.dp)
         ) {
             items(state.messages) { uiItem ->
-                ChatBubble(item = uiItem)
+                when (uiItem) {
+                    is ChatUiItem.MessageItem -> ChatBubble(item = uiItem)
+                    is ChatUiItem.DateSeparator -> DateSeparator(dateText = uiItem.dateText)
+                }
             }
 
             if (state.isLoadingMore) {
