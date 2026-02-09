@@ -1,6 +1,7 @@
 package com.itirafapp.android.domain.usecase.auth
 
 import com.itirafapp.android.domain.repository.AuthRepository
+import com.itirafapp.android.domain.repository.CrashReporter
 import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.UserRepository
@@ -14,7 +15,8 @@ class LogoutUserUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val followRepository: FollowRepository,
-    private val deviceRepository: DeviceRepository
+    private val deviceRepository: DeviceRepository,
+    private val crashReporter: CrashReporter
 ) {
     operator fun invoke(): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
@@ -26,6 +28,8 @@ class LogoutUserUseCase @Inject constructor(
         userRepository.clearUserData()
 
         followRepository.clearCache()
+
+        crashReporter.setUserId("")
 
         if (logoutResult is Resource.Error) {
             emit(Resource.Error(logoutResult.message ?: "Çıkış yapılamadı"))

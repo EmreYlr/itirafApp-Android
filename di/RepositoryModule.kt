@@ -4,6 +4,7 @@ import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.data.repository.ChannelRepositoryImpl
 import com.itirafapp.android.data.repository.ChatSocketRepositoryImpl
 import com.itirafapp.android.data.repository.ConfessionRepositoryImpl
+import com.itirafapp.android.data.repository.CrashReporterImpl
 import com.itirafapp.android.data.repository.DeviceRepositoryImpl
 import com.itirafapp.android.data.repository.FollowRepositoryImpl
 import com.itirafapp.android.data.repository.LanguageRepositoryImpl
@@ -16,6 +17,7 @@ import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.ChannelRepository
 import com.itirafapp.android.domain.repository.ChatSocketRepository
 import com.itirafapp.android.domain.repository.ConfessionRepository
+import com.itirafapp.android.domain.repository.CrashReporter
 import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.LanguageRepository
@@ -105,4 +107,10 @@ abstract class RepositoryModule {
     abstract fun bindChatSocketRepository(
         chatSocketRepositoryImpl: ChatSocketRepositoryImpl
     ): ChatSocketRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindCrashReporter(
+        crashReporterImpl: CrashReporterImpl
+    ): CrashReporter
 }

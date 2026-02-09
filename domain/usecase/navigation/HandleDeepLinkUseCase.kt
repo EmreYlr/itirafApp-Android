@@ -3,7 +3,9 @@ package com.itirafapp.android.domain.usecase.navigation
 import android.content.Intent
 import android.net.Uri
 import androidx.core.net.toUri
+import com.itirafapp.android.BuildConfig
 import com.itirafapp.android.presentation.navigation.Screen
+import com.itirafapp.android.util.constant.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -15,10 +17,13 @@ class HandleDeepLinkUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(intent: Intent?): String? = withContext(Dispatchers.IO) {
         val data: Uri = intent?.data ?: return@withContext null
+        val validHosts = listOf(
+            "itirafapp.com",
+            "www.itirafapp.com",
+            "apitest.itirafapp.com"
+        )
 
-        if (data.host != "itirafapp.com" && data.host != "www.itirafapp.com") {
-            return@withContext null
-        }
+        if (data.host !in validHosts) return@withContext null
 
         val segments = data.pathSegments
 
@@ -42,9 +47,11 @@ class HandleDeepLinkUseCase @Inject constructor(
     }
 
     private fun resolveShortLink(code: String): String? {
+        val baseUrl = if (BuildConfig.DEBUG) Constants.TEST_WEBSITE_URL else Constants.WEBSITE_URL
+
         return try {
             val request = Request.Builder()
-                .url("https://itirafapp.com/s/$code")
+                .url("$baseUrl/s/$code")
                 .head()
                 .build()
 

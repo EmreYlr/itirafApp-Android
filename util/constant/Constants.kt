@@ -1,6 +1,7 @@
 package com.itirafapp.android.util.constant
 
 object Constants {
+    const val TEST_WEBSITE_URL = "https://apitest.itirafapp.com"
     const val WEBSITE_URL = "https://itirafapp.com"
     const val TERMS_URL = "https://itirafapp.com/terms"
     const val PRIVACY_URL = "https://itirafapp.com/privacy"
