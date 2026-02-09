@@ -38,7 +38,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
@@ -101,7 +100,6 @@ fun SearchComponent(
                     text = placeholderText,
                     style = MaterialTheme.typography.bodyMedium,
                     color = ItirafTheme.colors.textTertiary,
-                    fontSize = 14.sp
                 )
             },
 
@@ -131,7 +129,6 @@ fun SearchComponent(
             ),
 
             textStyle = TextStyle(
-                fontSize = 14.sp,
                 color = ItirafTheme.colors.textPrimary
             )
         )

@@ -47,7 +47,7 @@ fun OnboardingSlide(
         HorizontalPager(
             state = pagerState,
             modifier = Modifier
-                .weight(4f)
+                .weight(5f)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.Top
         ) { index ->
