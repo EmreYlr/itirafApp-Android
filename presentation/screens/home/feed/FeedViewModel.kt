@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.repository.CrashReporter
 import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.GetConfessionsUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
@@ -28,7 +29,8 @@ class FeedViewModel @Inject constructor(
     private val likeConfessionUseCase: LikeConfessionUseCase,
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val createShortlinkUseCase: CreateShortlinkUseCase
+    private val createShortlinkUseCase: CreateShortlinkUseCase,
+    private val crashReporter: CrashReporter
 ) : ViewModel() {
 
     var state by mutableStateOf(FeedState())
@@ -128,6 +130,13 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun handleShareClick(id: Int) {
+        try {
+            crashReporter.logMessage("Share butonuna basıldı. Post ID: $id")
+            throw RuntimeException("TEST: FeedViewModel Non-Fatal Error (User ID Otomatik Gelecek)")
+        } catch (e: Exception) {
+            crashReporter.logNonFatal(e)
+        }
+
         val confession = state.confessions.find { it.id == id } ?: return
         if (!confession.shortlink.isNullOrBlank()) {
             sendUiEvent(FeedUiEvent.OpenShareSheet(confession.shortlink))

@@ -3,9 +3,11 @@ package com.itirafapp.android.presentation.main
 import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.usecase.crash_report.SetUserSessionUseCase
 import com.itirafapp.android.domain.usecase.navigation.GetNotificationRouteUseCase
 import com.itirafapp.android.domain.usecase.navigation.HandleDeepLinkUseCase
 import com.itirafapp.android.domain.usecase.theme.GetAppThemeUseCase
+import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.util.constant.ThemeConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,9 +21,16 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     getAppThemeUseCase: GetAppThemeUseCase,
+    getCurrentUserUseCase: GetCurrentUserUseCase,
+    setUserSessionUseCase: SetUserSessionUseCase,
     private val getNotificationRouteUseCase: GetNotificationRouteUseCase,
     private val handleDeepLinkUseCase: HandleDeepLinkUseCase
 ) : ViewModel() {
+
+    init {
+        val user = getCurrentUserUseCase()
+        setUserSessionUseCase(user?.id)
+    }
     val themeState = getAppThemeUseCase()
         .stateIn(
             scope = viewModelScope,

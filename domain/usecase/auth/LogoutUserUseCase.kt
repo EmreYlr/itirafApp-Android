@@ -30,7 +30,6 @@ class LogoutUserUseCase @Inject constructor(
         followRepository.clearCache()
 
         crashReporter.setUserId("")
-
         if (logoutResult is Resource.Error) {
             emit(Resource.Error(logoutResult.message ?: "Çıkış yapılamadı"))
             return@flow
