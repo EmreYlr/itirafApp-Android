@@ -30,6 +30,9 @@ fun ItirafApp(
     LaunchedEffect(Unit) {
         activity?.intent?.let { intent ->
             viewModel.handleNotificationIntent(intent)
+
+            viewModel.handleDeepLink(intent)
+
             activity.intent = null
         }
     }
@@ -37,6 +40,8 @@ fun ItirafApp(
     DisposableEffect(Unit) {
         val listener = Consumer<Intent> { intent ->
             viewModel.handleNotificationIntent(intent)
+
+            viewModel.handleDeepLink(intent)
         }
         activity?.addOnNewIntentListener(listener)
         onDispose {
