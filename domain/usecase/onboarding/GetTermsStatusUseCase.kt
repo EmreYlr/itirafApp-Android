@@ -3,10 +3,10 @@ package com.itirafapp.android.domain.usecase.onboarding
 import com.itirafapp.android.domain.repository.UserRepository
 import javax.inject.Inject
 
-class CompleteOnboardingUseCase @Inject constructor(
+class GetTermsStatusUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke() {
-        userRepository.setOnboardingCompleted(true)
+    operator fun invoke(): Boolean {
+        return userRepository.isTermsCompleted()
     }
 }

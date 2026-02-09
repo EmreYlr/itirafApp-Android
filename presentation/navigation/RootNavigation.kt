@@ -14,7 +14,9 @@ import com.itirafapp.android.presentation.main.MainViewModel
 import com.itirafapp.android.presentation.navigation.components.SessionDialogHandler
 import com.itirafapp.android.presentation.navigation.graphs.MainScreen
 import com.itirafapp.android.presentation.navigation.graphs.authNavGraph
+import com.itirafapp.android.presentation.screens.onboarding.OnboardingScreen
 import com.itirafapp.android.presentation.screens.splash.SplashScreen
+import com.itirafapp.android.presentation.screens.terms.TermsScreen
 import com.itirafapp.android.util.manager.SessionEvent
 
 @Composable
@@ -54,10 +56,29 @@ fun RootNavigation(
             SplashScreen(navController)
         }
 
-        // ONBOARDING (Placeholder)
+        // ONBOARDING
         composable(Screen.Onboarding.route) {
-            // Onboarding bittiğinde:
-            navController.navigate(Screen.MainGraph.route) { popUpTo(Screen.Onboarding.route) { inclusive = true } }
+            OnboardingScreen(
+                onboardingCompleted = {
+                    navController.navigate(Screen.Terms.route) {
+                        popUpTo(Screen.Onboarding.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // TERMS
+        composable(Screen.Terms.route) {
+            TermsScreen(
+                onTermsComplete = {
+                    navController.navigate(Screen.MainGraph.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                },
+                onAuthRedirect = {
+                    navigateToAuth()
+                }
+            )
         }
 
         // MAIN APP

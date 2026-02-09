@@ -19,5 +19,6 @@ interface UserRepository {
     fun isUserAuthenticated(): Boolean
     fun isOnboardingCompleted(): Boolean
     fun setOnboardingCompleted(completed: Boolean)
-
+    fun isTermsCompleted(): Boolean
+    fun setTermsCompleted(completed: Boolean)
 }

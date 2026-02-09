@@ -34,4 +34,13 @@ class UserManager @Inject constructor(
     fun setOnboardingCompleted(completed: Boolean) {
         prefs.edit { putBoolean("is_onboarding_completed", completed) }
     }
+
+    fun isTermsCompleted(): Boolean {
+        return prefs.getBoolean("is_terms_completed", false)
+    }
+
+    fun setTermsCompleted(completed: Boolean) {
+        prefs.edit { putBoolean("is_terms_completed", completed) }
+    }
+
 }

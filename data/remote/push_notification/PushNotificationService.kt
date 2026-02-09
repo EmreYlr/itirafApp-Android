@@ -7,24 +7,17 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.media.RingtoneManager
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.itirafapp.android.R
-import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.presentation.main.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 import kotlin.random.Random
 
 @AndroidEntryPoint
 class PushNotificationService : FirebaseMessagingService() {
-    @Inject
-    lateinit var deviceRepository: DeviceRepository
-
     companion object {
         private const val CHANNEL_ID = "itiraf_app_channel_v1"
         private const val CHANNEL_NAME = "Genel Bildirimler"
@@ -32,10 +25,7 @@ class PushNotificationService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        CoroutineScope(Dispatchers.IO).launch {
-            val hasPermission = deviceRepository.hasSystemNotificationPermission()
-            deviceRepository.syncDeviceState(hasPermission)
-        }
+        Log.d("PushNotificationService", "Refreshed token: $token")
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {

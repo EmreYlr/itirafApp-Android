@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.auth.GetAuthStateUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginAnonymousUseCase
 import com.itirafapp.android.domain.usecase.onboarding.GetOnboardingStatusUseCase
+import com.itirafapp.android.domain.usecase.onboarding.GetTermsStatusUseCase
 import com.itirafapp.android.presentation.navigation.Screen
 import com.itirafapp.android.util.state.AuthState
 import com.itirafapp.android.util.state.Resource
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val getAuthStateUseCase: GetAuthStateUseCase,
     private val loginAnonymousUseCase: LoginAnonymousUseCase,
-    private val getOnboardingStatusUseCase: GetOnboardingStatusUseCase
+    private val getOnboardingStatusUseCase: GetOnboardingStatusUseCase,
+    private val getTermsStatusUseCase: GetTermsStatusUseCase
 ) : ViewModel() {
     private val _destination = MutableStateFlow<String?>(null)
     val destination = _destination.asStateFlow()
@@ -32,10 +34,15 @@ class SplashViewModel @Inject constructor(
 
     private fun checkStartDestination() {
         viewModelScope.launch {
-//            if (!getOnboardingStatusUseCase()) {
-//                _destination.value = Screen.Onboarding.route
-//                return@launch
-//            }
+            if (!getOnboardingStatusUseCase()) {
+                _destination.value = Screen.Onboarding.route
+                return@launch
+            }
+
+            if (!getTermsStatusUseCase()) {
+                _destination.value = Screen.Terms.route
+                return@launch
+            }
 
             when (getAuthStateUseCase()) {
                 AuthState.AUTHENTICATED, AuthState.ANONYMOUS -> {

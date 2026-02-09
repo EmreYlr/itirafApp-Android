@@ -7,6 +7,7 @@ sealed class Screen(val route: String) {
     // --- Root Path ---
     object Splash : Screen("splash_screen")
     object Onboarding : Screen("onboarding_screen")
+    object Terms : Screen("terms_screen")
 
     // --- Feature Graph ---
     object AuthGraph : Screen("auth_graph")

@@ -80,4 +80,12 @@ class UserRepositoryImpl @Inject constructor(
     override fun setOnboardingCompleted(completed: Boolean) {
         userManager.setOnboardingCompleted(completed)
     }
+
+    override fun isTermsCompleted(): Boolean {
+        return userManager.isTermsCompleted()
+    }
+
+    override fun setTermsCompleted(completed: Boolean) {
+        userManager.setTermsCompleted(completed)
+    }
 }
