@@ -3,6 +3,7 @@ package com.itirafapp.android.data.repository
 import com.itirafapp.android.data.remote.auth.AuthService
 import com.itirafapp.android.data.remote.auth.dto.AnonymousLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
+import com.itirafapp.android.data.remote.auth.dto.GoogleLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
@@ -21,6 +22,13 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun loginUser(request: LoginRequest): Resource<Unit> {
         return safeApiCall {
             val response = api.loginUser(request)
+            tokenManager.saveTokens(response.accessToken, response.refreshToken)
+        }
+    }
+
+    override suspend fun googleLogin(request: GoogleLoginRequest): Resource<Unit> {
+        return safeApiCall {
+            val response = api.googleLogin(request)
             tokenManager.saveTokens(response.accessToken, response.refreshToken)
         }
     }

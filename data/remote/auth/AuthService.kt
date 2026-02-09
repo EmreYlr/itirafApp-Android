@@ -3,6 +3,7 @@ package com.itirafapp.android.data.remote.auth
 import com.itirafapp.android.data.remote.auth.dto.AnonymousLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
 import com.itirafapp.android.data.remote.auth.dto.AuthResponse
+import com.itirafapp.android.data.remote.auth.dto.GoogleLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
@@ -27,6 +28,11 @@ interface AuthService {
     @POST("auth/login")
     suspend fun loginUser(
         @Body request: LoginRequest
+    ): AuthResponse
+
+    @POST("auth/google")
+    suspend fun googleLogin(
+        @Body request: GoogleLoginRequest
     ): AuthResponse
 
     @POST("auth/forgot-password")

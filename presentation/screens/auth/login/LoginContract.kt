@@ -15,6 +15,8 @@ sealed class LoginEvent {
     object ForgotPasswordClicked : LoginEvent()
     object OpenPrivacyPolicy : LoginEvent()
     object OpenTermsOfUse : LoginEvent()
+    data class OnGoogleLoginSuccess(val token: String) : LoginEvent()
+    object OnGoogleLoginError : LoginEvent()
 }
 
 sealed class LoginUiEvent {

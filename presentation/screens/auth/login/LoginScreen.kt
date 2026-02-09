@@ -2,6 +2,7 @@ package com.itirafapp.android.presentation.screens.auth.login
 
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.PersonOff
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -28,6 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,7 +57,9 @@ import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.constant.Constants
 import com.itirafapp.android.util.extension.openUrlSafe
+import com.itirafapp.android.util.manager.GoogleAuthManager
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -66,6 +72,8 @@ fun LoginScreen(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val colorParams = ItirafTheme.colors.brandPrimary.toArgb()
+    val scope = rememberCoroutineScope()
+    val googleAuthManager = remember { GoogleAuthManager(context) }
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
@@ -109,6 +117,18 @@ fun LoginScreen(
         onAnonLogin = {
             focusManager.clearFocus()
             viewModel.onEvent(LoginEvent.AnonymousLoginClicked)
+        },
+        onGoogleLoginClick = {
+            focusManager.clearFocus()
+            scope.launch {
+                val token = googleAuthManager.signIn(context)
+
+                if (token != null) {
+                    viewModel.onEvent(LoginEvent.OnGoogleLoginSuccess(token))
+                } else {
+                    viewModel.onEvent(LoginEvent.OnGoogleLoginError)
+                }
+            }
         }
     )
 }
@@ -121,9 +141,11 @@ fun LoginContent(
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit,
     onAnonLogin: () -> Unit,
+    onGoogleLoginClick: () -> Unit,
     onForgotPasswordClick: () -> Unit = {},
 ) {
     val focusManager = LocalFocusManager.current
+    val isInteractionEnabled = !state.isLoading
 
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
@@ -133,189 +155,215 @@ fun LoginContent(
             )
         }
     ) { paddingValues ->
-
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            ItirafTextField(
-                value = state.email,
-                onValueChange = { onEvent(LoginEvent.EmailChanged(it)) },
-                hint = stringResource(R.string.auth_field_email),
-                keyboardType = KeyboardType.Email,
-                placeholder = stringResource(R.string.auth_field_email_placeholder),
-                imeAction = ImeAction.Next,
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Mail,
-                        contentDescription = "Email Icon",
-                        tint = ItirafTheme.colors.textSecondary
-                    )
-                }
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ItirafTextField(
-                value = state.password,
-                onValueChange = { onEvent(LoginEvent.PasswordChanged(it)) },
-                hint = stringResource(R.string.auth_field_password),
-                isPassword = true,
-                placeholder = "*********",
-                imeAction = ImeAction.Done,
-                onAction = KeyboardActions(
-                    onDone = {
-                        focusManager.clearFocus()
-                        onLoginClick()
+                ItirafTextField(
+                    value = state.email,
+                    onValueChange = { onEvent(LoginEvent.EmailChanged(it)) },
+                    hint = stringResource(R.string.auth_field_email),
+                    keyboardType = KeyboardType.Email,
+                    placeholder = stringResource(R.string.auth_field_email_placeholder),
+                    imeAction = ImeAction.Next,
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Mail,
+                            contentDescription = "Email Icon",
+                            tint = ItirafTheme.colors.textSecondary
+                        )
                     }
                 )
-            )
 
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                TextButton(
-                    onClick = { onForgotPasswordClick() },
-                    contentPadding = PaddingValues(0.dp)
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ItirafTextField(
+                    value = state.password,
+                    onValueChange = { onEvent(LoginEvent.PasswordChanged(it)) },
+                    hint = stringResource(R.string.auth_field_password),
+                    isPassword = true,
+                    placeholder = "*********",
+                    imeAction = ImeAction.Done,
+                    onAction = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            onLoginClick()
+                        }
+                    )
+                )
+
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd
                 ) {
+                    TextButton(
+                        onClick = { if (isInteractionEnabled) onForgotPasswordClick() },
+                        enabled = isInteractionEnabled,
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.forgot_password),
+                            color = if (isInteractionEnabled) ItirafTheme.colors.textSecondary else ItirafTheme.colors.textSecondary.copy(
+                                alpha = 0.5f
+                            ),
+                            fontSize = 14.sp,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ItirafButton(
+                    text = stringResource(R.string.login_button),
+                    onClick = {
+                        focusManager.clearFocus()
+                        onLoginClick()
+                    },
+                    isLoading = false,
+                    enabled = isInteractionEnabled
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        color = ItirafTheme.colors.dividerColor,
+                        thickness = 1.dp
+                    )
                     Text(
-                        text = stringResource(R.string.forgot_password),
+                        text = stringResource(R.string.or),
                         color = ItirafTheme.colors.textSecondary,
                         fontSize = 14.sp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.weight(1f),
+                        color = ItirafTheme.colors.dividerColor,
+                        thickness = 1.dp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ItirafButton(
+                    text = stringResource(R.string.apple_login_button),
+                    onClick = {
+                        focusManager.clearFocus()
+                        //TODO: onAppleLogin()
+                    },
+                    icon = ImageVector.vectorResource(id = R.drawable.ic_apple_logo),
+                    isLoading = false,
+                    enabled = isInteractionEnabled,
+                    containerColor = Color.Black,
+                    contentColor = Color.White,
+                    borderColor = ItirafTheme.colors.textSecondary,
+                    borderWidth = 1.dp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ItirafButton(
+                    text = stringResource(R.string.google_login_button),
+                    onClick = {
+                        focusManager.clearFocus()
+                        onGoogleLoginClick()
+                    },
+                    icon = ImageVector.vectorResource(id = R.drawable.ic_google_logo),
+                    contentColor = ItirafTheme.colors.textPrimary,
+                    isLoading = false,
+                    enabled = isInteractionEnabled,
+                    containerColor = ItirafTheme.colors.backgroundCard,
+                    iconTint = Color.Unspecified,
+                    borderColor = ItirafTheme.colors.textSecondary,
+                    borderWidth = 1.dp
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ItirafButton(
+                    text = stringResource(R.string.anonymous_login_button),
+                    onClick = {
+                        focusManager.clearFocus()
+                        onAnonLogin()
+                    },
+                    icon = Icons.Default.PersonOff,
+                    isLoading = false,
+                    enabled = isInteractionEnabled,
+                    containerColor = ItirafTheme.colors.textSecondary,
+                    borderColor = ItirafTheme.colors.textSecondary,
+                    borderWidth = 0.7.dp
+                )
+
+                Row(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.login_dont_account),
+                        color = ItirafTheme.colors.textSecondary,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = stringResource(R.string.register),
+                        color = if (isInteractionEnabled) MaterialTheme.colorScheme.primary else Color.Gray,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                            .clickable(enabled = isInteractionEnabled) { onRegisterClick() }
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                LegalTextMultiLink(
+                    onTermsClick = {
+                        if (isInteractionEnabled) onEvent(LoginEvent.OpenTermsOfUse)
+                    },
+                    onPrivacyClick = {
+                        if (isInteractionEnabled) onEvent(LoginEvent.OpenPrivacyPolicy)
+                    },
+                    modifier = Modifier.padding(bottom = 20.dp)
+                )
+            }
+
+            if (state.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                        .clickable(enabled = false) {},
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = ItirafTheme.colors.brandPrimary
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ItirafButton(
-                text = stringResource(R.string.login_button),
-                onClick = {
-                    focusManager.clearFocus()
-                    onLoginClick()
-                },
-                isLoading = state.isLoading
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HorizontalDivider(
-                    modifier = Modifier.weight(1f),
-                    color = ItirafTheme.colors.dividerColor,
-                    thickness = 1.dp
-                )
-                Text(
-                    text = stringResource(R.string.or),
-                    color = ItirafTheme.colors.textSecondary,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
-                )
-                HorizontalDivider(
-                    modifier = Modifier.weight(1f),
-                    color = ItirafTheme.colors.dividerColor,
-                    thickness = 1.dp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ItirafButton(
-                text = stringResource(R.string.apple_login_button),
-                onClick = {
-                    focusManager.clearFocus()
-                    //TODO: onAppleLogin()
-                },
-                icon = ImageVector.vectorResource(id = R.drawable.ic_apple_logo),
-                isLoading = state.isLoading,
-                containerColor = Color.Black,
-                contentColor = Color.White,
-                borderColor = ItirafTheme.colors.textSecondary,
-                borderWidth = 1.dp
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ItirafButton(
-                text = stringResource(R.string.google_login_button),
-                onClick = {
-                    focusManager.clearFocus()
-                    //TODO: onGoogleLogin()
-                },
-                icon = ImageVector.vectorResource(id = R.drawable.ic_google_logo),
-                contentColor = ItirafTheme.colors.textPrimary,
-                isLoading = state.isLoading,
-                containerColor = ItirafTheme.colors.backgroundCard,
-                iconTint = Color.Unspecified,
-                borderColor = ItirafTheme.colors.textSecondary,
-                borderWidth = 1.dp
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ItirafButton(
-                text = stringResource(R.string.anonymous_login_button),
-                onClick = {
-                    focusManager.clearFocus()
-                    onAnonLogin()
-                },
-                icon = Icons.Default.PersonOff,
-                isLoading = state.isLoading,
-                containerColor = ItirafTheme.colors.textSecondary,
-                borderColor = ItirafTheme.colors.textSecondary,
-                borderWidth = 0.7.dp
-            )
-
-            Row(
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = stringResource(R.string.login_dont_account),
-                    color = ItirafTheme.colors.textSecondary,
-                    fontSize = 14.sp
-                )
-                Text(
-                    text = stringResource(R.string.register),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp,
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .clickable { onRegisterClick() }
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            LegalTextMultiLink(
-                onTermsClick = {
-                    onEvent(LoginEvent.OpenTermsOfUse)
-                },
-                onPrivacyClick = {
-                    onEvent(LoginEvent.OpenPrivacyPolicy)
-                },
-                modifier = Modifier.padding(bottom = 20.dp)
-            )
         }
     }
 }
+
 @Preview(showBackground = true, name = "Light Mode")
 @Preview(
     showBackground = true,
@@ -330,7 +378,8 @@ fun LoginScreenPreview() {
             onEvent = {},
             onRegisterClick = {},
             onLoginClick = {},
-            onAnonLogin = {}
+            onAnonLogin = {},
+            onGoogleLoginClick = {}
         )
     }
 }

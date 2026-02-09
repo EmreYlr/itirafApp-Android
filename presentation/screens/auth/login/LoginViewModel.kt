@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.data.remote.auth.dto.GoogleLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.domain.usecase.auth.LoginAnonymousUseCase
+import com.itirafapp.android.domain.usecase.auth.LoginGoogleUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginUserUseCase
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUserUseCase: LoginUserUseCase,
-    private val loginAnonymousUseCase: LoginAnonymousUseCase
+    private val loginAnonymousUseCase: LoginAnonymousUseCase,
+    private val loginGoogleUseCase: LoginGoogleUseCase
 ) : ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
@@ -33,26 +36,41 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.EmailChanged -> {
                 state = state.copy(email = event.email)
             }
+
             is LoginEvent.PasswordChanged -> {
                 state = state.copy(password = event.password)
             }
+
             is LoginEvent.OpenPrivacyPolicy -> {
                 sendUiEvent(LoginUiEvent.ShowPrivacyPolicyDialog)
             }
+
             is LoginEvent.OpenTermsOfUse -> {
                 sendUiEvent(LoginUiEvent.ShowTermsDialog)
             }
+
             is LoginEvent.LoginClicked -> {
                 login()
             }
+
             is LoginEvent.AnonymousLoginClicked -> {
                 anonymousLogin()
             }
+
             is LoginEvent.RegisterClicked -> {
                 sendUiEvent(LoginUiEvent.NavigateToRegister)
             }
+
             is LoginEvent.ForgotPasswordClicked -> {
                 sendUiEvent(LoginUiEvent.NavigateToForgotPassword)
+            }
+
+            is LoginEvent.OnGoogleLoginSuccess -> {
+                loginWithGoogle(event.token)
+            }
+
+            is LoginEvent.OnGoogleLoginError -> {
+                sendUiEvent(LoginUiEvent.ShowError("Google girişi iptal edildi veya başarısız oldu."))
             }
         }
     }
@@ -71,13 +89,41 @@ class LoginViewModel @Inject constructor(
                 is Resource.Loading -> {
                     state = state.copy(isLoading = true)
                 }
+
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(LoginUiEvent.NavigateToHome)
                 }
+
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(LoginUiEvent.ShowError(result.message ?: "Beklenmedik bir hata"))
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun loginWithGoogle(idToken: String) {
+        val request = GoogleLoginRequest(idToken = idToken)
+
+        loginGoogleUseCase(request).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
+
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(LoginUiEvent.NavigateToHome)
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        LoginUiEvent.ShowError(
+                            result.message ?: "Google girişi sırasında hata oluştu."
+                        )
+                    )
                 }
             }
         }.launchIn(viewModelScope)
@@ -90,10 +136,12 @@ class LoginViewModel @Inject constructor(
                 is Resource.Loading -> {
                     state = state.copy(isLoading = true)
                 }
+
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(LoginUiEvent.NavigateToHome)
                 }
+
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(LoginUiEvent.ShowError(result.message ?: "Beklenmedik bir hata"))
