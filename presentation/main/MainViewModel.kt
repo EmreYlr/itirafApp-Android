@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.usecase.crash_report.SetUserSessionUseCase
+import com.itirafapp.android.domain.usecase.crash_report.SetupTrackingUseCase
 import com.itirafapp.android.domain.usecase.navigation.GetNotificationRouteUseCase
 import com.itirafapp.android.domain.usecase.navigation.HandleDeepLinkUseCase
 import com.itirafapp.android.domain.usecase.theme.GetAppThemeUseCase
@@ -23,11 +24,14 @@ class MainViewModel @Inject constructor(
     getAppThemeUseCase: GetAppThemeUseCase,
     getCurrentUserUseCase: GetCurrentUserUseCase,
     setUserSessionUseCase: SetUserSessionUseCase,
+    setupTrackingUseCase: SetupTrackingUseCase,
     private val getNotificationRouteUseCase: GetNotificationRouteUseCase,
     private val handleDeepLinkUseCase: HandleDeepLinkUseCase
 ) : ViewModel() {
 
     init {
+        setupTrackingUseCase()
+
         val user = getCurrentUserUseCase()
         setUserSessionUseCase(user?.id)
     }

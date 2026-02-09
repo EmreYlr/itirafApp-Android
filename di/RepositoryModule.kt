@@ -3,6 +3,7 @@ package com.itirafapp.android.di
 import com.itirafapp.android.data.repository.AuthRepositoryImpl
 import com.itirafapp.android.data.repository.ChannelRepositoryImpl
 import com.itirafapp.android.data.repository.ChatSocketRepositoryImpl
+import com.itirafapp.android.data.repository.ClaritySessionTracker
 import com.itirafapp.android.data.repository.ConfessionRepositoryImpl
 import com.itirafapp.android.data.repository.CrashReporterImpl
 import com.itirafapp.android.data.repository.DeviceRepositoryImpl
@@ -23,6 +24,7 @@ import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.LanguageRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
 import com.itirafapp.android.domain.repository.RoomRepository
+import com.itirafapp.android.domain.repository.SessionTracker
 import com.itirafapp.android.domain.repository.SocialLinkRepository
 import com.itirafapp.android.domain.repository.ThemeRepository
 import com.itirafapp.android.domain.repository.UserRepository
@@ -113,4 +115,10 @@ abstract class RepositoryModule {
     abstract fun bindCrashReporter(
         crashReporterImpl: CrashReporterImpl
     ): CrashReporter
+
+    @Binds
+    @Singleton
+    abstract fun bindSessionTracker(
+        clarityTracker: ClaritySessionTracker
+    ): SessionTracker
 }

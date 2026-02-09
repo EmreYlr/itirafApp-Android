@@ -4,6 +4,7 @@ import com.itirafapp.android.data.remote.auth.dto.GoogleLoginRequest
 import com.itirafapp.android.domain.repository.AuthRepository
 import com.itirafapp.android.domain.repository.CrashReporter
 import com.itirafapp.android.domain.repository.FollowRepository
+import com.itirafapp.android.domain.repository.SessionTracker
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.state.Resource
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,8 @@ class LoginGoogleUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository,
     private val followRepository: FollowRepository,
-    private val crashReporter: CrashReporter
+    private val crashReporter: CrashReporter,
+    private val sessionTracker: SessionTracker
 ) {
     operator fun invoke(request: GoogleLoginRequest): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading())
@@ -34,6 +36,7 @@ class LoginGoogleUseCase @Inject constructor(
             user?.let {
                 crashReporter.setUserId(it.id.toString())
                 crashReporter.setUserAnonymous(false)
+                sessionTracker.setUserId(it.id.toString())
             }
             followRepository.syncFollowedChannels()
 
