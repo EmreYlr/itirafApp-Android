@@ -130,13 +130,6 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun handleShareClick(id: Int) {
-        try {
-            crashReporter.logMessage("Share butonuna basıldı. Post ID: $id")
-            throw RuntimeException("TEST: FeedViewModel Non-Fatal Error (User ID Otomatik Gelecek)")
-        } catch (e: Exception) {
-            crashReporter.logNonFatal(e)
-        }
-
         val confession = state.confessions.find { it.id == id } ?: return
         if (!confession.shortlink.isNullOrBlank()) {
             sendUiEvent(FeedUiEvent.OpenShareSheet(confession.shortlink))
