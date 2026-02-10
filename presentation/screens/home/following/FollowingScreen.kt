@@ -10,20 +10,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.GroupOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.ConfessionCard
+import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.state.shareLink
 
@@ -33,6 +36,7 @@ fun FollowingScreen(
     onOpenDM: (Int) -> Unit,
     onChannelClick: (Int, String) -> Unit,
     onHomeRefresh: () -> Unit,
+    onGoToChannel: () -> Unit,
     viewModel: FollowingViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -71,7 +75,8 @@ fun FollowingScreen(
             if (event is FollowingEvent.Refresh) {
                 onHomeRefresh()
             }
-        }
+        },
+        onGoToChannel = onGoToChannel
     )
 }
 
@@ -79,7 +84,8 @@ fun FollowingScreen(
 @Composable
 fun FollowingScreen(
     state: FollowingState,
-    onEvent: (FollowingEvent) -> Unit
+    onEvent: (FollowingEvent) -> Unit,
+    onGoToChannel: () -> Unit,
 ) {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -149,10 +155,13 @@ fun FollowingScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Henüz itiraf yok.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = ItirafTheme.colors.textSecondary
+                    EmptyStateView(
+                        icon = Icons.Default.GroupOff,
+                        message = stringResource(R.string.empty_noFollowingChannels_title),
+                        buttonText = stringResource(R.string.empty_noFollowingChannels_button),
+                        onButtonClick = {
+                            onGoToChannel()
+                        }
                     )
                 }
             }

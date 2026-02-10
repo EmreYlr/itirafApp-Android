@@ -212,18 +212,16 @@ fun MyConfessionDetailContent(
                         )
                     }
 
-                    if (state.confessions.reply.isNotEmpty()) {
-                        item {
-                            Text(
-                                text = stringResource(
-                                    R.string.reply_title,
-                                    state.confessions.reply.size
-                                ),
-                                style = MaterialTheme.typography.titleSmall,
-                                color = ItirafTheme.colors.textPrimary,
-                                modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
-                            )
-                        }
+                    item {
+                        Text(
+                            text = stringResource(
+                                R.string.reply_title,
+                                state.confessions.reply.size
+                            ),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = ItirafTheme.colors.textPrimary,
+                            modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                        )
                     }
 
                     items(
@@ -285,7 +283,7 @@ fun MyConfessionDetailContent(
                                     )
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = "Henüz yorum yapılmamış.",
+                                        text = stringResource(R.string.empty_noComment_title),
                                         style = MaterialTheme.typography.bodyMedium,
                                         color = ItirafTheme.colors.textTertiary,
                                         textAlign = TextAlign.Center

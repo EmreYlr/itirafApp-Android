@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -92,6 +93,7 @@ fun PostContent(
     onEvent: (PostEvent) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var showNoChannelAlert by remember { mutableStateOf(false) }
 
     val maxTitleLength = 100
     val maxMessageLength = 500
@@ -238,7 +240,12 @@ fun PostContent(
             expanded = expanded,
             onExpandedChange = {
                 if (!state.isChannelLocked) {
-                    expanded = !expanded
+                    if (state.followedChannel.isEmpty()) {
+                        showNoChannelAlert = true
+                        expanded = false
+                    } else {
+                        expanded = !expanded
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth()
@@ -326,6 +333,20 @@ fun PostContent(
         )
 
         Spacer(modifier = Modifier.height(24.dp))
+    }
+
+    if (showNoChannelAlert) {
+        GenericAlertDialog(
+            onDismissRequest = { showNoChannelAlert = false },
+            title = stringResource(R.string.warning),
+            text = stringResource(R.string.error_no_followed_channels),
+            confirmButtonText = stringResource(R.string.ok),
+            onConfirmClick = {
+                showNoChannelAlert = false
+            },
+            dismissButtonText = null,
+            onDismissClick = null
+        )
     }
 }
 

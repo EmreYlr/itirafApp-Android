@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.GroupOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.ChannelCard
+import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.components.core.SearchComponent
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -35,6 +35,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 fun FollowChannelScreen(
     onBackClick: () -> Unit,
     onChannelClick: (Int, String) -> Unit,
+    onGoToChannel: () -> Unit,
     viewModel: FollowChannelViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -63,7 +64,8 @@ fun FollowChannelScreen(
         state = state,
         onEvent = viewModel::onEvent,
         onChannelClick = onChannelClick,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onGoToChannel = onGoToChannel
     )
 }
 
@@ -73,7 +75,8 @@ fun FollowChannelContent(
     state: FollowChannelState,
     onEvent: (FollowChannelEvent) -> Unit,
     onChannelClick: (Int, String) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onGoToChannel: () -> Unit
 ) {
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
@@ -117,14 +120,15 @@ fun FollowChannelContent(
                                     .padding(top = 50.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = if (state.searchQuery.isNotEmpty())
-                                        "Sonuç bulunamadı."
-                                    else
-                                        "Henüz hiç bir kanalı takip etmiyorsunuz.",
-                                    color = ItirafTheme.colors.textSecondary,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center
+                                EmptyStateView(
+                                    icon = Icons.Default.GroupOff,
+                                    message =
+                                        if (state.searchQuery.isNotEmpty()) stringResource(R.string.empty_noSearchChannels_title)
+                                        else stringResource(R.string.empty_noFollowingChannels_title),
+                                    buttonText = stringResource(R.string.empty_noFollowingChannels_button),
+                                    onButtonClick = {
+                                        onGoToChannel()
+                                    }
                                 )
                             }
                         }

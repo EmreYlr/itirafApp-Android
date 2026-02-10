@@ -11,21 +11,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddComment
+import androidx.compose.material.icons.filled.ContentPasteOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.ConfessionCard
+import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.channel.components.AddPostIconButton
 import com.itirafapp.android.presentation.screens.channel.components.ChannelDetailHeader
@@ -124,10 +126,17 @@ fun ChannelDetailContent(
                                 .padding(top = 40.dp),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text(
-                                text = "Bu kanalda henüz itiraf yok.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = ItirafTheme.colors.textSecondary
+                            EmptyStateView(
+                                icon = Icons.Default.ContentPasteOff,
+                                message = stringResource(R.string.empty_noChannelConfession_title),
+                                buttonText =
+                                    if (state.isUserAuthenticated && state.isFollowing) stringResource(
+                                        R.string.write_confession
+                                    )
+                                    else null,
+                                onButtonClick = {
+                                    onEvent(ChannelDetailEvent.AddPostClicked(state.channelId))
+                                }
                             )
                         }
                     }

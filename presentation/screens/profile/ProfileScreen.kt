@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.Link
+import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.profile.components.SocialCard
@@ -267,16 +269,18 @@ fun ProfileContent(
                         )
                     }
                 }
-
-                if (state.user?.socialLinks.isNullOrEmpty() && !state.isAnonymous) {
-                    Text(
-                        text = "Henüz ekli bir hesap yok.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = ItirafTheme.colors.textTertiary,
+                if (!state.isAnonymous && state.user?.socialLinks.isNullOrEmpty()) {
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(top = 10.dp)
-                    )
+                            .fillMaxWidth()
+                            .padding(top = 24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        EmptyStateView(
+                            icon = Icons.Default.Link,
+                            message = stringResource(R.string.empty_noSocialMediaLinks_title)
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))

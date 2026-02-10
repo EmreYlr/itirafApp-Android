@@ -10,12 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SearchOff
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.presentation.components.core.ChannelCard
+import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.components.core.SearchComponent
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -111,10 +112,9 @@ fun ChannelContent(
                                     .padding(top = 50.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = "Kanal bulunamadı.",
-                                    color = ItirafTheme.colors.textSecondary,
-                                    style = MaterialTheme.typography.bodyMedium
+                                EmptyStateView(
+                                    icon = Icons.Default.SearchOff,
+                                    message = stringResource(R.string.empty_noChannels_title)
                                 )
                             }
                         }

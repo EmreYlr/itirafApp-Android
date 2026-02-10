@@ -143,6 +143,9 @@ fun MainScreen(
                         navController.navigate(
                             Screen.ChannelDetail.createRoute(channelId, channelTitle)
                         )
+                    },
+                    onGoToChannel = {
+                        navController.navigate(Screen.Channel.route)
                     }
                 )
             }
@@ -208,6 +211,9 @@ fun MainScreen(
                         )
 
                         navController.navigate(Screen.MyConfessionEditConfession.route)
+                    },
+                    writeClicked = {
+                        currentSheet = BottomSheetType.AddPost(-1)
                     }
                 )
             }
@@ -370,6 +376,11 @@ fun MainScreen(
                         navController.navigate(
                             Screen.ChannelDetail.createRoute(channelId, channelTitle)
                         )
+                    },
+                    onGoToChannel = {
+                        navController.navigate(Screen.Channel.route) {
+                            navController.popBackStack(Screen.FollowChannel.route, inclusive = true)
+                        }
                     }
                 )
             }

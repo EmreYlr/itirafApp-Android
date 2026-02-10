@@ -3,7 +3,6 @@ package com.itirafapp.android.presentation.screens.my_confession
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,11 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.MyConfessionData
+import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.my_confession.components.MyConfessionCard
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
@@ -35,6 +37,7 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 fun MyConfessionScreen(
     onItemClick: (MyConfessionData) -> Unit,
     onEditClick: (MyConfessionData) -> Unit,
+    writeClicked: () -> Unit,
     viewModel: MyConfessionViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -61,7 +64,8 @@ fun MyConfessionScreen(
 
     MyConfessionContent(
         state = state,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        writeClicked = writeClicked
     )
 }
 
@@ -69,7 +73,8 @@ fun MyConfessionScreen(
 @Composable
 fun MyConfessionContent(
     state: MyConfessionState,
-    onEvent: (MyConfessionEvent) -> Unit
+    onEvent: (MyConfessionEvent) -> Unit,
+    writeClicked: () -> Unit
 ) {
     Scaffold(
         containerColor = ItirafTheme.colors.backgroundApp,
@@ -88,51 +93,55 @@ fun MyConfessionContent(
         ) {
 
             if (!state.isLoading && state.myConfession.isEmpty() && state.error == null) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Henüz hiç itirafın yok.",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = ItirafTheme.colors.textSecondary
+                    EmptyStateView(
+                        icon = Icons.Default.AddComment,
+                        message = stringResource(R.string.empty_noMyConfessions_title),
+                        buttonText = stringResource(R.string.write_confession),
+                        onButtonClick = {
+                            writeClicked()
+                        }
                     )
                 }
-            }
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                itemsIndexed(state.myConfession) { index, confession ->
-                    if (index >= state.myConfession.lastIndex && !state.isLoading) {
-                        LaunchedEffect(Unit) {
-                            onEvent(MyConfessionEvent.LoadMore)
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    itemsIndexed(state.myConfession) { index, confession ->
+                        if (index >= state.myConfession.lastIndex && !state.isLoading) {
+                            LaunchedEffect(Unit) {
+                                onEvent(MyConfessionEvent.LoadMore)
+                            }
                         }
+
+                        MyConfessionCard(
+                            confession = confession,
+                            onCardClick = { onEvent(MyConfessionEvent.ItemClicked(confession.id)) },
+                            onEditClick = { onEvent(MyConfessionEvent.EditClicked(confession.id)) }
+                        )
                     }
 
-                    MyConfessionCard(
-                        confession = confession,
-                        onCardClick = { onEvent(MyConfessionEvent.ItemClicked(confession.id)) },
-                        onEditClick = { onEvent(MyConfessionEvent.EditClicked(confession.id)) }
-                    )
-                }
-
-                if (state.isLoading && state.myConfession.isNotEmpty()) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                color = ItirafTheme.colors.brandPrimary,
-                                strokeWidth = 2.dp
-                            )
+                    if (state.isLoading && state.myConfession.isNotEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(24.dp),
+                                    color = ItirafTheme.colors.brandPrimary,
+                                    strokeWidth = 2.dp
+                                )
+                            }
                         }
                     }
                 }

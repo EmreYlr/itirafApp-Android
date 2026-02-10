@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChatBubbleOutline
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -28,12 +30,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.presentation.components.core.CommentInputBar
+import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.core.ReplyCard
 import com.itirafapp.android.presentation.components.layout.TopBar
@@ -153,19 +155,16 @@ fun DetailContent(
                             }
                         )
                     }
-
-                    if (state.confession.replies.isNotEmpty()) {
-                        item {
-                            Text(
-                                text = stringResource(
-                                    R.string.reply_title,
-                                    state.confession.replies.size
-                                ),
-                                style = MaterialTheme.typography.titleSmall,
-                                color = ItirafTheme.colors.textPrimary,
-                                modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
-                            )
-                        }
+                    item {
+                        Text(
+                            text = stringResource(
+                                R.string.reply_title,
+                                state.confession.replies.size
+                            ),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = ItirafTheme.colors.textPrimary,
+                            modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                        )
                     }
 
                     items(
@@ -188,7 +187,6 @@ fun DetailContent(
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-                    //TODO: Boş state yönetimi yapılacak
                     if (state.confession.replies.isEmpty()) {
                         item {
                             Box(
@@ -197,11 +195,9 @@ fun DetailContent(
                                     .padding(top = 40.dp),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = "Henüz yorum yapılmamış.\nİlk yorumu sen yap!",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = ItirafTheme.colors.textTertiary,
-                                    textAlign = TextAlign.Center
+                                EmptyStateView(
+                                    icon = Icons.Default.ChatBubbleOutline,
+                                    message = stringResource(R.string.reply_is_empty)
                                 )
                             }
                         }
