@@ -33,6 +33,15 @@ fun RootNavigation(
         }
     }
 
+    val handleSessionExpiredAndNavigate = {
+        viewModel.onSessionExpiredConfirmed {
+            activeSessionEvent = null
+            navController.navigate(Screen.AuthGraph.route) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
     val navigateToAuth = {
         activeSessionEvent = null
 
@@ -44,7 +53,15 @@ fun RootNavigation(
     SessionDialogHandler(
         event = activeSessionEvent,
         onDismiss = { activeSessionEvent = null },
-        onConfirm = navigateToAuth
+        onConfirm = {
+            when (activeSessionEvent) {
+                is SessionEvent.SessionExpired -> handleSessionExpiredAndNavigate()
+                else -> {
+                    activeSessionEvent = null
+                    navController.navigate(Screen.AuthGraph.route)
+                }
+            }
+        }
     )
 
     NavHost(

@@ -25,19 +25,19 @@ class LogoutUserUseCase @Inject constructor(
 
         val logoutResult = authRepository.logoutUser()
 
-        deviceRepository.clearLocalDeviceData()
-
-        userRepository.clearUserData()
-
-        followRepository.clearCache()
-
-        crashReporter.setUserId("")
-
-        sessionTracker.clearUser()
-
         if (logoutResult is Resource.Error) {
-            emit(Resource.Error(logoutResult.message ?: "Çıkış yapılamadı"))
-            return@flow
+            crashReporter.logMessage("Logout API failed: ${logoutResult.message} but continuing local logout.")
+        }
+
+        try {
+            deviceRepository.clearLocalDeviceData()
+            userRepository.clearUserData()
+            followRepository.clearCache()
+
+            crashReporter.setUserId("")
+            sessionTracker.clearUser()
+        } catch (e: Exception) {
+            crashReporter.logNonFatal(e)
         }
 
         emit(Resource.Success(Unit))
