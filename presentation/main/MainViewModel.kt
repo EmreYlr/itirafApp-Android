@@ -10,6 +10,7 @@ import com.itirafapp.android.domain.usecase.navigation.HandleDeepLinkUseCase
 import com.itirafapp.android.domain.usecase.theme.GetAppThemeUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.util.constant.ThemeConfig
+import com.itirafapp.android.util.manager.SessionEventBus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,11 +23,12 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     getAppThemeUseCase: GetAppThemeUseCase,
-    getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     setUserSessionUseCase: SetUserSessionUseCase,
     setupTrackingUseCase: SetupTrackingUseCase,
     private val getNotificationRouteUseCase: GetNotificationRouteUseCase,
-    private val handleDeepLinkUseCase: HandleDeepLinkUseCase
+    private val handleDeepLinkUseCase: HandleDeepLinkUseCase,
+    private val sessionEventBus: SessionEventBus
 ) : ViewModel() {
 
     init {
@@ -35,6 +37,9 @@ class MainViewModel @Inject constructor(
         val user = getCurrentUserUseCase()
         setUserSessionUseCase(user?.id)
     }
+
+    private val isAnonymous: Boolean
+        get() = getCurrentUserUseCase()?.anonymous == true
     val themeState = getAppThemeUseCase()
         .stateIn(
             scope = viewModelScope,
@@ -78,5 +83,16 @@ class MainViewModel @Inject constructor(
 
     fun clearPendingRoute() {
         _pendingRoute.value = null
+    }
+
+
+    fun onTabSelectionInterceptor(requiresAuth: Boolean): Boolean {
+        if (requiresAuth && isAnonymous) {
+            viewModelScope.launch {
+                sessionEventBus.triggerLoginRequired()
+            }
+            return false
+        }
+        return true
     }
 }

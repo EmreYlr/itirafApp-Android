@@ -109,7 +109,12 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             if (showBottomBar) {
-                BottomNavigation(navController = navController)
+                BottomNavigation(
+                    navController = navController,
+                    onTabClick = { item ->
+                        mainViewModel.onTabSelectionInterceptor(item.requiresAuth)
+                    }
+                )
             }
         }
     ) { innerPadding ->

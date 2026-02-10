@@ -40,33 +40,39 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
 fun BottomNavigation(
-    navController: NavController
+    navController: NavController,
+    onTabClick: (BottomNavItem) -> Boolean
 ) {
     val items = listOf(
         BottomNavItem(
             route = Screen.Home.route,
             selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home
+            unselectedIcon = Icons.Outlined.Home,
+            requiresAuth = false
         ),
         BottomNavItem(
             route = Screen.Channel.route,
             selectedIcon = Icons.Filled.Explore,
-            unselectedIcon = Icons.Outlined.Explore
+            unselectedIcon = Icons.Outlined.Explore,
+            requiresAuth = false
         ),
         BottomNavItem(
             route = Screen.Message.route,
             selectedIcon = Icons.AutoMirrored.Filled.Send,
-            unselectedIcon = Icons.AutoMirrored.Outlined.Send
+            unselectedIcon = Icons.AutoMirrored.Outlined.Send,
+            requiresAuth = true
         ),
         BottomNavItem(
             route = Screen.MyConfession.route,
             selectedIcon = Icons.Filled.AccountBox,
-            unselectedIcon = Icons.Outlined.AccountBox
+            unselectedIcon = Icons.Outlined.AccountBox,
+            requiresAuth = true
         ),
         BottomNavItem(
             route = Screen.Profile.route,
             selectedIcon = Icons.Filled.Person,
-            unselectedIcon = Icons.Outlined.Person
+            unselectedIcon = Icons.Outlined.Person,
+            requiresAuth = false
         )
     )
 
@@ -94,18 +100,22 @@ fun BottomNavigation(
             NavigationBarItem(
                 selected = isSelected,
                 onClick = {
-                    if (isSelected) {
-                        navController.popBackStack(item.route, inclusive = false)
-                    } else {
-                        navController.navigate(item.route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            if (item.route == Screen.Home.route) {
-                                restoreState = false
-                            } else {
-                                restoreState = true
+                    val canNavigate = onTabClick(item)
+
+                    if (canNavigate) {
+                        if (isSelected) {
+                            navController.popBackStack(item.route, inclusive = false)
+                        } else {
+                            navController.navigate(item.route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                if (item.route == Screen.Home.route) {
+                                    restoreState = false
+                                } else {
+                                    restoreState = true
+                                }
                             }
                         }
                     }
@@ -145,7 +155,10 @@ fun BottomNavigationPreview() {
 
     ItirafAppTheme {
         BottomNavigation(
-            navController = navController
+            navController = navController,
+            onTabClick = { BottomNavItem ->
+                true
+            }
         )
     }
 }

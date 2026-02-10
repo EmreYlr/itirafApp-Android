@@ -143,7 +143,8 @@ fun HomeContent(
                         notificationCount = state.notificationCount,
                         onClick = {
                             onEvent(HomeEvent.NotificationClicked)
-                        }
+                        },
+                        isEnabled = state.isUserAuthenticated
                     )
                 }
             )

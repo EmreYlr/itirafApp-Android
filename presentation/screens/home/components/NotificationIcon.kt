@@ -21,9 +21,10 @@ import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 fun NotificationIcon(
     hasUnread: Boolean,
     notificationCount: Int,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isEnabled: Boolean
 ) {
-    IconButton(onClick = onClick) {
+    IconButton(onClick = onClick, enabled = isEnabled) {
         BadgedBox(
             modifier = Modifier.offset(x = (-4).dp),
             badge = {
@@ -43,7 +44,7 @@ fun NotificationIcon(
             Icon(
                 imageVector = if (hasUnread) Icons.Filled.Notifications else Icons.Outlined.Notifications,
                 contentDescription = "notifications",
-                tint = ItirafTheme.colors.brandPrimary
+                tint = if (isEnabled) ItirafTheme.colors.brandPrimary else ItirafTheme.colors.dividerColor,
             )
         }
     }
