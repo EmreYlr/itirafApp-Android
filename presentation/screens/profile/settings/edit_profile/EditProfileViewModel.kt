@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.usecase.user.DeleteCurrentUserUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -67,16 +69,20 @@ class EditProfileViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(EditProfileUiEvent.ShowMessage("Hesabınız silinmiştir."))
+                    sendUiEvent(
+                        EditProfileUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.message_account_deleted),
+                        )
+                    )
                     sendUiEvent(EditProfileUiEvent.NavigateToLogin)
                 }
 
                 is Resource.Error -> {
                     state = state.copy(
                         isLoading = false,
-                        error = result.message
+                        error = result.error.message
                     )
-                    sendUiEvent(EditProfileUiEvent.ShowMessage(result.message ?: "Hata oluştu"))
+                    sendUiEvent(EditProfileUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)

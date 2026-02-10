@@ -12,7 +12,7 @@ class RegisterUserUseCase @Inject constructor(
 ) {
     operator fun invoke(request: RegisterRequest): Flow<Resource<Unit>> = flow {
 
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = authRepository.registerUser(request)
 

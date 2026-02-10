@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.itirafapp.android.data.remote.device.DeviceService
 import com.itirafapp.android.data.remote.device.dto.DeviceRegisterRequest
 import com.itirafapp.android.data.remote.network.safeApiCall
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.util.manager.DeviceManager
 import com.itirafapp.android.util.state.Resource
@@ -46,7 +47,7 @@ class DeviceRepositoryImpl @Inject constructor(
             response
 
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "Beklenmeyen hata")
+            Resource.Error(AppError.LocalError.Unknown)
         }
     }
 
@@ -58,7 +59,7 @@ class DeviceRepositoryImpl @Inject constructor(
             registerOrUpdateDevice(finalState)
 
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "Senkronizasyon hatası")
+            Resource.Error(AppError.LocalError.Unknown)
         }
     }
 

@@ -29,8 +29,7 @@ class FeedViewModel @Inject constructor(
     private val likeConfessionUseCase: LikeConfessionUseCase,
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val createShortlinkUseCase: CreateShortlinkUseCase,
-    private val crashReporter: CrashReporter
+    private val createShortlinkUseCase: CreateShortlinkUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(FeedState())
@@ -66,6 +65,7 @@ class FeedViewModel @Inject constructor(
             is FeedEvent.DMRequestClicked -> {
                 sendUiEvent(FeedUiEvent.OpenDMSheet(event.id))
             }
+
             is FeedEvent.ShareClicked -> {
                 handleShareClick(event.id)
             }
@@ -73,6 +73,7 @@ class FeedViewModel @Inject constructor(
             is FeedEvent.ChannelClicked -> {
                 sendUiEvent(FeedUiEvent.NavigateToChannel(event.id, event.title))
             }
+
             is FeedEvent.CommentClicked -> sendUiEvent(FeedUiEvent.NavigateToDetail(event.id))
         }
     }
@@ -120,9 +121,9 @@ class FeedViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message ?: "Bilinmeyen bir hata oluştu"
+                            error = result.error.message
                         )
-                        sendUiEvent(FeedUiEvent.ShowMessage(result.message ?: "Hata"))
+                        sendUiEvent(FeedUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }
@@ -152,13 +153,11 @@ class FeedViewModel @Inject constructor(
                         updateConfessionById(id) { it.copy(shortlink = newLink) }
 
                         sendUiEvent(FeedUiEvent.OpenShareSheet(newLink))
-                    } else {
-                        sendUiEvent(FeedUiEvent.ShowMessage("Link oluşturulamadı."))
                     }
                 }
 
                 is Resource.Error -> {
-                    sendUiEvent(FeedUiEvent.ShowMessage(result.message ?: "Link hatası"))
+                    sendUiEvent(FeedUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)

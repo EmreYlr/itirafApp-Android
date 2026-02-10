@@ -5,10 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.domain.usecase.confession.ReportConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.ReportReplyUseCase
+import com.itirafapp.android.util.extension.refinedForBusiness
+import com.itirafapp.android.util.extension.refinedForRegister
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -21,7 +25,7 @@ import javax.inject.Inject
 class ReportViewModel @Inject constructor(
     private val reportConfessionUseCase: ReportConfessionUseCase,
     private val reportReplyUseCase: ReportReplyUseCase,
-    //private val reportRoomUseCase: ReportRoomUseCase
+    //private val reportRoomUseCase: ReportRoomUseCase //TODO: Buraya bak
 ) : ViewModel() {
     var state by mutableStateOf(ReportState())
         private set
@@ -56,12 +60,20 @@ class ReportViewModel @Inject constructor(
         val reason = state.reason
 
         if (target == null) {
-            sendUiEvent(ReportUiEvent.ShowMessage("Hata: Raporlanacak içerik bulunamadı."))
+            sendUiEvent(
+                ReportUiEvent.ShowMessage(
+                    UiText.StringResource(R.string.error_report_content_not_found),
+                )
+            )
             return
         }
 
         if (reason.isBlank()) {
-            sendUiEvent(ReportUiEvent.ShowMessage("Lütfen bir şikayet sebebi yazınız."))
+            sendUiEvent(
+                ReportUiEvent.ShowMessage(
+                    UiText.StringResource(R.string.validation_error_write_report_reason)
+                )
+            )
             return
         }
 
@@ -75,7 +87,7 @@ class ReportViewModel @Inject constructor(
             }
 
             is ReportTarget.Room -> {
-                // reportRoomUseCase(id = target.roomId, reason = reason)
+                //reportRoomUseCase(id = target.roomId, reason = reason)
 
                 kotlinx.coroutines.flow.flow { }
             }
@@ -89,13 +101,21 @@ class ReportViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(ReportUiEvent.ShowMessage("Bildiriminiz alındı. Teşekkürler."))
+                    sendUiEvent(
+                        ReportUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.message_report_received)
+                        )
+                    )
                     sendUiEvent(ReportUiEvent.Dismiss)
                 }
 
                 is Resource.Error -> {
-                    state = state.copy(isLoading = false, error = result.message)
-                    sendUiEvent(ReportUiEvent.ShowMessage(result.message ?: "Bir hata oluştu"))
+                    state = state.copy(isLoading = false, error = result.error.message)
+                    val originalError = result.error
+
+                    val refinedError = originalError.refinedForBusiness()
+
+                    sendUiEvent(ReportUiEvent.ShowMessage(refinedError.message))
                 }
             }
         }.launchIn(viewModelScope)

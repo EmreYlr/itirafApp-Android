@@ -16,7 +16,7 @@ class GetMyConfessionsUseCase @Inject constructor(
         limit: Int = 10
     ): Flow<Resource<PaginatedResult<MyConfessionData>>> = flow {
 
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.getMyConfessions(page, limit)
 

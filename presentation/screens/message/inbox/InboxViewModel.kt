@@ -65,7 +65,7 @@ class InboxViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = !isRefresh,
                             isRefreshing = isRefresh,
-                            error = ""
+                            error = null
                         )
                     }
 
@@ -74,7 +74,7 @@ class InboxViewModel @Inject constructor(
                             inboxMessage = result.data ?: emptyList(),
                             isLoading = false,
                             isRefreshing = false,
-                            error = ""
+                            error = null
                         )
                     }
 
@@ -82,9 +82,9 @@ class InboxViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message ?: "Hata"
+                            error = result.error.message
                         )
-                        sendUiEvent(InboxUiEvent.ShowMessage(result.message ?: "Yüklenemedi"))
+                        sendUiEvent(InboxUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }
@@ -101,7 +101,7 @@ class InboxViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        sendUiEvent(InboxUiEvent.ShowMessage(result.message ?: "İşlem başarısız"))
+                        sendUiEvent(InboxUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }
@@ -119,7 +119,7 @@ class InboxViewModel @Inject constructor(
                     }
 
                     is Resource.Error -> {
-                        sendUiEvent(InboxUiEvent.ShowMessage(result.message ?: "İşlem başarısız"))
+                        sendUiEvent(InboxUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }

@@ -12,7 +12,7 @@ class BlockUserUseCase @Inject constructor(
     operator fun invoke(
         targetUserId: String
     ): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.blockUser(
             targetUserId = targetUserId

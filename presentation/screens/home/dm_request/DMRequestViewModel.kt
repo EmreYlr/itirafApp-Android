@@ -5,8 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.room.RequestCreateRoomUseCase
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -58,7 +61,7 @@ class DMRequestViewModel @Inject constructor(
         val currentId = postId
 
         if (currentId == null) {
-            viewModelScope.launch { _uiEvent.send(DMRequestUiEvent.ShowMessage("ID bulunamadı")) }
+            viewModelScope.launch { _uiEvent.send(DMRequestUiEvent.ShowMessage(AppError.BusinessError.RequestSentIdNotFound.message)) }
             return
         }
 
@@ -80,16 +83,20 @@ class DMRequestViewModel @Inject constructor(
                         shareSocialLinks = true
                     )
 
-                    _uiEvent.send(DMRequestUiEvent.ShowMessage("Mesaj isteğiniz gönderildi."))
+                    _uiEvent.send(
+                        DMRequestUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.message_dm_request_sent)
+                        )
+                    )
                     _uiEvent.send(DMRequestUiEvent.Dismiss)
                 }
 
                 is Resource.Error -> {
                     state = state.copy(
                         isLoading = false,
-                        error = result.message ?: "Beklenmedik bir hata oluştu"
+                        error = result.error.message
                     )
-                    _uiEvent.send(DMRequestUiEvent.ShowMessage(result.message ?: "Hata"))
+                    _uiEvent.send(DMRequestUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)

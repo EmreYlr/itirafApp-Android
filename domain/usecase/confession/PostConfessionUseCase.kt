@@ -14,7 +14,7 @@ class PostConfessionUseCase @Inject constructor(
         title: String?,
         message: String
     ): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.postConfession(channelId, title, message)
 

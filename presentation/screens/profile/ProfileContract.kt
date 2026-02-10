@@ -2,13 +2,14 @@ package com.itirafapp.android.presentation.screens.profile
 
 import com.itirafapp.android.domain.model.Link
 import com.itirafapp.android.domain.model.User
+import com.itirafapp.android.util.state.UiText
 
 data class ProfileState(
     val user: User? = null,
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
     val isAnonymous: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 sealed class ProfileEvent {
@@ -24,5 +25,5 @@ sealed class ProfileUiEvent {
     object NavigateToSettings : ProfileUiEvent()
     object NavigateToFollowChannel : ProfileUiEvent()
     data class NavigateToSocial(val link: Link?) : ProfileUiEvent()
-    data class ShowMessage(val message: String) : ProfileUiEvent()
+    data class ShowMessage(val message: UiText) : ProfileUiEvent()
 }

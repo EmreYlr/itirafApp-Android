@@ -1,12 +1,13 @@
 package com.itirafapp.android.presentation.screens.report
 
 import com.itirafapp.android.domain.model.ReportTarget
+import com.itirafapp.android.util.state.UiText
 
 data class ReportState(
     val isLoading: Boolean = false,
     val target: ReportTarget? = null,
     val reason: String = "",
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class ReportEvent {
@@ -17,5 +18,5 @@ sealed class ReportEvent {
 
 sealed class ReportUiEvent {
     object Dismiss : ReportUiEvent()
-    data class ShowMessage(val message: String) : ReportUiEvent()
+    data class ShowMessage(val message: UiText) : ReportUiEvent()
 }

@@ -12,12 +12,12 @@ class LoginGoogleUseCase @Inject constructor(
     private val userSessionManager: UserSessionManager
 ) {
     operator fun invoke(request: GoogleLoginRequest): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val loginResult = authRepository.googleLogin(request)
 
         if (loginResult is Resource.Error) {
-            emit(Resource.Error(loginResult.message ?: "Google girişi yapılamadı"))
+            emit(Resource.Error(loginResult.error))
             return@flow
         }
 

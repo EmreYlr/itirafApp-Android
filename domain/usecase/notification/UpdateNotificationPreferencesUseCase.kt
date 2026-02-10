@@ -11,7 +11,7 @@ class UpdateNotificationPreferencesUseCase @Inject constructor(
     private val repository: NotificationRepository
 ) {
     operator fun invoke(updateModel: NotificationPreferencesUpdate): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.updateNotificationPreferences(updateModel)
         emit(result)
     }

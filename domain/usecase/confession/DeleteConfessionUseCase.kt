@@ -10,7 +10,7 @@ class DeleteConfessionUseCase @Inject constructor(
     private val repository: ConfessionRepository
 ) {
     operator fun invoke(id: Int): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.deleteConfession(id)
 

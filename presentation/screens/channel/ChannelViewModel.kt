@@ -160,9 +160,9 @@ class ChannelViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message
+                            error = result.error.message
                         )
-                        sendUiEvent(ChannelUiEvent.ShowMessage(result.message ?: "Hata"))
+                        sendUiEvent(ChannelUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }.launchIn(viewModelScope)
@@ -176,7 +176,7 @@ class ChannelViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val results = result.data ?: emptyList()
+                    val results = result.data
                     rawSearchResults = results
 
                     state = state.copy(isLoading = false)
@@ -186,9 +186,9 @@ class ChannelViewModel @Inject constructor(
                 is Resource.Error -> {
                     state = state.copy(
                         isLoading = false,
-                        error = result.message
+                        error = result.error.message
                     )
-                    sendUiEvent(ChannelUiEvent.ShowMessage(result.message ?: "Arama başarısız"))
+                    sendUiEvent(ChannelUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)
@@ -203,7 +203,7 @@ class ChannelViewModel @Inject constructor(
                 val result = toggleFollowChannelUseCase(targetChannel)
 
                 if (result is Resource.Error) {
-                    sendUiEvent(ChannelUiEvent.ShowMessage(result.message ?: "İşlem başarısız"))
+                    sendUiEvent(ChannelUiEvent.ShowMessage(result.error.message))
                 }
             }
         }

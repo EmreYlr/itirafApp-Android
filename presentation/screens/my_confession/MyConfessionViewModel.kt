@@ -103,11 +103,11 @@ class MyConfessionViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message
+                            error = result.error.message
                         )
                         sendUiEvent(
                             MyConfessionUiEvent.ShowMessage(
-                                result.message ?: "Bir hata oluştu"
+                                result.error.message
                             )
                         )
                     }

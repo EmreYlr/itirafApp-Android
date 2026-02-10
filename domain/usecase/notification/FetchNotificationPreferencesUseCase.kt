@@ -11,7 +11,7 @@ class FetchNotificationPreferencesUseCase @Inject constructor(
     private val repository: NotificationRepository
 ) {
     operator fun invoke(): Flow<Resource<NotificationPreferences>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.fetchNotificationPreferences()
 

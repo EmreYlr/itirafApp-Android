@@ -147,9 +147,9 @@ class NotificationViewModel @Inject constructor(
                             isLoading = false,
                             isRefreshing = false,
                             isLoadingMore = false,
-                            error = result.message ?: "Bilinmeyen hata"
+                            error = result.error.message
                         )
-                        sendUiEvent(NotificationUiEvent.ShowMessage(result.message ?: "Hata"))
+                        sendUiEvent(NotificationUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }
@@ -167,7 +167,7 @@ class NotificationViewModel @Inject constructor(
         viewModelScope.launch {
             val result = markNotificationSeenUseCase(ids)
             if (result is Resource.Error) {
-                sendUiEvent(NotificationUiEvent.ShowMessage("Hata oluştu"))
+                sendUiEvent(NotificationUiEvent.ShowMessage(result.error.message))
             }
         }
     }
@@ -188,7 +188,7 @@ class NotificationViewModel @Inject constructor(
         viewModelScope.launch {
             val result = deleteNotificationUseCase(ids)
             if (result is Resource.Error) {
-                sendUiEvent(NotificationUiEvent.ShowMessage("Silinemedi"))
+                sendUiEvent(NotificationUiEvent.ShowMessage(result.error.message))
                 loadNotifications(isRefresh = true)
             }
         }
@@ -202,7 +202,7 @@ class NotificationViewModel @Inject constructor(
         viewModelScope.launch {
             val result = deleteAllNotificationUseCase()
             if (result is Resource.Error) {
-                sendUiEvent(NotificationUiEvent.ShowMessage("Hata"))
+                sendUiEvent(NotificationUiEvent.ShowMessage(result.error.message))
                 loadNotifications(isRefresh = true)
             }
         }

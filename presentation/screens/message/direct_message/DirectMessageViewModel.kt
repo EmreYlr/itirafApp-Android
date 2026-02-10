@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.usecase.room.DeleteRoomUseCase
 import com.itirafapp.android.domain.usecase.room.GetAllDirectMessagesUseCase
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -73,7 +75,7 @@ class DirectMessageViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = !isRefresh,
                             isRefreshing = isRefresh,
-                            error = ""
+                            error = null
                         )
                     }
 
@@ -82,7 +84,7 @@ class DirectMessageViewModel @Inject constructor(
                             directMessages = result.data ?: emptyList(),
                             isLoading = false,
                             isRefreshing = false,
-                            error = ""
+                            error = null
                         )
                     }
 
@@ -90,9 +92,9 @@ class DirectMessageViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message ?: "Beklenmedik bir hata oluştu"
+                            error = result.error.message
                         )
-                        sendUiEvent(DirectMessageUiEvent.ShowMessage(result.message ?: "Hata"))
+                        sendUiEvent(DirectMessageUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }
@@ -115,7 +117,11 @@ class DirectMessageViewModel @Inject constructor(
                             selectedRoomId = null,
                             showDeleteDialog = false
                         )
-                        sendUiEvent(DirectMessageUiEvent.ShowMessage("Sohbet silindi."))
+                        sendUiEvent(
+                            DirectMessageUiEvent.ShowMessage(
+                                UiText.StringResource(R.string.message_chat_deleted)
+                            )
+                        )
 
                         loadMessages(isRefresh = true)
                     }
@@ -127,7 +133,7 @@ class DirectMessageViewModel @Inject constructor(
                         )
                         sendUiEvent(
                             DirectMessageUiEvent.ShowMessage(
-                                result.message ?: "Silinemedi"
+                                result.error.message
                             )
                         )
                         loadMessages()

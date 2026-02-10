@@ -1,5 +1,6 @@
 package com.itirafapp.android.domain.usecase.channel
 
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.ChannelData
 import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.repository.ChannelRepository
@@ -15,7 +16,7 @@ class GetChannelsUseCase @Inject constructor(
         page: Int,
         limit: Int = 15
     ): Flow<Resource<PaginatedResult<ChannelData>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         try {
             val result = repository.getChannels(page = page, limit = limit)
@@ -23,7 +24,7 @@ class GetChannelsUseCase @Inject constructor(
             emit(result)
 
         } catch (e: Exception) {
-            emit(Resource.Error(e.localizedMessage ?: "Beklenmedik hata"))
+            emit(Resource.Error(AppError.LocalError.Unknown))
         }
     }
 }

@@ -15,7 +15,7 @@ class FetchNotificationsUseCase @Inject constructor(
         page: Int,
         limit: Int = 10
     ): Flow<Resource<PaginatedResult<NotificationItem>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.fetchNotifications(page, limit)
         emit(result)
     }

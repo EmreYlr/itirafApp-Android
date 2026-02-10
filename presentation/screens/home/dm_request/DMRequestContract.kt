@@ -1,10 +1,12 @@
 package com.itirafapp.android.presentation.screens.home.dm_request
 
+import com.itirafapp.android.util.state.UiText
+
 data class DMRequestState(
     val isLoading: Boolean = false,
     val shareSocialLinks: Boolean = true,
     val initialMessage: String = "",
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 sealed class DMRequestEvent {
@@ -16,5 +18,5 @@ sealed class DMRequestEvent {
 
 sealed class DMRequestUiEvent {
     object Dismiss : DMRequestUiEvent()
-    data class ShowMessage(val message: String) : DMRequestUiEvent()
+    data class ShowMessage(val message: UiText) : DMRequestUiEvent()
 }

@@ -1,11 +1,12 @@
 package com.itirafapp.android.presentation.screens.message.direct_message
 
 import com.itirafapp.android.domain.model.DirectMessage
+import com.itirafapp.android.util.state.UiText
 
 data class DirectMessageState(
     val directMessages: List<DirectMessage> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String = "",
+    val error: UiText? = null,
     val isRefreshing: Boolean = false,
     val showDeleteDialog: Boolean = false,
     val selectedRoomId: String? = null
@@ -21,5 +22,5 @@ sealed class DirectMessageEvent {
 
 sealed class DirectMessageUiEvent {
     data class NavigateToDetail(val id: String, val title: String) : DirectMessageUiEvent()
-    data class ShowMessage(val message: String) : DirectMessageUiEvent()
+    data class ShowMessage(val message: UiText) : DirectMessageUiEvent()
 }

@@ -4,6 +4,7 @@ import com.itirafapp.android.domain.model.enums.SettingActionType
 import com.itirafapp.android.presentation.model.SectionUiModel
 import com.itirafapp.android.util.constant.LanguageConfig
 import com.itirafapp.android.util.constant.ThemeConfig
+import com.itirafapp.android.util.state.UiText
 
 data class SettingsState(
     val isLoading: Boolean = false,
@@ -32,5 +33,5 @@ sealed class SettingsUiEvent {
     object NavigateToNotification : SettingsUiEvent()
     data class CopyToClipboard(val text: String, val message: String) : SettingsUiEvent()
     data class NavigateToUrl(val url: String) : SettingsUiEvent()
-    data class ShowMessage(val message: String) : SettingsUiEvent()
+    data class ShowMessage(val message: UiText) : SettingsUiEvent()
 }

@@ -5,9 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.auth.ResetPasswordUseCase
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -42,7 +45,8 @@ class PasswordResetViewModel @Inject constructor(
 
     fun resetPassword() {
         if (state.email.isBlank()) {
-            sendUiEvent(PasswordResetUiEvent.ShowMessage("Email cannot be empty"))
+            val error = AppError.ValidationError.EmptyField(UiText.StringResource(R.string.email))
+            sendUiEvent(PasswordResetUiEvent.ShowMessage(error.message))
             return
         }
 
@@ -56,12 +60,12 @@ class PasswordResetViewModel @Inject constructor(
                 }
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(PasswordResetUiEvent.ShowMessage("Email gönderildi. Mailinizi kontrol edin."))
+                    sendUiEvent(PasswordResetUiEvent.ShowMessage(UiText.StringResource(R.string.forgot_password_success_message)))
                     sendUiEvent(PasswordResetUiEvent.NavigateToBack)
                 }
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(PasswordResetUiEvent.ShowMessage(result.message ?: "Email gönderilemedi"))
+                    sendUiEvent(PasswordResetUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)

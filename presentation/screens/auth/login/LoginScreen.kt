@@ -98,8 +98,9 @@ fun LoginScreen(
                     openUrlSafe(context, Constants.TERMS_URL, colorParams)
                 }
 
-                is LoginUiEvent.ShowError -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                is LoginUiEvent.ShowMessage -> {
+                    Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }

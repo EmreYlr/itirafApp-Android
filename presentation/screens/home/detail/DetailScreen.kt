@@ -72,7 +72,8 @@ fun DetailScreen(
                 }
 
                 is DetailUiEvent.ShowMessage -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -121,7 +122,7 @@ fun DetailContent(
                 )
             } else if (state.error != null) {
                 Text(
-                    text = state.error,
+                    text = state.error.asString(),
                     color = ItirafTheme.colors.statusError,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.align(Alignment.Center)

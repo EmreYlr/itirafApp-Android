@@ -11,7 +11,7 @@ class FetchCurrentUserUseCase @Inject constructor(
     private val repository: UserRepository
 ) {
     operator fun invoke(): Flow<Resource<User>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.getUser()
 

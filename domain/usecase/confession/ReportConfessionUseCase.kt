@@ -10,7 +10,7 @@ class ReportConfessionUseCase @Inject constructor(
     private val repository: ConfessionRepository
 ) {
     operator fun invoke(id: Int, reason: String): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.reportConfession(id, reason)
 

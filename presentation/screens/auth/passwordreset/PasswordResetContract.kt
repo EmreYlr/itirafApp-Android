@@ -1,5 +1,7 @@
 package com.itirafapp.android.presentation.screens.auth.passwordreset
 
+import com.itirafapp.android.util.state.UiText
+
 data class PasswordResetState(
     val email: String = "",
     val isLoading: Boolean = false
@@ -13,5 +15,5 @@ sealed class PasswordResetEvent {
 
 sealed class PasswordResetUiEvent {
     object NavigateToBack : PasswordResetUiEvent()
-    data class ShowMessage(val message: String) : PasswordResetUiEvent()
+    data class ShowMessage(val message: UiText) : PasswordResetUiEvent()
 }

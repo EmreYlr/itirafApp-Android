@@ -62,7 +62,8 @@ fun ChatScreen(
                 }
 
                 is ChatUiEvent.ShowMessage -> {
-                    Toast.makeText(context, uiEvent.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }

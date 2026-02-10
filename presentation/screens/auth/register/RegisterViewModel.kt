@@ -5,9 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.auth.RegisterUserUseCase
+import com.itirafapp.android.util.extension.refinedForLogin
+import com.itirafapp.android.util.extension.refinedForRegister
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -58,12 +63,13 @@ class RegisterViewModel @Inject constructor(
 
     private fun register() {
         if (state.email.isBlank() || state.password.isBlank()) {
-            sendUiEvent(RegisterUiEvent.ShowMessage("Lütfen tüm alanları doldurun"))
+            val error =
+                AppError.ValidationError.EmptyField(UiText.StringResource(R.string.email_or_password))
+            sendUiEvent(RegisterUiEvent.ShowMessage(error.message))
             return
         }
 
         if (!state.isPrivacyAccepted || !state.isTermsAccepted) {
-            sendUiEvent(RegisterUiEvent.ShowMessage("Lütfen sözleşmeleri okuyup onaylayın."))
             return
         }
 
@@ -77,12 +83,17 @@ class RegisterViewModel @Inject constructor(
                 }
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(RegisterUiEvent.ShowMessage("Kayıt Başarılı! Giriş yapabilirsiniz."))
+                    //sendUiEvent(RegisterUiEvent.ShowMessage("Kayıt Başarılı! Giriş yapabilirsiniz."))
+                    //TODO: EMAİL ONAYI İLETİLECEK.
                     sendUiEvent(RegisterUiEvent.NavigateToLogin)
                 }
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(RegisterUiEvent.ShowMessage(result.message ?: "Kayıt başarısız"))
+                    val originalError = result.error
+
+                    val refinedError = originalError.refinedForRegister()
+
+                    sendUiEvent(RegisterUiEvent.ShowMessage(refinedError.message))
                 }
             }
         }.launchIn(viewModelScope)

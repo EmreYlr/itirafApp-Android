@@ -5,11 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.enums.SocialPlatform
 import com.itirafapp.android.domain.usecase.social_link.GetUserSocialLinksUseCase
 import com.itirafapp.android.domain.usecase.social_link.UpdateSocialLinkVisibilityUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -57,7 +59,11 @@ class ProfileViewModel @Inject constructor(
                 if (canAddNewAccount()) {
                     sendUiEvent(ProfileUiEvent.NavigateToSocial(null))
                 } else {
-                    sendUiEvent(ProfileUiEvent.ShowMessage("Tüm platformlarda zaten hesabınız var."))
+                    sendUiEvent(
+                        ProfileUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.error_all_platforms_linked)
+                        )
+                    )
                 }
             }
 
@@ -123,7 +129,7 @@ class ProfileViewModel @Inject constructor(
 
                     sendUiEvent(
                         ProfileUiEvent.ShowMessage(
-                            result.message ?: "Güncelleme başarısız"
+                            result.error.message
                         )
                     )
                 }

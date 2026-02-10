@@ -1,12 +1,13 @@
 package com.itirafapp.android.presentation.screens.home.notification
 
 import com.itirafapp.android.domain.model.NotificationItem
+import com.itirafapp.android.util.state.UiText
 
 data class NotificationState(
     val isLoading: Boolean = false,
     val isLoadingMore: Boolean = false,
     val notifications: List<NotificationItem> = emptyList(),
-    val error: String? = null,
+    val error: UiText? = null,
     val selectedIds: Set<String> = emptySet(),
     val isSelectionMode: Boolean = false,
     val currentPage: Int = 1,
@@ -41,5 +42,5 @@ sealed class NotificationEvent {
 sealed class NotificationUiEvent {
     object NavigateToBack : NotificationUiEvent()
     data class NavigateToDetail(val url: String) : NotificationUiEvent()
-    data class ShowMessage(val message: String) : NotificationUiEvent()
+    data class ShowMessage(val message: UiText) : NotificationUiEvent()
 }

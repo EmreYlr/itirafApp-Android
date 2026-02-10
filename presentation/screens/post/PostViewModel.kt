@@ -5,9 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.confession.PostConfessionUseCase
 import com.itirafapp.android.domain.usecase.follow.GetLocalFollowedChannelsUseCase
+import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditUiEvent
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -87,12 +91,23 @@ class PostViewModel @Inject constructor(
         val title = state.title.trim()
 
         if (currentChannel == null) {
-            sendUiEvent(PostUiEvent.ShowMessage("Lütfen bir kanal seçiniz."))
+            sendUiEvent(
+                PostUiEvent.ShowMessage(
+                    UiText.StringResource(R.string.validation_error_select_channel)
+                )
+            )
             return
         }
 
         if (message.isBlank()) {
-            sendUiEvent(PostUiEvent.ShowMessage("İtiraf metni boş olamaz."))
+            val error = AppError.ValidationError.EmptyField(
+                fieldName = UiText.StringResource(R.string.label_confession_text)
+            )
+            sendUiEvent(
+                PostUiEvent.ShowMessage(
+                    message = error.message,
+                )
+            )
             return
         }
 
@@ -109,16 +124,20 @@ class PostViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(isLoading = false)
-                        sendUiEvent(PostUiEvent.ShowMessage("İtirafınız modarasyona gönderildi!"))
+                        sendUiEvent(
+                            PostUiEvent.ShowMessage(
+                                UiText.StringResource(R.string.message_confession_sent_moderation)
+                            )
+                        )
                         sendUiEvent(PostUiEvent.Dismiss)
                     }
 
                     is Resource.Error -> {
                         state = state.copy(
                             isLoading = false,
-                            error = result.message
+                            error = result.error.message
                         )
-                        sendUiEvent(PostUiEvent.ShowMessage(result.message ?: "Bir hata oluştu"))
+                        sendUiEvent(PostUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }

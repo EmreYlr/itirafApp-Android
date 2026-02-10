@@ -1,37 +1,22 @@
 package com.itirafapp.android.util.state
 
-sealed class Resource<T>(
-    val data: T? = null,
-    val message: String? = null,
-    val errorCode: Int? = null
-) {
-    class Success<T>(data: T) : Resource<T>(data)
-    class Error<T>(message: String, errorCode: Int? = null, data: T? = null) : Resource<T>(data, message, errorCode)
-    class Loading<T> : Resource<T>()
-}
-
+import com.itirafapp.android.domain.model.AppError
 data class APIError(
     val code: Int,
     val type: String,
     val message: String
 )
 
+sealed class Resource<out T> {
+    data class Success<out T>(val data: T) : Resource<T>()
+    data class Error(val error: AppError) : Resource<Nothing>()
+    object Loading : Resource<Nothing>()
+}
+
 fun <T, R> Resource<T>.map(transform: (T) -> R): Resource<R> {
     return when (this) {
-        is Resource.Success -> {
-            if (data != null) {
-                Resource.Success(transform(data))
-            } else {
-                Resource.Error("Data is null inside Success")
-            }
-        }
-
-        is Resource.Error -> {
-            Resource.Error(message ?: "Unknown Error", errorCode)
-        }
-
-        is Resource.Loading -> {
-            Resource.Loading()
-        }
+        is Resource.Success -> Resource.Success(transform(data))
+        is Resource.Error -> Resource.Error(error)
+        is Resource.Loading -> Resource.Loading
     }
 }

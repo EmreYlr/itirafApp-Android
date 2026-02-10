@@ -26,7 +26,7 @@ class AuthGuardInterceptor @Inject constructor(
                     sessionEventBus.triggerLoginRequired()
                 }
 
-                throw IOException("Action requires non-anonymous login")
+                throw AnonymousAuthException()
             }
         }
 
@@ -37,3 +37,5 @@ class AuthGuardInterceptor @Inject constructor(
         return chain.proceed(newRequest)
     }
 }
+
+class AnonymousAuthException : IOException("User needs to login")

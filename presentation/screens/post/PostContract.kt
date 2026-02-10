@@ -1,6 +1,7 @@
 package com.itirafapp.android.presentation.screens.post
 
 import com.itirafapp.android.domain.model.ChannelData
+import com.itirafapp.android.util.state.UiText
 
 data class PostState(
     val isLoading: Boolean = false,
@@ -11,7 +12,7 @@ data class PostState(
     val selectedChannel: ChannelData? = null,
     val isChannelLocked: Boolean = false,
 
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 sealed class PostEvent {
@@ -24,5 +25,5 @@ sealed class PostEvent {
 
 sealed class PostUiEvent {
     object Dismiss : PostUiEvent()
-    data class ShowMessage(val message: String) : PostUiEvent()
+    data class ShowMessage(val message: UiText) : PostUiEvent()
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.GetFollowingConfessionsUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
@@ -120,9 +121,9 @@ class FollowingViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message ?: "Bilinmeyen bir hata oluştu"
+                            error = result.error.message
                         )
-                        sendUiEvent(FollowingUiEvent.ShowMessage(result.message ?: "Hata"))
+                        sendUiEvent(FollowingUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }
@@ -152,13 +153,11 @@ class FollowingViewModel @Inject constructor(
                         updateConfessionById(id) { it.copy(shortlink = newLink) }
 
                         sendUiEvent(FollowingUiEvent.OpenShareSheet(newLink))
-                    } else {
-                        sendUiEvent(FollowingUiEvent.ShowMessage("Link oluşturulamadı."))
                     }
                 }
 
                 is Resource.Error -> {
-                    sendUiEvent(FollowingUiEvent.ShowMessage(result.message ?: "Link hatası"))
+                    sendUiEvent(FollowingUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)
@@ -179,7 +178,7 @@ class FollowingViewModel @Inject constructor(
 
             if (result is Resource.Error) {
                 state = state.copy(confessions = oldList)
-                sendUiEvent(FollowingUiEvent.ShowMessage("İşlem başarısız"))
+                sendUiEvent(FollowingUiEvent.ShowMessage(result.error.message))
             }
         }
     }

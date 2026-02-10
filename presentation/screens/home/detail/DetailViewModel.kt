@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.DeleteConfessionUseCase
@@ -57,7 +58,7 @@ class DetailViewModel @Inject constructor(
         if (currentId != null) {
             loadConfessionDetail()
         } else {
-            state = state.copy(error = "Geçersiz veya eksik ID")
+            state = state.copy(error = AppError.BusinessError.InvalidConfessionData.message)
         }
     }
 
@@ -157,14 +158,14 @@ class DetailViewModel @Inject constructor(
                             confession = data.toUiModel(currentUserId)
                         )
                     } else {
-                        state.copy(isLoading = false, error = "Veri boş geldi")
+                        state.copy(isLoading = false)
                     }
                 }
 
                 is Resource.Error -> {
                     state = state.copy(
                         isLoading = false,
-                        error = result.message ?: "Beklenmedik bir hata oluştu"
+                        error = result.error.message
                     )
                 }
             }
@@ -190,7 +191,6 @@ class DetailViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(DetailUiEvent.ShowMessage("Yorum silindi"))
                     loadConfessionDetail()
                 }
 
@@ -198,7 +198,7 @@ class DetailViewModel @Inject constructor(
                     state = state.copy(isLoading = false)
                     sendUiEvent(
                         DetailUiEvent.ShowMessage(
-                            result.message ?: "Yorum Silinenemdi"
+                            result.error.message
                         )
                     )
                 }
@@ -218,7 +218,7 @@ class DetailViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(DetailUiEvent.ShowMessage("İtiraf silindi"))
+                    sendUiEvent(DetailUiEvent.ShowMessage(UiText.StringResource(R.string.confession_delete_success)))
                     sendUiEvent(DetailUiEvent.NavigateToBack)
                 }
 
@@ -226,7 +226,7 @@ class DetailViewModel @Inject constructor(
                     state = state.copy(isLoading = false)
                     sendUiEvent(
                         DetailUiEvent.ShowMessage(
-                            result.message ?: "İtiraf Silinenemdi"
+                            result.error.message
                         )
                     )
                 }
@@ -246,7 +246,11 @@ class DetailViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(DetailUiEvent.ShowMessage("Kullanıcı engellendi"))
+                    sendUiEvent(
+                        DetailUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.message_user_blocked)
+                        )
+                    )
 
                     if (!isReply) {
                         sendUiEvent(DetailUiEvent.NavigateToBack)
@@ -259,7 +263,7 @@ class DetailViewModel @Inject constructor(
                     state = state.copy(isLoading = false)
                     sendUiEvent(
                         DetailUiEvent.ShowMessage(
-                            result.message ?: "Kullanıcı engellenemedi"
+                            result.error.message
                         )
                     )
                 }
@@ -285,7 +289,7 @@ class DetailViewModel @Inject constructor(
                 is Resource.Success -> {
                     val response = result.data
 
-                    val newLink = response?.url ?: ""
+                    val newLink = response.url
 
                     if (newLink.isNotBlank()) {
                         val updatedConfession = state.confession?.copy(shortlink = newLink)
@@ -296,12 +300,16 @@ class DetailViewModel @Inject constructor(
 
                         sendUiEvent(DetailUiEvent.OpenShareSheet(newLink))
                     } else {
-                        sendUiEvent(DetailUiEvent.ShowMessage("Link boş geldi."))
+                        sendUiEvent(
+                            DetailUiEvent.ShowMessage(
+                                UiText.StringResource(R.string.error_message_link_empty)
+                            )
+                        )
                     }
                 }
 
                 is Resource.Error -> {
-                    sendUiEvent(DetailUiEvent.ShowMessage(result.message ?: "Link oluşturulamadı"))
+                    sendUiEvent(DetailUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)
@@ -341,12 +349,10 @@ class DetailViewModel @Inject constructor(
                             replyCount = currentConfession.replyCount + 1
                         )
                     )
-
-                    sendUiEvent(DetailUiEvent.ShowMessage("Yorumunuz gönderildi!"))
                 }
 
                 is Resource.Error -> {
-                    sendUiEvent(DetailUiEvent.ShowMessage(result.message ?: "Yorum gönderilemedi"))
+                    sendUiEvent(DetailUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)

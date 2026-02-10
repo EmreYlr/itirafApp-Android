@@ -11,7 +11,7 @@ class ResetPasswordUseCase @Inject constructor(
     private val authRepository: AuthRepository
 )  {
     operator fun invoke(request: ResetPasswordRequest): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = authRepository.resetPassword(request)
 

@@ -1,12 +1,13 @@
 package com.itirafapp.android.presentation.screens.terms
 
 import com.itirafapp.android.presentation.model.TermsItem
+import com.itirafapp.android.util.state.UiText
 
 data class TermsState(
     val items: List<TermsItem> = emptyList(),
     val isAccepted: Boolean = false,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class TermsEvent {

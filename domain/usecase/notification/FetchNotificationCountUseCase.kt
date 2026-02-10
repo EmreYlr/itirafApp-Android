@@ -13,7 +13,7 @@ class FetchNotificationCountUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
     operator fun invoke(): Flow<Resource<NotificationStatus>> = flow  {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         if (!userRepository.isUserAuthenticated()) {
             emit(Resource.Success(NotificationStatus(count = 0, hasUnread = false)))

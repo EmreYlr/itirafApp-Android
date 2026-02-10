@@ -11,7 +11,7 @@ class GetUserSocialLinksUseCase @Inject constructor(
     private val repository: SocialLinkRepository
 ) {
     operator fun invoke(): Flow<Resource<UserSocialLink>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.getUserSocialLinks()
         emit(result)
     }

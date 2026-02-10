@@ -10,7 +10,7 @@ class UpdateSocialLinkVisibilityUseCase @Inject constructor(
     private val repository: SocialLinkRepository
 ) {
     operator fun invoke(id: String, visible: Boolean): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.updateUserSocialLinkVisibility(id, visible)
         emit(result)
     }

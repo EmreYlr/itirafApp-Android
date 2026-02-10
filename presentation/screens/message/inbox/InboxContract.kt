@@ -1,11 +1,12 @@
 package com.itirafapp.android.presentation.screens.message.inbox
 
 import com.itirafapp.android.domain.model.InboxMessage
+import com.itirafapp.android.util.state.UiText
 
 data class InboxState(
     val inboxMessage: List<InboxMessage> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String = "",
+    val error: UiText? = null,
     val isRefreshing: Boolean = false
 )
 
@@ -18,5 +19,5 @@ sealed class InboxEvent {
 
 sealed class InboxUiEvent {
     data class NavigateToDetail(val data: InboxMessage) : InboxUiEvent()
-    data class ShowMessage(val message: String) : InboxUiEvent()
+    data class ShowMessage(val message: UiText) : InboxUiEvent()
 }

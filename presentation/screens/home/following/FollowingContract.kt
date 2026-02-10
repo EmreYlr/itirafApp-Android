@@ -1,11 +1,12 @@
 package com.itirafapp.android.presentation.screens.home.following
 
 import com.itirafapp.android.presentation.model.ConfessionUiModel
+import com.itirafapp.android.util.state.UiText
 
 data class FollowingState(
     val isLoading: Boolean = false,
     val confessions: List<ConfessionUiModel> = emptyList(),
-    val error: String? = null,
+    val error: UiText? = null,
     val isRefreshing: Boolean = false
 )
 
@@ -25,5 +26,5 @@ sealed class FollowingUiEvent {
     data class OpenDMSheet(val targetId: Int) : FollowingUiEvent()
     data class OpenShareSheet(val link: String) : FollowingUiEvent()
     data class NavigateToChannel(val id: Int, val title: String) : FollowingUiEvent()
-    data class ShowMessage(val message: String) : FollowingUiEvent()
+    data class ShowMessage(val message: UiText) : FollowingUiEvent()
 }

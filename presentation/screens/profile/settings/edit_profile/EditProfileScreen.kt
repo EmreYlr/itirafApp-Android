@@ -47,7 +47,8 @@ fun EditProfileScreen(
                 }
 
                 is EditProfileUiEvent.ShowMessage -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, event.message.asString(context), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }

@@ -10,7 +10,7 @@ class RejectMessageRequestUseCase @Inject constructor(
     private val repository: RoomRepository
 ) {
     operator fun invoke(requestId: String): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.rejectPendingMessage(requestId)
         emit(result)
     }

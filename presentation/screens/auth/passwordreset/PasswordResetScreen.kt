@@ -57,7 +57,8 @@ fun PasswordResetScreen(
                 }
 
                 is PasswordResetUiEvent.ShowMessage -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }

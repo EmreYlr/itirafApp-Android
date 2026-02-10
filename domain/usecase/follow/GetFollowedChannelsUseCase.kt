@@ -11,7 +11,7 @@ class GetFollowedChannelsUseCase @Inject constructor(
     private val followRepository: FollowRepository
 ) {
     operator fun invoke(): Flow<Resource<List<ChannelData>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = followRepository.getRemoteFollowedChannels()
 

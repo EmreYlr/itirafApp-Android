@@ -1,5 +1,6 @@
 package com.itirafapp.android.domain.usecase.room
 
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.MessageData
 import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.repository.RoomRepository
@@ -16,7 +17,7 @@ class GetRoomMessagesUseCase @Inject constructor(
         page: Int,
         limit: Int = 10
     ): Flow<Resource<PaginatedResult<MessageData>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         try {
             val result = repository.getRoomMessages(roomId, page = page, limit = limit)
@@ -24,7 +25,7 @@ class GetRoomMessagesUseCase @Inject constructor(
             emit(result)
 
         } catch (e: Exception) {
-            emit(Resource.Error(e.localizedMessage ?: "Beklenmedik hata"))
+            emit(Resource.Error(AppError.LocalError.Unknown))
         }
     }
 }

@@ -13,18 +13,34 @@ sealed class UiText {
         vararg val args: Any
     ) : UiText()
 
+    fun asString(context: Context): String {
+        return when (this) {
+            is DynamicString -> value
+            is StringResource -> {
+                val resolvedArgs = args.map { arg ->
+                    if (arg is UiText) {
+                        arg.asString(context)
+                    } else {
+                        arg
+                    }
+                }.toTypedArray()
+
+                context.getString(resId, *resolvedArgs)
+            }
+        }
+    }
+
     @Composable
     fun asString(): String {
         return when (this) {
             is DynamicString -> value
-            is StringResource -> stringResource(resId, *args)
-        }
-    }
+            is StringResource -> {
+                val resolvedArgs = args.map { arg ->
+                    if (arg is UiText) arg.asString() else arg
+                }.toTypedArray()
 
-    fun asString(context: Context): String {
-        return when (this) {
-            is DynamicString -> value
-            is StringResource -> context.getString(resId, *args)
+                stringResource(resId, *resolvedArgs)
+            }
         }
     }
 }

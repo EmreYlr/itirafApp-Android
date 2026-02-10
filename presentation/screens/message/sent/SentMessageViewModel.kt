@@ -52,7 +52,7 @@ class SentMessageViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = !isRefresh,
                             isRefreshing = isRefresh,
-                            error = ""
+                            error = null
                         )
                     }
 
@@ -61,7 +61,7 @@ class SentMessageViewModel @Inject constructor(
                             sentMessage = result.data ?: emptyList(),
                             isLoading = false,
                             isRefreshing = false,
-                            error = ""
+                            error = null
                         )
                     }
 
@@ -69,9 +69,9 @@ class SentMessageViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message ?: "Beklenmedik bir hata oluştu"
+                            error = result.error.message
                         )
-                        sendUiEvent(SentMessageUiEvent.ShowMessage(result.message ?: "Hata"))
+                        sendUiEvent(SentMessageUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }

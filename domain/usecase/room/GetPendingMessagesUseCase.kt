@@ -11,7 +11,7 @@ class GetPendingMessagesUseCase @Inject constructor(
     private val repository: RoomRepository
 ) {
     operator fun invoke(): Flow<Resource<List<InboxMessage>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.getPendingMessages()
         emit(result)
     }

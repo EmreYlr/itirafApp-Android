@@ -3,6 +3,7 @@ package com.itirafapp.android.presentation.screens.my_confession.my_confession_d
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.util.state.ActiveDialog
+import com.itirafapp.android.util.state.UiText
 
 data class MyConfessionDetailState(
     val isLoading: Boolean = false,
@@ -10,7 +11,7 @@ data class MyConfessionDetailState(
     val commentText: String = "",
     val currentUserId: String? = null,
     val isRefreshing: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
     val activeDialog: ActiveDialog? = null
 )
 
@@ -35,5 +36,5 @@ sealed class MyConfessionDetailUiEvent {
 
     data class OpenShareSheet(val link: String) : MyConfessionDetailUiEvent()
     data class OpenReportSheet(val target: ReportTarget) : MyConfessionDetailUiEvent()
-    data class ShowMessage(val message: String) : MyConfessionDetailUiEvent()
+    data class ShowMessage(val message: UiText) : MyConfessionDetailUiEvent()
 }

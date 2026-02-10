@@ -3,13 +3,14 @@ package com.itirafapp.android.presentation.screens.home.detail
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.presentation.model.ConfessionDetailUiModel
 import com.itirafapp.android.util.state.ActiveDialog
+import com.itirafapp.android.util.state.UiText
 
 data class DetailState(
     val isLoading: Boolean = false,
     val confession: ConfessionDetailUiModel? = null,
     val commentText: String = "",
     val isSendingComment: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
     val activeDialog: ActiveDialog? = null
 )
 
@@ -31,5 +32,5 @@ sealed class DetailUiEvent {
     data class OpenShareSheet(val link: String) : DetailUiEvent()
     data class OpenReportSheet(val target: ReportTarget) : DetailUiEvent()
     data class OpenDMSheet(val targetId: Int) : DetailUiEvent()
-    data class ShowMessage(val message: String) : DetailUiEvent()
+    data class ShowMessage(val message: UiText) : DetailUiEvent()
 }

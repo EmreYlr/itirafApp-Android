@@ -12,12 +12,12 @@ class LoginUserUseCase @Inject constructor(
     private val userSessionManager: UserSessionManager
 ) {
     operator fun invoke(request: LoginRequest): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val loginResult = authRepository.loginUser(request)
 
         if (loginResult is Resource.Error) {
-            emit(Resource.Error(loginResult.message ?: "Giriş yapılamadı"))
+            emit(Resource.Error(loginResult.error))
             return@flow
         }
 

@@ -149,11 +149,11 @@ class ChannelDetailViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message
+                            error = result.error.message
                         )
                         sendUiEvent(
                             ChannelDetailUiEvent.ShowMessage(
-                                result.message ?: "Hata oluştu"
+                                result.error.message
                             )
                         )
                     }
@@ -172,7 +172,7 @@ class ChannelDetailViewModel @Inject constructor(
             val result = toggleFollowChannelUseCase(channelData)
 
             if (result is Resource.Error) {
-                sendUiEvent(ChannelDetailUiEvent.ShowMessage(result.message ?: "İşlem başarısız"))
+                sendUiEvent(ChannelDetailUiEvent.ShowMessage(result.error.message))
             }
         }
     }
@@ -192,7 +192,7 @@ class ChannelDetailViewModel @Inject constructor(
 
             if (result is Resource.Error) {
                 state = state.copy(confessions = oldList)
-                sendUiEvent(ChannelDetailUiEvent.ShowMessage(result.message ?: "İşlem başarısız"))
+                sendUiEvent(ChannelDetailUiEvent.ShowMessage(result.error.message))
             }
         }
     }

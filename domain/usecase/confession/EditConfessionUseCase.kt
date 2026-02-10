@@ -11,7 +11,7 @@ class EditConfessionUseCase @Inject constructor(
     private val repository: ConfessionRepository
 ) {
     operator fun invoke(id: Int, title: String?, message: String): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.editConfession(id, title, message)
 

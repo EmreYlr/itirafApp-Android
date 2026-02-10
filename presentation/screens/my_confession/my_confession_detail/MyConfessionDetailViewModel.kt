@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.Owner
 import com.itirafapp.android.domain.model.Reply
@@ -17,8 +19,10 @@ import com.itirafapp.android.domain.usecase.confession.PostReplyUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.user.BlockUserUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
+import com.itirafapp.android.presentation.screens.home.detail.DetailUiEvent
 import com.itirafapp.android.util.state.ActiveDialog
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -110,7 +114,6 @@ class MyConfessionDetailViewModel @Inject constructor(
                 sendUiEvent(MyConfessionDetailUiEvent.OpenReportSheet(target))
             }
 
-            // --- DIALOG AKSİYONLARI ---
             is MyConfessionDetailEvent.DismissDialog -> {
                 state = state.copy(activeDialog = null)
             }
@@ -154,7 +157,7 @@ class MyConfessionDetailViewModel @Inject constructor(
                 state = state.copy(confessions = currentConfession)
                 sendUiEvent(
                     MyConfessionDetailUiEvent.ShowMessage(
-                        result.message ?: "İşlem başarısız"
+                        result.error.message
                     )
                 )
             }
@@ -176,15 +179,13 @@ class MyConfessionDetailViewModel @Inject constructor(
                     val link = result.data?.url
                     if (!link.isNullOrBlank()) {
                         sendUiEvent(MyConfessionDetailUiEvent.OpenShareSheet(link))
-                    } else {
-                        sendUiEvent(MyConfessionDetailUiEvent.ShowMessage("Link oluşturulamadı"))
                     }
                 }
 
                 is Resource.Error -> {
                     sendUiEvent(
                         MyConfessionDetailUiEvent.ShowMessage(
-                            result.message ?: "Hata oluştu"
+                            result.error.message
                         )
                     )
                 }
@@ -233,15 +234,13 @@ class MyConfessionDetailViewModel @Inject constructor(
                             replyCount = currentConfession.replyCount + 1
                         )
                     )
-
-                    sendUiEvent(MyConfessionDetailUiEvent.ShowMessage("Yorum gönderildi"))
                 }
 
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(
                         MyConfessionDetailUiEvent.ShowMessage(
-                            result.message ?: "Yorum gönderilemedi"
+                            result.error.message
                         )
                     )
                 }
@@ -279,14 +278,13 @@ class MyConfessionDetailViewModel @Inject constructor(
                     } else {
                         state = state.copy(isLoading = false)
                     }
-                    sendUiEvent(MyConfessionDetailUiEvent.ShowMessage("Yorum silindi"))
                 }
 
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(
                         MyConfessionDetailUiEvent.ShowMessage(
-                            result.message ?: "Yorum silinemedi"
+                            result.error.message
                         )
                     )
                 }
@@ -300,7 +298,11 @@ class MyConfessionDetailViewModel @Inject constructor(
                 is Resource.Loading -> state = state.copy(isLoading = true)
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(MyConfessionDetailUiEvent.ShowMessage("İtirafınız silindi"))
+                    sendUiEvent(
+                        MyConfessionDetailUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.confession_delete_success)
+                        )
+                    )
                     sendUiEvent(MyConfessionDetailUiEvent.NavigateToBack)
                 }
 
@@ -308,7 +310,7 @@ class MyConfessionDetailViewModel @Inject constructor(
                     state = state.copy(isLoading = false)
                     sendUiEvent(
                         MyConfessionDetailUiEvent.ShowMessage(
-                            result.message ?: "İtiraf silinemedi"
+                            result.error.message
                         )
                     )
                 }
@@ -336,14 +338,18 @@ class MyConfessionDetailViewModel @Inject constructor(
                     } else {
                         state = state.copy(isLoading = false)
                     }
-                    sendUiEvent(MyConfessionDetailUiEvent.ShowMessage("Kullanıcı engellendi"))
+                    sendUiEvent(
+                        MyConfessionDetailUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.message_user_blocked)
+                        )
+                    )
                 }
 
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(
                         MyConfessionDetailUiEvent.ShowMessage(
-                            result.message ?: "Kullanıcı engellenemedi"
+                            result.error.message
                         )
                     )
                 }

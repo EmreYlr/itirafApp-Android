@@ -5,9 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.domain.usecase.room.DeleteSentMessageRequestUseCase
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -71,18 +73,22 @@ class SentMessageDetailViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(isLoading = false)
-                        sendUiEvent(SentMessageDetailUiEvent.ShowMessage("İstek geri çekildi."))
+                        sendUiEvent(
+                            SentMessageDetailUiEvent.ShowMessage(
+                                UiText.StringResource(R.string.message_request_withdrawn)
+                            )
+                        )
                         sendUiEvent(SentMessageDetailUiEvent.NavigateToBack)
                     }
 
                     is Resource.Error -> {
                         state = state.copy(
                             isLoading = false,
-                            error = result.message
+                            error = result.error.message
                         )
                         sendUiEvent(
                             SentMessageDetailUiEvent.ShowMessage(
-                                result.message ?: "Silinemedi"
+                                result.error.message
                             )
                         )
                     }

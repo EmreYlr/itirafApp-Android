@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.ChannelData
 import com.itirafapp.android.domain.usecase.follow.GetFollowedChannelsUseCase
 import com.itirafapp.android.domain.usecase.follow.ToggleFollowChannelUseCase
@@ -92,11 +93,11 @@ class FollowChannelViewModel @Inject constructor(
                         state = state.copy(
                             isLoading = false,
                             isRefreshing = false,
-                            error = result.message
+                            error = result.error.message
                         )
                         sendUiEvent(
                             FollowChannelUiEvent.ShowMessage(
-                                result.message ?: "Hata oluştu"
+                                result.error.message
                             )
                         )
                     }
@@ -145,7 +146,7 @@ class FollowChannelViewModel @Inject constructor(
             val result = toggleFollowChannelUseCase(domainChannel)
 
             if (result is Resource.Error) {
-                sendUiEvent(FollowChannelUiEvent.ShowMessage("İşlem başarısız oldu"))
+                sendUiEvent(FollowChannelUiEvent.ShowMessage(AppError.LocalError.Unknown.message))
 
                 val revertedAll = allChannels.map {
                     if (it.id == channelId) it.copy(isFollowing = !it.isFollowing) else it

@@ -5,12 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.data.remote.auth.dto.GoogleLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.auth.LoginAnonymousUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginGoogleUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginUserUseCase
+import com.itirafapp.android.util.extension.refinedForLogin
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -70,14 +74,16 @@ class LoginViewModel @Inject constructor(
             }
 
             is LoginEvent.OnGoogleLoginError -> {
-                sendUiEvent(LoginUiEvent.ShowError("Google girişi iptal edildi veya başarısız oldu."))
+                sendUiEvent(LoginUiEvent.ShowMessage(AppError.LocalError.Unknown.message))
             }
         }
     }
 
     private fun login() {
         if (state.email.isBlank() || state.password.isBlank()) {
-            sendUiEvent(LoginUiEvent.ShowError("Lütfen tüm alanları doldurun"))
+            val error =
+                AppError.ValidationError.EmptyField(UiText.StringResource(R.string.email_or_password))
+            sendUiEvent(LoginUiEvent.ShowMessage(error.message))
             return
         }
 
@@ -96,8 +102,13 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
+                    //TODO: 1405 gelirse resend email olacak aynısını register içinde yapcaz
+                    val originalError = result.error
+
+                    val refinedError = originalError.refinedForLogin()
+
                     state = state.copy(isLoading = false)
-                    sendUiEvent(LoginUiEvent.ShowError(result.message ?: "Beklenmedik bir hata"))
+                    sendUiEvent(LoginUiEvent.ShowMessage(refinedError.message))
                 }
             }
         }.launchIn(viewModelScope)
@@ -120,8 +131,8 @@ class LoginViewModel @Inject constructor(
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(
-                        LoginUiEvent.ShowError(
-                            result.message ?: "Google girişi sırasında hata oluştu."
+                        LoginUiEvent.ShowMessage(
+                            result.error.message
                         )
                     )
                 }
@@ -144,7 +155,7 @@ class LoginViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(LoginUiEvent.ShowError(result.message ?: "Beklenmedik bir hata"))
+                    sendUiEvent(LoginUiEvent.ShowMessage((result.error.message)))
                 }
             }
         }.launchIn(viewModelScope)

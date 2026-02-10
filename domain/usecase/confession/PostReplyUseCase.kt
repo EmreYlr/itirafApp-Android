@@ -10,7 +10,7 @@ class PostReplyUseCase @Inject constructor(
     private val confessionRepository: ConfessionRepository
 ) {
     operator fun invoke(id: Int, message: String): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = confessionRepository.postReply(id, message)
 

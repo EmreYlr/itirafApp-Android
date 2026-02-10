@@ -81,7 +81,7 @@ class NotificationPreferencesViewModel @Inject constructor(
                     state = state.copy(isLoading = false)
                     sendUiEvent(
                         NotificationPreferencesUiEvent.ShowMessage(
-                            result.message ?: "Hata"
+                            result.error.message
                         )
                     )
                 }
@@ -204,7 +204,7 @@ class NotificationPreferencesViewModel @Inject constructor(
             withContext(NonCancellable) {
                 updateNotificationPreferencesUseCase(updateModel).collect { result ->
                     if (result is Resource.Error) {
-                        println("Bildirim ayarları güncellenirken hata: ${result.message}")
+                        println("Bildirim ayarları güncellenirken hata: ${result.error.message}")
                     }
                 }
             }

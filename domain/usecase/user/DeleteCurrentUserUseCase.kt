@@ -1,5 +1,6 @@
 package com.itirafapp.android.domain.usecase.user
 
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.state.Resource
@@ -12,7 +13,7 @@ class DeleteCurrentUserUseCase @Inject constructor(
     private val followRepository: FollowRepository
 ) {
     operator fun invoke(): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val deleteResult = userRepository.deleteAccount()
 
@@ -24,7 +25,7 @@ class DeleteCurrentUserUseCase @Inject constructor(
             }
 
             is Resource.Error -> {
-                emit(Resource.Error(deleteResult.message ?: "Hesap silerken hata oluştu"))
+                emit(Resource.Error(AppError.LocalError.Unknown))
             }
 
             else -> Unit

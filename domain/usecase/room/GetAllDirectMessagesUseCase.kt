@@ -11,7 +11,7 @@ class GetAllDirectMessagesUseCase @Inject constructor(
     private val repository: RoomRepository
 ) {
     operator fun invoke(): Flow<Resource<List<DirectMessage>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.getAllDirectMessages()
 

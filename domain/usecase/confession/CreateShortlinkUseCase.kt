@@ -11,7 +11,7 @@ class CreateShortlinkUseCase @Inject constructor(
     private val confessionRepository: ConfessionRepository
 ) {
     operator fun invoke(id: Int): Flow<Resource<ShortlinkResponse>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = confessionRepository.createShortlink(id)
 

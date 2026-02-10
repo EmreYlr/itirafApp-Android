@@ -181,7 +181,7 @@ class SettingsViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(SettingsUiEvent.ShowMessage(result.message ?: "Çıkış yapılamadı"))
+                    sendUiEvent(SettingsUiEvent.ShowMessage(result.error.message))
                     sendUiEvent(SettingsUiEvent.NavigateToLogin)
                 }
             }

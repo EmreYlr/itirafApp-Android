@@ -10,7 +10,7 @@ class DeleteSocialLinkUseCase @Inject constructor(
     private val repository: SocialLinkRepository
 ) {
     operator fun invoke(id: String): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.deleteUserSocialLink(id)
         emit(result)
     }

@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.MessageData
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.domain.usecase.chat.ConnectChatUseCase
@@ -16,7 +17,9 @@ import com.itirafapp.android.domain.usecase.room.DeleteRoomUseCase
 import com.itirafapp.android.domain.usecase.room.GetRoomMessagesUseCase
 import com.itirafapp.android.presentation.mapper.toUiItemsWithDateSeparators
 import com.itirafapp.android.presentation.model.ChatUiItem
+import com.itirafapp.android.presentation.screens.home.detail.DetailUiEvent
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -126,9 +129,9 @@ class ChatViewModel @Inject constructor(
             when (result) {
                 is Resource.Loading -> {
                     state = if (isLoadMore) {
-                        state.copy(isLoadingMore = true, error = "")
+                        state.copy(isLoadingMore = true)
                     } else {
-                        state.copy(isLoading = true, error = "")
+                        state.copy(isLoading = true)
                     }
                 }
 
@@ -162,9 +165,9 @@ class ChatViewModel @Inject constructor(
                     state = state.copy(
                         isLoading = false,
                         isLoadingMore = false,
-                        error = result.message ?: "Mesajlar yüklenemedi"
+                        error = result.error.message
                     )
-                    sendUiEvent(ChatUiEvent.ShowMessage(result.message ?: "Hata oluştu"))
+                    sendUiEvent(ChatUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)
@@ -214,7 +217,11 @@ class ChatViewModel @Inject constructor(
                             showBlockDialog = false
                         )
 
-                        sendUiEvent(ChatUiEvent.ShowMessage("Kullanıcı Engellendi."))
+                        sendUiEvent(
+                            ChatUiEvent.ShowMessage(
+                                UiText.StringResource(R.string.message_user_blocked)
+                            )
+                        )
                         sendUiEvent(ChatUiEvent.NavigateToBack)
                     }
 
@@ -225,7 +232,7 @@ class ChatViewModel @Inject constructor(
                         )
                         sendUiEvent(
                             ChatUiEvent.ShowMessage(
-                                result.message ?: "Kullanıcı Engellenemedi"
+                                result.error.message
                             )
                         )
                     }

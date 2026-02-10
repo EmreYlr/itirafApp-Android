@@ -2,6 +2,7 @@ package com.itirafapp.android.presentation.screens.profile.settings.notification
 
 import com.itirafapp.android.domain.model.NotificationEventType
 import com.itirafapp.android.presentation.model.NotificationPreferencesUiModel
+import com.itirafapp.android.util.state.UiText
 
 data class NotificationPreferencesState(
     val isLoading: Boolean = false,
@@ -19,5 +20,5 @@ sealed class NotificationPreferencesEvent {
 sealed class NotificationPreferencesUiEvent {
     object NavigateToBack : NotificationPreferencesUiEvent()
     data class RequestSystemPermission(val message: String) : NotificationPreferencesUiEvent()
-    data class ShowMessage(val message: String) : NotificationPreferencesUiEvent()
+    data class ShowMessage(val message: UiText) : NotificationPreferencesUiEvent()
 }

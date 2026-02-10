@@ -56,7 +56,8 @@ fun DMRequestScreen(
                 }
 
                 is DMRequestUiEvent.ShowMessage -> {
-                    Toast.makeText(context, event.message, Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
                 }
             }
         }
@@ -180,15 +181,6 @@ fun DMRequestContent(
                 onEvent(DMRequestEvent.SubmitClicked)
             }
         )
-
-        if (state.error != null) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = state.error,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
     }
 }
 

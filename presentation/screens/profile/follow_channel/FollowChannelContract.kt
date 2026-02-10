@@ -1,12 +1,13 @@
 package com.itirafapp.android.presentation.screens.profile.follow_channel
 
 import com.itirafapp.android.presentation.model.ChannelUiModel
+import com.itirafapp.android.util.state.UiText
 
 data class FollowChannelState(
     val isLoading: Boolean = false,
     val channel: List<ChannelUiModel> = emptyList(),
     val searchQuery: String = "",
-    val error: String? = null,
+    val error: UiText? = null,
     val isRefreshing: Boolean = false
 )
 
@@ -20,5 +21,5 @@ sealed class FollowChannelEvent {
 sealed class FollowChannelUiEvent {
     object NavigateToBack : FollowChannelUiEvent()
     data class NavigateToDetail(val id: Int, val title: String) : FollowChannelUiEvent()
-    data class ShowMessage(val message: String) : FollowChannelUiEvent()
+    data class ShowMessage(val message: UiText) : FollowChannelUiEvent()
 }

@@ -21,12 +21,12 @@ class LogoutUserUseCase @Inject constructor(
     private val sessionTracker: SessionTracker
 ) {
     operator fun invoke(): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val logoutResult = authRepository.logoutUser()
 
         if (logoutResult is Resource.Error) {
-            crashReporter.logMessage("Logout API failed: ${logoutResult.message} but continuing local logout.")
+            crashReporter.logMessage("Logout API failed: ${logoutResult.error.message} but continuing local logout.")
         }
 
         try {

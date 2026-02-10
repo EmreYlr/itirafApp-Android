@@ -5,11 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.InboxMessage
 import com.itirafapp.android.domain.usecase.room.ApproveMessageRequestUseCase
 import com.itirafapp.android.domain.usecase.room.RejectMessageRequestUseCase
 import com.itirafapp.android.domain.usecase.user.BlockUserUseCase
+import com.itirafapp.android.presentation.screens.home.detail.DetailUiEvent
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -86,9 +89,9 @@ class InboxDetailViewModel @Inject constructor(
                     is Resource.Error -> {
                         state = state.copy(
                             isLoading = false,
-                            error = result.message
+                            error = result.error.message
                         )
-                        sendUiEvent(InboxDetailUiEvent.ShowMessage(result.message ?: "Hata oluştu"))
+                        sendUiEvent(InboxDetailUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }
@@ -107,16 +110,15 @@ class InboxDetailViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(isLoading = false)
-                        sendUiEvent(InboxDetailUiEvent.ShowMessage("İstek reddedildi."))
                         sendUiEvent(InboxDetailUiEvent.NavigateToBack)
                     }
 
                     is Resource.Error -> {
                         state = state.copy(
                             isLoading = false,
-                            error = result.message
+                            error = result.error.message
                         )
-                        sendUiEvent(InboxDetailUiEvent.ShowMessage(result.message ?: "Hata oluştu"))
+                        sendUiEvent(InboxDetailUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }
@@ -135,18 +137,22 @@ class InboxDetailViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(isLoading = false)
-                        sendUiEvent(InboxDetailUiEvent.ShowMessage("Kullanıcı engellendi."))
+                        sendUiEvent(
+                            InboxDetailUiEvent.ShowMessage(
+                                UiText.StringResource(R.string.message_user_blocked)
+                            )
+                        )
                         sendUiEvent(InboxDetailUiEvent.NavigateToBack)
                     }
 
                     is Resource.Error -> {
                         state = state.copy(
                             isLoading = false,
-                            error = result.message
+                            error = result.error.message
                         )
                         sendUiEvent(
                             InboxDetailUiEvent.ShowMessage(
-                                result.message ?: "Bir hata oluştu"
+                                result.error.message
                             )
                         )
                     }

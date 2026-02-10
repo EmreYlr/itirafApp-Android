@@ -52,7 +52,11 @@ fun SentMessageScreen(
                 }
 
                 is SentMessageUiEvent.ShowMessage -> {
-                    Toast.makeText(localContext, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        localContext,
+                        event.message.asString(localContext),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                 }
             }
@@ -112,7 +116,7 @@ fun SentMessageContent(
                                 }
                             )
                         }
-                    } else if (!state.isLoading && state.error.isEmpty()) {
+                    } else if (!state.isLoading && state.error == null) {
                         item {
                             Box(
                                 modifier = Modifier.fillParentMaxSize(),
@@ -141,9 +145,9 @@ fun SentMessageContent(
                 CircularProgressIndicator(color = ItirafTheme.colors.brandPrimary)
             }
 
-            if (state.error.isNotEmpty() && !state.isLoading && state.sentMessage.isEmpty()) {
+            if (state.error != null && !state.isLoading && state.sentMessage.isEmpty()) {
                 Text(
-                    text = state.error,
+                    text = state.error.asString(),
                     color = ItirafTheme.colors.statusError,
                     modifier = Modifier.padding(16.dp)
                 )

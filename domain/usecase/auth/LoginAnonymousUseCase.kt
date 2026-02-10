@@ -18,7 +18,7 @@ class LoginAnonymousUseCase @Inject constructor(
     private val sessionTracker: SessionTracker
 ) {
     operator fun invoke(): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val currentUser = userManager.getUser()
 
@@ -30,20 +30,28 @@ class LoginAnonymousUseCase @Inject constructor(
         } else {
             val registerResult = authRepository.registerAnonymous()
 
-            if (registerResult is Resource.Error) {
-                emit(Resource.Error(registerResult.message ?: "Kayıt hatası"))
-                return@flow
-            }
+            when (registerResult) {
+                is Resource.Error -> {
+                    emit(Resource.Error(registerResult.error))
+                    return@flow
+                }
 
-            finalEmail = registerResult.data!!.email
-            isNewUser = true
+                is Resource.Success -> {
+                    finalEmail = registerResult.data.email
+                    isNewUser = true
+                }
+
+                is Resource.Loading -> {
+                    return@flow
+                }
+            }
         }
 
         val anonymousRequest = AnonymousLoginRequest(finalEmail)
         val loginResult = authRepository.loginAnonymous(anonymousRequest)
 
         if (loginResult is Resource.Error) {
-            emit(Resource.Error(loginResult.message ?: "Login hatası"))
+            emit(Resource.Error(loginResult.error))
             return@flow
         }
 

@@ -1,11 +1,12 @@
 package com.itirafapp.android.presentation.screens.home.feed
 
 import com.itirafapp.android.presentation.model.ConfessionUiModel
+import com.itirafapp.android.util.state.UiText
 
 data class FeedState(
     val isLoading: Boolean = false,
     val confessions: List<ConfessionUiModel> = emptyList(),
-    val error: String? = null,
+    val error: UiText? = null,
     val isRefreshing: Boolean = false
 )
 
@@ -25,5 +26,5 @@ sealed class FeedUiEvent {
     data class OpenDMSheet(val targetId: Int) : FeedUiEvent()
     data class OpenShareSheet(val link: String) : FeedUiEvent()
     data class NavigateToChannel(val id: Int, val title: String) : FeedUiEvent()
-    data class ShowMessage(val message: String) : FeedUiEvent()
+    data class ShowMessage(val message: UiText) : FeedUiEvent()
 }

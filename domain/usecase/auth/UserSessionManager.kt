@@ -23,21 +23,27 @@ class UserSessionManager @Inject constructor(
 
         val profileResult = userRepository.getUser()
 
-        return if (profileResult is Resource.Success) {
-            val user = profileResult.data
+        return when (profileResult) {
+            is Resource.Success -> {
+                val user = profileResult.data
 
-            user?.let {
-                val userId = it.id.toString()
+                val userId = user.id.toString()
                 crashReporter.setUserId(userId)
                 crashReporter.setUserAnonymous(false)
                 sessionTracker.setUserId(userId)
+
+                followRepository.syncFollowedChannels()
+
+                Resource.Success(Unit)
             }
 
-            followRepository.syncFollowedChannels()
+            is Resource.Error -> {
+                Resource.Error(profileResult.error)
+            }
 
-            Resource.Success(Unit)
-        } else {
-            Resource.Error(profileResult.message ?: "Profil bilgileri alınamadı")
+            is Resource.Loading -> {
+                Resource.Loading
+            }
         }
     }
 

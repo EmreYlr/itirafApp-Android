@@ -5,12 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.Link
 import com.itirafapp.android.domain.usecase.social_link.CreateSocialLinkUseCase
 import com.itirafapp.android.domain.usecase.social_link.DeleteSocialLinkUseCase
 import com.itirafapp.android.domain.usecase.social_link.GetUserLocalSocialLinksUseCase
 import com.itirafapp.android.domain.usecase.social_link.UpdateSocialLinkUseCase
 import com.itirafapp.android.util.state.Resource
+import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -106,12 +109,23 @@ class SocialViewModel @Inject constructor(
         val platform = state.platform
 
         if (platform == null) {
-            sendUiEvent(SocialUiEvent.ShowMessage("Lütfen bir platform seçiniz"))
+            sendUiEvent(
+                SocialUiEvent.ShowMessage(
+                    UiText.StringResource(R.string.validation_error_select_platform),
+                )
+            )
             return
         }
 
         if (username.isBlank()) {
-            sendUiEvent(SocialUiEvent.ShowMessage("Kullanıcı adı boş olamaz"))
+            val usernameError = AppError.ValidationError.EmptyField(
+                fieldName = UiText.StringResource(R.string.label_username)
+            )
+            sendUiEvent(
+                SocialUiEvent.ShowMessage(
+                    message = usernameError.message
+                )
+            )
             return
         }
 
@@ -138,6 +152,7 @@ class SocialViewModel @Inject constructor(
     }
 
     private fun handleResource(result: Resource<Unit>, successMessage: String) {
+        val successMessage = UiText.DynamicString(successMessage)
         when (result) {
             is Resource.Loading -> {
                 state = state.copy(isLoading = true, error = null)
@@ -150,8 +165,8 @@ class SocialViewModel @Inject constructor(
             }
 
             is Resource.Error -> {
-                state = state.copy(isLoading = false, error = result.message)
-                sendUiEvent(SocialUiEvent.ShowMessage(result.message ?: "Bir hata oluştu"))
+                state = state.copy(isLoading = false, error = result.error.message)
+                sendUiEvent(SocialUiEvent.ShowMessage(result.error.message))
             }
         }
     }

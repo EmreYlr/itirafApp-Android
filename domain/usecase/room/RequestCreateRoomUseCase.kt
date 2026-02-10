@@ -15,7 +15,7 @@ class RequestCreateRoomUseCase @Inject constructor(
         shareSocialLinks: Boolean
     ): Flow<Resource<Unit>> = flow {
 
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
 
         val result = repository.requestCreateRoom(

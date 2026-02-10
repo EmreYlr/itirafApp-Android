@@ -1,5 +1,6 @@
 package com.itirafapp.android.domain.usecase.confession
 
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.ConfessionData
 import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.repository.ConfessionRepository
@@ -15,7 +16,7 @@ class GetFollowingConfessionsUseCase @Inject constructor(
         page: Int,
         limit: Int = 10
     ): Flow<Resource<PaginatedResult<ConfessionData>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         try {
             val result = repository.getFollowingConfessions(page, limit)
@@ -23,7 +24,7 @@ class GetFollowingConfessionsUseCase @Inject constructor(
             emit(result)
 
         } catch (e: Exception) {
-            emit(Resource.Error(e.localizedMessage ?: "Beklenmedik hata"))
+            emit(Resource.Error(AppError.LocalError.Unknown))
         }
     }
 }

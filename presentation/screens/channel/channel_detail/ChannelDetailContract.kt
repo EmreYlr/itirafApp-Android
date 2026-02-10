@@ -1,6 +1,7 @@
 package com.itirafapp.android.presentation.screens.channel.channel_detail
 
 import com.itirafapp.android.presentation.model.ConfessionUiModel
+import com.itirafapp.android.util.state.UiText
 
 data class ChannelDetailState(
     val channelId: Int = 0,
@@ -12,7 +13,7 @@ data class ChannelDetailState(
 
     val isLoading: Boolean = false,
     val isRefreshing: Boolean = false,
-    val error: String? = null
+    val error: UiText? = null
 )
 
 sealed class ChannelDetailEvent {
@@ -29,5 +30,5 @@ sealed class ChannelDetailUiEvent {
     object NavigateBack : ChannelDetailUiEvent()
     data class NavigateToConfessionDetail(val id: Int) : ChannelDetailUiEvent()
     data class NavigateToAddPost(val id: Int) : ChannelDetailUiEvent()
-    data class ShowMessage(val message: String) : ChannelDetailUiEvent()
+    data class ShowMessage(val message: UiText) : ChannelDetailUiEvent()
 }

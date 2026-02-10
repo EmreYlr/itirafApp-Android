@@ -45,7 +45,11 @@ fun InboxScreen(
                 }
 
                 is InboxUiEvent.ShowMessage -> {
-                    Toast.makeText(localContext, event.message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        localContext,
+                        event.message.asString(localContext),
+                        Toast.LENGTH_SHORT
+                    ).show()
 
                 }
             }
@@ -95,7 +99,7 @@ fun InboxContent(
                             }
                         )
                     }
-                } else if (!state.isLoading && state.error.isEmpty()) {
+                } else if (!state.isLoading && state.error == null) {
                     item {
                         Box(
                             modifier = Modifier.fillParentMaxSize(),

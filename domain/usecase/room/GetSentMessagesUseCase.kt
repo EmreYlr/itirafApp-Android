@@ -11,7 +11,7 @@ class GetSentMessagesUseCase @Inject constructor(
     private val repository: RoomRepository
 ) {
     operator fun invoke(): Flow<Resource<List<SentMessage>>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.getSentMessages()
         emit(result)
     }

@@ -1,5 +1,7 @@
 package com.itirafapp.android.presentation.screens.auth.login
 
+import com.itirafapp.android.util.state.UiText
+
 data class LoginState(
     val email: String = "admin@admin.com",
     val password: String = "password123",
@@ -25,5 +27,5 @@ sealed class LoginUiEvent {
     object NavigateToForgotPassword : LoginUiEvent()
     object ShowPrivacyPolicyDialog : LoginUiEvent()
     object ShowTermsDialog : LoginUiEvent()
-    data class ShowError(val message: String) : LoginUiEvent()
+    data class ShowMessage(val message: UiText) : LoginUiEvent()
 }

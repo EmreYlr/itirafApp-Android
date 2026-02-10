@@ -1,6 +1,7 @@
 package com.itirafapp.android.presentation.screens.my_confession.my_confession_edit
 
 import com.itirafapp.android.domain.model.MyConfessionData
+import com.itirafapp.android.util.state.UiText
 
 data class MyConfessionEditState(
     val isLoading: Boolean = false,
@@ -9,7 +10,7 @@ data class MyConfessionEditState(
     val confessions: MyConfessionData? = null,
     val isRefreshing: Boolean = false,
     val showDeleteDialog: Boolean = false,
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 sealed class MyConfessionEditEvent {
@@ -25,5 +26,5 @@ sealed class MyConfessionEditEvent {
 sealed class MyConfessionEditUiEvent {
     object NavigateToBack : MyConfessionEditUiEvent()
     object NavigateToRoot : MyConfessionEditUiEvent()
-    data class ShowMessage(val message: String) : MyConfessionEditUiEvent()
+    data class ShowMessage(val message: UiText) : MyConfessionEditUiEvent()
 }

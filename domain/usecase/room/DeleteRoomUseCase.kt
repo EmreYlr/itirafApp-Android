@@ -10,7 +10,7 @@ class DeleteRoomUseCase @Inject constructor(
     private val repository: RoomRepository
 ) {
     operator fun invoke(roomId: String, blockUser: Boolean): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         val result = repository.deleteRoom(roomId, blockUser)
 

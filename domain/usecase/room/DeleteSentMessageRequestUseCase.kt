@@ -10,7 +10,7 @@ class DeleteSentMessageRequestUseCase @Inject constructor(
     private val repository: RoomRepository
 ) {
     operator fun invoke(requestId: String): Flow<Resource<Unit>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
         val result = repository.deleteSentMessageRequest(requestId)
         emit(result)
     }

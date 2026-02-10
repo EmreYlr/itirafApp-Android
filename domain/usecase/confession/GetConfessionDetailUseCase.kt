@@ -1,5 +1,6 @@
 package com.itirafapp.android.domain.usecase.confession
 
+import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.ConfessionDetail
 import com.itirafapp.android.domain.repository.ConfessionRepository
 import com.itirafapp.android.util.state.Resource
@@ -11,14 +12,14 @@ class GetConfessionDetailUseCase @Inject constructor(
     private val repository: ConfessionRepository
 ) {
     operator fun invoke(id: Int): Flow<Resource<ConfessionDetail>> = flow {
-        emit(Resource.Loading())
+        emit(Resource.Loading)
 
         try {
             val result = repository.getConfessionDetail(id)
             emit(result)
 
         } catch (e: Exception) {
-            emit(Resource.Error(e.localizedMessage ?: "Beklenmedik hata"))
+            emit(Resource.Error(AppError.LocalError.Unknown))
         }
     }
 }

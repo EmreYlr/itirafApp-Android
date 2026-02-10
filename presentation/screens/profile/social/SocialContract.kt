@@ -2,6 +2,7 @@ package com.itirafapp.android.presentation.screens.profile.social
 
 import com.itirafapp.android.domain.model.Link
 import com.itirafapp.android.domain.model.enums.SocialPlatform
+import com.itirafapp.android.util.state.UiText
 
 data class SocialState(
     val link: Link? = null,
@@ -12,7 +13,7 @@ data class SocialState(
     val isLoading: Boolean = false,
     val showDeleteDialog: Boolean = false,
     val usedPlatforms: List<SocialPlatform> = emptyList(),
-    val error: String? = null,
+    val error: UiText? = null,
 )
 
 sealed class SocialEvent {
@@ -26,5 +27,5 @@ sealed class SocialEvent {
 
 sealed class SocialUiEvent {
     object NavigateToBack : SocialUiEvent()
-    data class ShowMessage(val message: String) : SocialUiEvent()
+    data class ShowMessage(val message: UiText) : SocialUiEvent()
 }

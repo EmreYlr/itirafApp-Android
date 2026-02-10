@@ -1,5 +1,7 @@
 package com.itirafapp.android.presentation.screens.auth.register
 
+import com.itirafapp.android.util.state.UiText
+
 data class RegisterState(
     val email: String = "",
     val password: String = "",
@@ -25,5 +27,5 @@ sealed class RegisterUiEvent {
     object NavigateToLogin : RegisterUiEvent()
     object ShowPrivacyPolicyDialog : RegisterUiEvent()
     object ShowTermsDialog : RegisterUiEvent()
-    data class ShowMessage(val message: String) : RegisterUiEvent()
+    data class ShowMessage(val message: UiText) : RegisterUiEvent()
 }
