@@ -17,7 +17,6 @@ import com.itirafapp.android.domain.usecase.room.DeleteRoomUseCase
 import com.itirafapp.android.domain.usecase.room.GetRoomMessagesUseCase
 import com.itirafapp.android.presentation.mapper.toUiItemsWithDateSeparators
 import com.itirafapp.android.presentation.model.ChatUiItem
-import com.itirafapp.android.presentation.screens.home.detail.DetailUiEvent
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -136,7 +135,7 @@ class ChatViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    result.data?.let { data ->
+                    result.data.let { data ->
                         val newMessages = data.items
 
                         rawMessages = if (isLoadMore) {

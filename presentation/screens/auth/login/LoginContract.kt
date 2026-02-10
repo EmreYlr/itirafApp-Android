@@ -19,6 +19,8 @@ sealed class LoginEvent {
     object OpenTermsOfUse : LoginEvent()
     data class OnGoogleLoginSuccess(val token: String) : LoginEvent()
     object OnGoogleLoginError : LoginEvent()
+    object ResendEmailClicked : LoginEvent()
+    object DismissResendDialog : LoginEvent()
 }
 
 sealed class LoginUiEvent {
@@ -27,5 +29,7 @@ sealed class LoginUiEvent {
     object NavigateToForgotPassword : LoginUiEvent()
     object ShowPrivacyPolicyDialog : LoginUiEvent()
     object ShowTermsDialog : LoginUiEvent()
+    object ShowResendDialog : LoginUiEvent()
+    object HideResendDialog : LoginUiEvent()
     data class ShowMessage(val message: UiText) : LoginUiEvent()
 }

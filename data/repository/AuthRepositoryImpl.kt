@@ -6,6 +6,7 @@ import com.itirafapp.android.data.remote.auth.dto.AnonymousRegisterResponse
 import com.itirafapp.android.data.remote.auth.dto.GoogleLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
+import com.itirafapp.android.data.remote.auth.dto.ResendEmailRequest
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.repository.AuthRepository
@@ -55,6 +56,13 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun resetPassword(request: ResetPasswordRequest): Resource<Unit> {
         return safeApiCall {
             api.resetPassword(request)
+        }
+    }
+
+    override suspend fun resendEmail(email: String): Resource<Unit> {
+        return safeApiCall {
+            val request = ResendEmailRequest(email)
+            api.resendEmail(request)
         }
     }
 

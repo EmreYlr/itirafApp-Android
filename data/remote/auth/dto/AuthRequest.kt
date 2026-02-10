@@ -25,3 +25,7 @@ data class ResetPasswordRequest(
 data class GoogleLoginRequest(
     val idToken: String
 )
+
+data class ResendEmailRequest(
+    val email: String
+)

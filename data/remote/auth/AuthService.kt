@@ -6,6 +6,7 @@ import com.itirafapp.android.data.remote.auth.dto.AuthResponse
 import com.itirafapp.android.data.remote.auth.dto.GoogleLoginRequest
 import com.itirafapp.android.data.remote.auth.dto.LoginRequest
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
+import com.itirafapp.android.data.remote.auth.dto.ResendEmailRequest
 import com.itirafapp.android.data.remote.auth.dto.ResetPasswordRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -38,6 +39,11 @@ interface AuthService {
     @POST("auth/forgot-password")
     suspend fun resetPassword(
         @Body request: ResetPasswordRequest
+    )
+
+    @POST("users/email/confirm/resend")
+    suspend fun resendEmail(
+        @Body request: ResendEmailRequest
     )
     @DELETE("auth/logout")
     suspend fun logoutUser()

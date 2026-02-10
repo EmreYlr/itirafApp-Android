@@ -15,17 +15,21 @@ sealed class RegisterEvent {
     data class PasswordChanged(val password: String) : RegisterEvent()
     object LoginClicked : RegisterEvent()
     object RegisterClicked : RegisterEvent()
-
     data class PrivacyPolicyChanged(val isAccepted: Boolean) : RegisterEvent()
     data class TermsChanged(val isAccepted: Boolean) : RegisterEvent()
-
     object OpenPrivacyPolicy : RegisterEvent()
     object OpenTermsOfUse : RegisterEvent()
+    object ResendEmailClicked : RegisterEvent()
+
+    object DismissResendDialog : RegisterEvent()
 }
 
 sealed class RegisterUiEvent {
     object NavigateToLogin : RegisterUiEvent()
+    object ShowSuccessDialog : RegisterUiEvent()
     object ShowPrivacyPolicyDialog : RegisterUiEvent()
+    object ShowResendDialog : RegisterUiEvent()
+    object HideResendDialog : RegisterUiEvent()
     object ShowTermsDialog : RegisterUiEvent()
     data class ShowMessage(val message: UiText) : RegisterUiEvent()
 }

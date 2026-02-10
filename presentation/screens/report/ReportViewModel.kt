@@ -9,8 +9,8 @@ import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ReportTarget
 import com.itirafapp.android.domain.usecase.confession.ReportConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.ReportReplyUseCase
+import com.itirafapp.android.domain.usecase.room.ReportRoomUseCase
 import com.itirafapp.android.util.extension.refinedForBusiness
-import com.itirafapp.android.util.extension.refinedForRegister
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class ReportViewModel @Inject constructor(
     private val reportConfessionUseCase: ReportConfessionUseCase,
     private val reportReplyUseCase: ReportReplyUseCase,
-    //private val reportRoomUseCase: ReportRoomUseCase //TODO: Buraya bak
+    private val reportRoomUseCase: ReportRoomUseCase
 ) : ViewModel() {
     var state by mutableStateOf(ReportState())
         private set
@@ -87,9 +87,7 @@ class ReportViewModel @Inject constructor(
             }
 
             is ReportTarget.Room -> {
-                //reportRoomUseCase(id = target.roomId, reason = reason)
-
-                kotlinx.coroutines.flow.flow { }
+                reportRoomUseCase(id = target.roomId, reason = reason)
             }
         }
 

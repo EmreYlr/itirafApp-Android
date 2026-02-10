@@ -15,5 +15,6 @@ interface AuthRepository {
     suspend fun googleLogin(request: GoogleLoginRequest): Resource<Unit>
     suspend fun registerUser(request: RegisterRequest): Resource<Unit>
     suspend fun resetPassword(request: ResetPasswordRequest): Resource<Unit>
+    suspend fun resendEmail(email: String): Resource<Unit>
     suspend fun logoutUser(): Resource<Unit>
 }

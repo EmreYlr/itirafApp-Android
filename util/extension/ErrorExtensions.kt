@@ -1,6 +1,5 @@
 package com.itirafapp.android.util.extension
 
-import androidx.compose.ui.res.stringResource
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.util.state.UiText
@@ -10,6 +9,9 @@ fun AppError.refinedForLogin(): AppError {
         return when (code) {
             1400 -> this.copy(
                 userMessage = UiText.StringResource(R.string.login_credentials_error)
+            )
+            1409 -> this.copy(
+                userMessage = UiText.StringResource(R.string.register_email_deleted)
             )
 
             else -> this
@@ -23,6 +25,9 @@ fun AppError.refinedForRegister(): AppError {
         return when (code) {
             1302 -> this.copy(
                 userMessage = UiText.StringResource(R.string.register_conflict)
+            )
+            1409 -> this.copy(
+                userMessage = UiText.StringResource(R.string.register_email_deleted)
             )
 
             else -> this

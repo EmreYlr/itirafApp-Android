@@ -12,6 +12,7 @@ import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.auth.LoginAnonymousUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginGoogleUseCase
 import com.itirafapp.android.domain.usecase.auth.LoginUserUseCase
+import com.itirafapp.android.domain.usecase.auth.ResendEmailUseCase
 import com.itirafapp.android.util.extension.refinedForLogin
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.UiText
@@ -27,7 +28,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val loginUserUseCase: LoginUserUseCase,
     private val loginAnonymousUseCase: LoginAnonymousUseCase,
-    private val loginGoogleUseCase: LoginGoogleUseCase
+    private val loginGoogleUseCase: LoginGoogleUseCase,
+    private val resendEmailUseCase: ResendEmailUseCase
 ) : ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
@@ -76,6 +78,14 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.OnGoogleLoginError -> {
                 sendUiEvent(LoginUiEvent.ShowMessage(AppError.LocalError.Unknown.message))
             }
+
+            is LoginEvent.ResendEmailClicked -> {
+                resendEmail()
+            }
+
+            is LoginEvent.DismissResendDialog -> {
+                sendUiEvent(LoginUiEvent.HideResendDialog)
+            }
         }
     }
 
@@ -102,13 +112,15 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    //TODO: 1405 gelirse resend email olacak aynısını register içinde yapcaz
-                    val originalError = result.error
-
-                    val refinedError = originalError.refinedForLogin()
-
                     state = state.copy(isLoading = false)
-                    sendUiEvent(LoginUiEvent.ShowMessage(refinedError.message))
+                    val error = result.error
+
+                    if (error is AppError.ApiError && error.code == 1405) {
+                        sendUiEvent(LoginUiEvent.ShowResendDialog)
+                    } else {
+                        val refinedError = error.refinedForLogin()
+                        sendUiEvent(LoginUiEvent.ShowMessage(refinedError.message))
+                    }
                 }
             }
         }.launchIn(viewModelScope)
@@ -156,6 +168,29 @@ class LoginViewModel @Inject constructor(
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
                     sendUiEvent(LoginUiEvent.ShowMessage((result.error.message)))
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun resendEmail() {
+        sendUiEvent(LoginUiEvent.HideResendDialog)
+
+        resendEmailUseCase(state.email).onEach { result ->
+            when (result) {
+                is Resource.Loading -> state = state.copy(isLoading = true)
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        LoginUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.message_email_resend_success)
+                        )
+                    )
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(LoginUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)

@@ -25,6 +25,10 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.components.core.ItirafTextField
 import com.itirafapp.android.presentation.components.layout.TopBar
@@ -61,6 +66,9 @@ fun RegisterScreen(
     val focusManager = LocalFocusManager.current
     val colorParams = ItirafTheme.colors.brandPrimary.toArgb()
 
+    var showSuccessDialog by remember { mutableStateOf(false) }
+    var showResendDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
             when (event) {
@@ -76,12 +84,54 @@ fun RegisterScreen(
                     openUrlSafe(context, Constants.PRIVACY_URL, colorParams)
                 }
 
+                is RegisterUiEvent.ShowSuccessDialog -> {
+                    showSuccessDialog = true
+                }
+
+                is RegisterUiEvent.ShowResendDialog -> showResendDialog = true
+                is RegisterUiEvent.HideResendDialog -> showResendDialog = false
+
                 is RegisterUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
             }
         }
+    }
+
+    if (showResendDialog) {
+        GenericAlertDialog(
+            onDismissRequest = {
+                viewModel.onEvent(RegisterEvent.DismissResendDialog)
+            },
+            title = stringResource(R.string.warning),
+            text = stringResource(R.string.message_account_not_verified),
+
+            confirmButtonText = stringResource(R.string.error_send_resend),
+            onConfirmClick = {
+                viewModel.onEvent(RegisterEvent.ResendEmailClicked)
+            },
+
+            dismissButtonText = stringResource(R.string.cancel),
+            onDismissClick = {
+                viewModel.onEvent(RegisterEvent.DismissResendDialog)
+            }
+        )
+    }
+
+    if (showSuccessDialog) {
+        GenericAlertDialog(
+            onDismissRequest = {},
+            title = stringResource(R.string.warning),
+            text = stringResource(R.string.auth_register_success_message),
+            confirmButtonText = stringResource(R.string.ok),
+            onConfirmClick = {
+                showSuccessDialog = false
+                onNavigateBack()
+            },
+            dismissButtonText = null,
+            onDismissClick = null
+        )
     }
 
     RegisterContent(

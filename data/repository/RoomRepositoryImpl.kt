@@ -5,6 +5,7 @@ import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.data.remote.room.RoomService
 import com.itirafapp.android.data.remote.room.dto.DMRequest
 import com.itirafapp.android.data.remote.room.dto.DeleteRoomRequest
+import com.itirafapp.android.data.remote.room.dto.ReportRoomRequest
 import com.itirafapp.android.data.remote.room.dto.RoomMessagesResponse
 import com.itirafapp.android.domain.model.DirectMessage
 import com.itirafapp.android.domain.model.InboxMessage
@@ -96,6 +97,16 @@ class RoomRepositoryImpl @Inject constructor(
             )
 
             api.requestCreateRoom(request)
+        }
+    }
+
+    override suspend fun reportRoom(
+        id: String,
+        reason: String
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = ReportRoomRequest(reason)
+            api.reportRoom(id, request)
         }
     }
 }

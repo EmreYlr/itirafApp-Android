@@ -25,4 +25,6 @@ interface RoomRepository {
         initialMessage: String,
         shareSocialLinks: Boolean
     ): Resource<Unit>
+
+    suspend fun reportRoom(id: String, reason: String): Resource<Unit>
 }

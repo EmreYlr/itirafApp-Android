@@ -9,3 +9,7 @@ data class DMRequest(
 data class DeleteRoomRequest(
     val blockUser: Boolean
 )
+
+data class ReportRoomRequest(
+    val reason: String
+)

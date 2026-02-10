@@ -30,8 +30,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.components.core.ItirafTextField
 import com.itirafapp.android.presentation.components.layout.TopBar
@@ -74,6 +78,8 @@ fun LoginScreen(
     val colorParams = ItirafTheme.colors.brandPrimary.toArgb()
     val scope = rememberCoroutineScope()
     val googleAuthManager = remember { GoogleAuthManager(context) }
+    var showResendDialog by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collectLatest { event ->
@@ -98,12 +104,39 @@ fun LoginScreen(
                     openUrlSafe(context, Constants.TERMS_URL, colorParams)
                 }
 
+                is LoginUiEvent.ShowResendDialog -> {
+                    showResendDialog = true
+                }
+
+                is LoginUiEvent.HideResendDialog -> {
+                    showResendDialog = false
+                }
+
                 is LoginUiEvent.ShowMessage -> {
                     Toast.makeText(context, event.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
             }
         }
+    }
+
+    if (showResendDialog) {
+        GenericAlertDialog(
+            onDismissRequest = {
+                viewModel.onEvent(LoginEvent.DismissResendDialog)
+            },
+            title = stringResource(R.string.warning),
+            text = stringResource(R.string.message_account_not_verified),
+
+            confirmButtonText = stringResource(R.string.error_send_resend),
+            onConfirmClick = {
+                viewModel.onEvent(LoginEvent.ResendEmailClicked)
+            },
+            dismissButtonText = stringResource(R.string.cancel),
+            onDismissClick = {
+                viewModel.onEvent(LoginEvent.DismissResendDialog)
+            }
+        )
     }
 
     LoginContent(

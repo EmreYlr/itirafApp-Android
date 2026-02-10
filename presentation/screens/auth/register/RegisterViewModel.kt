@@ -9,7 +9,7 @@ import com.itirafapp.android.R
 import com.itirafapp.android.data.remote.auth.dto.RegisterRequest
 import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.auth.RegisterUserUseCase
-import com.itirafapp.android.util.extension.refinedForLogin
+import com.itirafapp.android.domain.usecase.auth.ResendEmailUseCase
 import com.itirafapp.android.util.extension.refinedForRegister
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.UiText
@@ -23,7 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val registerUserUseCase: RegisterUserUseCase
+    private val registerUserUseCase: RegisterUserUseCase,
+    private val resendEmailUseCase: ResendEmailUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(RegisterState())
@@ -37,26 +38,41 @@ class RegisterViewModel @Inject constructor(
             is RegisterEvent.EmailChanged -> {
                 state = state.copy(email = event.email)
             }
-            is RegisterEvent.PasswordChanged ->  {
+
+            is RegisterEvent.PasswordChanged -> {
                 state = state.copy(password = event.password)
             }
+
             is RegisterEvent.PrivacyPolicyChanged -> {
                 state = state.copy(isPrivacyAccepted = event.isAccepted)
             }
+
             is RegisterEvent.TermsChanged -> {
                 state = state.copy(isTermsAccepted = event.isAccepted)
             }
+
             is RegisterEvent.OpenPrivacyPolicy -> {
                 sendUiEvent(RegisterUiEvent.ShowPrivacyPolicyDialog)
             }
+
             is RegisterEvent.OpenTermsOfUse -> {
                 sendUiEvent(RegisterUiEvent.ShowTermsDialog)
             }
+
             is RegisterEvent.RegisterClicked -> {
                 register()
             }
+
             is RegisterEvent.LoginClicked -> {
                 sendUiEvent(RegisterUiEvent.NavigateToLogin)
+            }
+
+            is RegisterEvent.ResendEmailClicked -> {
+                resendEmail()
+            }
+
+            is RegisterEvent.DismissResendDialog -> {
+                sendUiEvent(RegisterUiEvent.HideResendDialog)
             }
         }
     }
@@ -81,19 +97,47 @@ class RegisterViewModel @Inject constructor(
                 is Resource.Loading -> {
                     state = state.copy(isLoading = true)
                 }
+
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    //sendUiEvent(RegisterUiEvent.ShowMessage("Kayıt Başarılı! Giriş yapabilirsiniz."))
-                    //TODO: EMAİL ONAYI İLETİLECEK.
-                    sendUiEvent(RegisterUiEvent.NavigateToLogin)
+                    sendUiEvent(RegisterUiEvent.ShowSuccessDialog)
                 }
+
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
-                    val originalError = result.error
+                    val error = result.error
 
-                    val refinedError = originalError.refinedForRegister()
+                    if (error is AppError.ApiError && error.code == 1405) {
+                        sendUiEvent(RegisterUiEvent.ShowResendDialog)
+                    } else {
+                        val refinedError = error.refinedForRegister()
+                        sendUiEvent(RegisterUiEvent.ShowMessage(refinedError.message))
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
 
-                    sendUiEvent(RegisterUiEvent.ShowMessage(refinedError.message))
+    private fun resendEmail() {
+        sendUiEvent(RegisterUiEvent.HideResendDialog)
+        resendEmailUseCase(state.email).onEach { result ->
+            when (result) {
+                is Resource.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
+
+                is Resource.Success -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(
+                        RegisterUiEvent.ShowMessage(
+                            UiText.StringResource(R.string.message_email_resend_success)
+                        )
+                    )
+                }
+
+                is Resource.Error -> {
+                    state = state.copy(isLoading = false)
+                    sendUiEvent(RegisterUiEvent.ShowMessage(result.error.message))
                 }
             }
         }.launchIn(viewModelScope)

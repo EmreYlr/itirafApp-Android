@@ -4,6 +4,7 @@ import com.itirafapp.android.data.remote.room.dto.DMRequest
 import com.itirafapp.android.data.remote.room.dto.DeleteRoomRequest
 import com.itirafapp.android.data.remote.room.dto.DirectMessageResponse
 import com.itirafapp.android.data.remote.room.dto.InboxMessageResponse
+import com.itirafapp.android.data.remote.room.dto.ReportRoomRequest
 import com.itirafapp.android.data.remote.room.dto.RoomMessagesResponse
 import com.itirafapp.android.data.remote.room.dto.SentMessageResponse
 import retrofit2.http.Body
@@ -66,5 +67,12 @@ interface RoomService {
     @POST("rooms/request")
     suspend fun requestCreateRoom(
         @Body request: DMRequest
+    ): Unit
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @POST("rooms/{id}/report")
+    suspend fun reportRoom(
+        @Path("id") id: String,
+        @Body request: ReportRoomRequest
     ): Unit
 }
