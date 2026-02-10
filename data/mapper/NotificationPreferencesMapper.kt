@@ -41,7 +41,9 @@ fun NotificationPreferencesItemResponse.toDomain(): NotificationPreferencesItem?
     )
 }
 
-fun mapApiEventToDomain(apiEvent: NotificationApiEventType): NotificationEventType? {
+fun mapApiEventToDomain(apiEvent: NotificationApiEventType?): NotificationEventType? {
+    if (apiEvent == null) return null
+
     return when (apiEvent) {
         NotificationApiEventType.CONFESSION_PUBLISHED -> NotificationEventType.CONFESSION
         NotificationApiEventType.CONFESSION_REPLIED -> NotificationEventType.COMMENT
@@ -51,6 +53,8 @@ fun mapApiEventToDomain(apiEvent: NotificationApiEventType): NotificationEventTy
         NotificationApiEventType.DM_REQUEST_RESPONDED -> NotificationEventType.MESSAGE_REQUEST_RESULT
         NotificationApiEventType.CONFESSION_MODERATED -> NotificationEventType.MODERATOR
         NotificationApiEventType.ADMIN_REVIEW_REQUIRED -> NotificationEventType.ADMIN_REVIEW_REQUIRED
+
+        else -> null
     }
 }
 
