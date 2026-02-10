@@ -294,22 +294,22 @@ fun LoginContent(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                ItirafButton(
-                    text = stringResource(R.string.apple_login_button),
-                    onClick = {
-                        focusManager.clearFocus()
-                        //TODO: onAppleLogin()
-                    },
-                    icon = ImageVector.vectorResource(id = R.drawable.ic_apple_logo),
-                    isLoading = false,
-                    enabled = isInteractionEnabled,
-                    containerColor = Color.Black,
-                    contentColor = Color.White,
-                    borderColor = ItirafTheme.colors.textSecondary,
-                    borderWidth = 1.dp
-                )
+//                Spacer(modifier = Modifier.height(16.dp))
+//
+//                ItirafButton(
+//                    text = stringResource(R.string.apple_login_button),
+//                    onClick = {
+//                        focusManager.clearFocus()
+//                        onAppleLogin()
+//                    },
+//                    icon = ImageVector.vectorResource(id = R.drawable.ic_apple_logo),
+//                    isLoading = false,
+//                    enabled = isInteractionEnabled,
+//                    containerColor = Color.Black,
+//                    contentColor = Color.White,
+//                    borderColor = ItirafTheme.colors.textSecondary,
+//                    borderWidth = 1.dp
+//                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
