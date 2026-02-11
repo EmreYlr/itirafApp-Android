@@ -20,3 +20,7 @@ data class ReportConfessionRequest(
 data class ReportReplyRequest(
     val reason: String
 )
+
+data class ViewConfessionRequest(
+    val messageIds: List<Int>
+)

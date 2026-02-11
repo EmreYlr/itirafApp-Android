@@ -8,6 +8,7 @@ import com.itirafapp.android.data.remote.confession.dto.ReportConfessionRequest
 import com.itirafapp.android.data.remote.confession.dto.ReportReplyRequest
 import com.itirafapp.android.data.remote.confession.dto.ShortlinkRequest
 import com.itirafapp.android.data.remote.confession.dto.ShortlinkResponse
+import com.itirafapp.android.data.remote.confession.dto.ViewConfessionRequest
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -107,4 +108,8 @@ interface ConfessionService {
         @Body request: ReportReplyRequest
     ): Unit
 
+    @POST("messages/view")
+    suspend fun viewConfession(
+        @Body request: ViewConfessionRequest
+    ): Unit
 }

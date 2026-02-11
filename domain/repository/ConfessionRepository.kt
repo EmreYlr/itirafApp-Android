@@ -29,4 +29,5 @@ interface ConfessionRepository {
     suspend fun deleteReply(id: Int): Resource<Unit>
     suspend fun reportConfession(id: Int, reason: String): Resource<Unit>
     suspend fun reportReply(id: Int, reason: String): Resource<Unit>
+    suspend fun viewConfession(ids: List<Int>): Resource<Unit>
 }

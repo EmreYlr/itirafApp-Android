@@ -9,6 +9,7 @@ import com.itirafapp.android.data.remote.confession.dto.ReportConfessionRequest
 import com.itirafapp.android.data.remote.confession.dto.ReportReplyRequest
 import com.itirafapp.android.data.remote.confession.dto.ShortlinkRequest
 import com.itirafapp.android.data.remote.confession.dto.ShortlinkResponse
+import com.itirafapp.android.data.remote.confession.dto.ViewConfessionRequest
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.model.ConfessionData
 import com.itirafapp.android.domain.model.ConfessionDetail
@@ -150,6 +151,13 @@ class ConfessionRepositoryImpl @Inject constructor(
         return safeApiCall {
             val request = ReportReplyRequest(reason)
             api.reportReply(id, request)
+        }
+    }
+
+    override suspend fun viewConfession(ids: List<Int>): Resource<Unit> {
+        return safeApiCall {
+            val request = ViewConfessionRequest(ids)
+            api.viewConfession(request)
         }
     }
 }
