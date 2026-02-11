@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.ChannelData
+import com.itirafapp.android.domain.model.shouldShowToast
 import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.usecase.confession.GetChannelConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
@@ -172,7 +173,9 @@ class ChannelDetailViewModel @Inject constructor(
             val result = toggleFollowChannelUseCase(channelData)
 
             if (result is Resource.Error) {
-                sendUiEvent(ChannelDetailUiEvent.ShowMessage(result.error.message))
+                if (result.error.shouldShowToast) {
+                    sendUiEvent(ChannelDetailUiEvent.ShowMessage(result.error.message))
+                }
             }
         }
     }
@@ -192,7 +195,6 @@ class ChannelDetailViewModel @Inject constructor(
 
             if (result is Resource.Error) {
                 state = state.copy(confessions = oldList)
-                sendUiEvent(ChannelDetailUiEvent.ShowMessage(result.error.message))
             }
         }
     }

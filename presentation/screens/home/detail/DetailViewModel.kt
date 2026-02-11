@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.ReportTarget
+import com.itirafapp.android.domain.model.shouldShowToast
 import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.DeleteConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.DeleteReplyUseCase
@@ -261,11 +262,13 @@ class DetailViewModel @Inject constructor(
 
                 is Resource.Error -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(
-                        DetailUiEvent.ShowMessage(
-                            result.error.message
+                    if (result.error.shouldShowToast) {
+                        sendUiEvent(
+                            DetailUiEvent.ShowMessage(
+                                result.error.message
+                            )
                         )
-                    )
+                    }
                 }
             }
         }.launchIn(viewModelScope)
@@ -352,7 +355,9 @@ class DetailViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
-                    sendUiEvent(DetailUiEvent.ShowMessage(result.error.message))
+                    if (result.error.shouldShowToast) {
+                        sendUiEvent(DetailUiEvent.ShowMessage(result.error.message))
+                    }
                 }
             }
         }.launchIn(viewModelScope)

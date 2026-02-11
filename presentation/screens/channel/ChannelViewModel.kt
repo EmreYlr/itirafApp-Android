@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.domain.model.ChannelData
+import com.itirafapp.android.domain.model.shouldShowToast
 import com.itirafapp.android.domain.usecase.channel.GetChannelsUseCase
 import com.itirafapp.android.domain.usecase.channel.SearchChannelsUseCase
 import com.itirafapp.android.domain.usecase.follow.GetLocalFollowedChannelsUseCase
@@ -203,7 +204,9 @@ class ChannelViewModel @Inject constructor(
                 val result = toggleFollowChannelUseCase(targetChannel)
 
                 if (result is Resource.Error) {
-                    sendUiEvent(ChannelUiEvent.ShowMessage(result.error.message))
+                    if (result.error.shouldShowToast) {
+                        sendUiEvent(ChannelUiEvent.ShowMessage(result.error.message))
+                    }
                 }
             }
         }

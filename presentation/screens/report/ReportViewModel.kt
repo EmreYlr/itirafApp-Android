@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ReportTarget
+import com.itirafapp.android.domain.model.shouldShowToast
 import com.itirafapp.android.domain.usecase.confession.ReportConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.ReportReplyUseCase
 import com.itirafapp.android.domain.usecase.room.ReportRoomUseCase
@@ -112,8 +113,9 @@ class ReportViewModel @Inject constructor(
                     val originalError = result.error
 
                     val refinedError = originalError.refinedForBusiness()
-
-                    sendUiEvent(ReportUiEvent.ShowMessage(refinedError.message))
+                    if (result.error.shouldShowToast) {
+                        sendUiEvent(ReportUiEvent.ShowMessage(refinedError.message))
+                    }
                 }
             }
         }.launchIn(viewModelScope)

@@ -91,3 +91,6 @@ sealed interface AppError {
         }
     }
 }
+
+val AppError.shouldShowToast: Boolean
+    get() = this !is AppError.AuthError.AnonymousUser

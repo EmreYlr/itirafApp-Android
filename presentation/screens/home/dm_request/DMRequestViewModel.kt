@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.AppError
+import com.itirafapp.android.domain.model.shouldShowToast
 import com.itirafapp.android.domain.usecase.room.RequestCreateRoomUseCase
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.UiText
@@ -96,7 +97,9 @@ class DMRequestViewModel @Inject constructor(
                         isLoading = false,
                         error = result.error.message
                     )
-                    _uiEvent.send(DMRequestUiEvent.ShowMessage(result.error.message))
+                    if (result.error.shouldShowToast) {
+                        _uiEvent.send(DMRequestUiEvent.ShowMessage(result.error.message))
+                    }
                 }
             }
         }.launchIn(viewModelScope)
