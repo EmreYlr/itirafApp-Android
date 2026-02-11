@@ -3,8 +3,8 @@ package com.itirafapp.android.presentation.screens.auth.login
 import com.itirafapp.android.util.state.UiText
 
 data class LoginState(
-    val email: String = "admin@admin.com",
-    val password: String = "password123",
+    val email: String = "",
+    val password: String = "",
     val isLoading: Boolean = false
 )
 
