@@ -19,6 +19,8 @@ sealed class FollowingEvent {
     data class CommentClicked(val id: Int) : FollowingEvent()
     data class DMRequestClicked(val id: Int) : FollowingEvent()
     data class ShareClicked(val id: Int) : FollowingEvent()
+    data class OnVisibleItemsChanged(val visibleIds: List<Int>) : FollowingEvent()
+    object OnScreenExit : FollowingEvent()
 }
 
 sealed class FollowingUiEvent {

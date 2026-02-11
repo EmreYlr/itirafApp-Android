@@ -19,6 +19,8 @@ sealed class FeedEvent {
     data class CommentClicked(val id: Int) : FeedEvent()
     data class DMRequestClicked(val id: Int) : FeedEvent()
     data class ShareClicked(val id: Int) : FeedEvent()
+    data class OnVisibleItemsChanged(val visibleIds: List<Int>) : FeedEvent()
+    object OnScreenExit : FeedEvent()
 }
 
 sealed class FeedUiEvent {

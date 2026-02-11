@@ -5,18 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.usecase.confession.CreateShortlinkUseCase
 import com.itirafapp.android.domain.usecase.confession.GetFollowingConfessionsUseCase
 import com.itirafapp.android.domain.usecase.confession.LikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
+import com.itirafapp.android.domain.usecase.confession.ViewConfessionUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.presentation.model.ConfessionUiModel
 import com.itirafapp.android.presentation.model.toggleLikeState
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -29,7 +31,8 @@ class FollowingViewModel @Inject constructor(
     private val likeConfessionUseCase: LikeConfessionUseCase,
     private val unlikeConfessionUseCase: UnlikeConfessionUseCase,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val createShortlinkUseCase: CreateShortlinkUseCase
+    private val createShortlinkUseCase: CreateShortlinkUseCase,
+    private val viewConfessionUseCase: ViewConfessionUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(FollowingState())
@@ -40,6 +43,16 @@ class FollowingViewModel @Inject constructor(
 
     private var currentPage = 1
     private var isLastPage = false
+
+    private val viewedConfessionIds = mutableSetOf<Int>()
+    private val pendingViewIds = mutableSetOf<Int>()
+    private var lastVisibleIds = emptyList<Int>()
+    private var viewDebounceJob: Job? = null
+
+    companion object {
+        private const val VIEW_FLUSH_THRESHOLD = 15
+        private const val VIEW_DEBOUNCE_MS = 2000L
+    }
 
     init {
         loadConfessions()
@@ -75,6 +88,14 @@ class FollowingViewModel @Inject constructor(
             }
             is FollowingEvent.CommentClicked -> sendUiEvent(FollowingUiEvent.NavigateToDetail(event.id))
 
+            is FollowingEvent.OnVisibleItemsChanged -> {
+                lastVisibleIds = event.visibleIds
+                markConfessionsAsViewed(event.visibleIds)
+            }
+
+            is FollowingEvent.OnScreenExit -> {
+                markConfessionsAsViewed(lastVisibleIds)
+            }
         }
     }
 
@@ -194,5 +215,41 @@ class FollowingViewModel @Inject constructor(
 
     private fun sendUiEvent(event: FollowingUiEvent) {
         viewModelScope.launch { _uiEvent.send(event) }
+    }
+
+    private fun markConfessionsAsViewed(ids: List<Int>) {
+        val newIds = ids.filter { it !in viewedConfessionIds }
+        if (newIds.isEmpty()) return
+        pendingViewIds.addAll(newIds)
+
+        if (pendingViewIds.size >= VIEW_FLUSH_THRESHOLD) {
+            flushViewedConfessions()
+            return
+        }
+
+        viewDebounceJob?.cancel()
+        viewDebounceJob = viewModelScope.launch {
+            delay(VIEW_DEBOUNCE_MS)
+            flushViewedConfessions()
+        }
+    }
+
+    private fun flushViewedConfessions() {
+        viewDebounceJob?.cancel()
+        val idsToSend = pendingViewIds.toList()
+        if (idsToSend.isEmpty()) return
+        viewedConfessionIds.addAll(idsToSend)
+        pendingViewIds.clear()
+        viewModelScope.launch {
+            try {
+                viewConfessionUseCase(idsToSend)
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+    override fun onCleared() {
+        flushViewedConfessions()
+        super.onCleared()
     }
 }

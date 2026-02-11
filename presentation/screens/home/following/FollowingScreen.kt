@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GroupOff
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,7 +18,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -29,6 +32,7 @@ import com.itirafapp.android.presentation.components.core.ConfessionCard
 import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 import com.itirafapp.android.util.state.shareLink
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun FollowingScreen(
@@ -78,6 +82,12 @@ fun FollowingScreen(
         },
         onGoToChannel = onGoToChannel
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.onEvent(FollowingEvent.OnScreenExit)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -87,6 +97,20 @@ fun FollowingScreen(
     onEvent: (FollowingEvent) -> Unit,
     onGoToChannel: () -> Unit,
 ) {
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            listState.layoutInfo.visibleItemsInfo.mapNotNull { it.key as? Int }
+        }
+            .distinctUntilChanged()
+            .collect { visibleIds ->
+                if (visibleIds.isNotEmpty()) {
+                    onEvent(FollowingEvent.OnVisibleItemsChanged(visibleIds))
+                }
+            }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -98,6 +122,7 @@ fun FollowingScreen(
         ) {
             if (state.confessions.isNotEmpty()) {
                 LazyColumn(
+                    state = listState,
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(bottom = 16.dp),
                     verticalArrangement = Arrangement.Top
