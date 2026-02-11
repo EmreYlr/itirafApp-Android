@@ -209,7 +209,7 @@ fun PostContent(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(140.dp),
+                .heightIn(min = 140.dp),
             shape = RoundedCornerShape(12.dp),
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = ItirafTheme.colors.brandPrimary,

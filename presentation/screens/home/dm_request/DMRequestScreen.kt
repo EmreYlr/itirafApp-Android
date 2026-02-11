@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -87,6 +90,7 @@ fun DMRequestContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp)
             .padding(bottom = 24.dp)
             .imePadding()
@@ -128,7 +132,7 @@ fun DMRequestContent(
                 onValueChange = { onEvent(DMRequestEvent.MessageChanged(it)) },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp),
+                    .heightIn(min = 120.dp),
                 placeholder = {
                     Text(
                         stringResource(R.string.dm_request_placeholder),
@@ -172,6 +176,8 @@ fun DMRequestContent(
         HorizontalDivider()
 
         Spacer(modifier = Modifier.height(24.dp))
+
+        Spacer(modifier = Modifier.weight(1f, fill = false))
 
         ItirafButton(
             text = stringResource(R.string.dm_request_button),

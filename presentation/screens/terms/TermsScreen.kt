@@ -151,7 +151,8 @@ fun TermsContent(
                         text = stringResource(R.string.terms_detail_button),
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Medium,
-                        color = ItirafTheme.colors.brandPrimary
+                        color = ItirafTheme.colors.brandPrimary,
+                        modifier = Modifier.weight(1f)
                     )
                     Icon(
                         imageVector = Icons.Rounded.ChevronRight,

@@ -64,7 +64,7 @@ fun OnboardingSlide(
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(400.dp),
+                        .weight(1f, fill = false),
                     contentScale = ContentScale.Fit
                 )
                 Spacer(modifier = Modifier.height(24.dp))
