@@ -1,8 +1,17 @@
 package com.itirafapp.android.presentation.components.layout
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.automirrored.outlined.Send
@@ -15,15 +24,19 @@ import androidx.compose.material.icons.outlined.Explore
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -80,9 +93,10 @@ fun BottomNavigation(
     val currentDestination = navBackStackEntry?.destination
     val dividerColor = ItirafTheme.colors.dividerColor
 
-    NavigationBar(
+    Surface(
+        color = ItirafTheme.colors.backgroundCard,
         modifier = Modifier
-            .height(60.dp)
+            .fillMaxWidth()
             .drawBehind {
                 val strokeWidth = 1.dp.toPx()
                 drawLine(
@@ -91,50 +105,63 @@ fun BottomNavigation(
                     end = Offset(size.width, 0f),
                     strokeWidth = strokeWidth
                 )
-            },
-        containerColor = ItirafTheme.colors.backgroundCard
+            }
+            .shadow(0.dp)
     ) {
-        items.forEach { item ->
-            val isSelected = currentDestination?.hierarchy?.any { it.route == item.route } == true
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .selectableGroup(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                items.forEach { item ->
+                    val isSelected =
+                        currentDestination?.hierarchy?.any { it.route == item.route } == true
 
-            NavigationBarItem(
-                selected = isSelected,
-                onClick = {
-                    val canNavigate = onTabClick(item)
-
-                    if (canNavigate) {
-                        if (isSelected) {
-                            navController.popBackStack(item.route, inclusive = false)
-                        } else {
-                            navController.navigate(item.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                    CompositionLocalProvider(LocalRippleConfiguration provides null) {
+                        NavigationBarItem(
+                            selected = isSelected,
+                            onClick = {
+                                val canNavigate = onTabClick(item)
+                                if (canNavigate) {
+                                    if (isSelected) {
+                                        navController.popBackStack(item.route, inclusive = false)
+                                    } else {
+                                        navController.navigate(item.route) {
+                                            popUpTo(navController.graph.findStartDestination().id) {
+                                                saveState = true
+                                            }
+                                            launchSingleTop = true
+                                            restoreState = item.route != Screen.Home.route
+                                        }
+                                    }
                                 }
-                                launchSingleTop = true
-                                if (item.route == Screen.Home.route) {
-                                    restoreState = false
-                                } else {
-                                    restoreState = true
-                                }
-                            }
-                        }
+                            },
+                            icon = {
+                                Icon(
+                                    imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(26.dp)
+                                )
+                            },
+                            label = null, // Label yok
+                            alwaysShowLabel = false,
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = ItirafTheme.colors.pureContrast,
+                                indicatorColor = Color.Transparent
+                            )
+                        )
                     }
-                },
-                icon = {
-                    Icon(
-                        imageVector = if (isSelected) item.selectedIcon else item.unselectedIcon,
-                        contentDescription = null,
-                        modifier = Modifier.size(26.dp)
-                    )
-                },
-                label = null,
-                alwaysShowLabel = false,
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = ItirafTheme.colors.pureContrast,
-                    indicatorColor = Color.Transparent
-                )
-            )
+                }
+            }
+
+            Spacer(modifier = Modifier.windowInsetsBottomHeight(WindowInsets.navigationBars))
         }
     }
 }
