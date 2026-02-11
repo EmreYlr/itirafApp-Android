@@ -1,5 +1,8 @@
 package com.itirafapp.android.presentation.navigation.graphs
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -11,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -119,7 +123,10 @@ fun MainScreen(
         NavHost(
             navController = navController,
             startDestination = Screen.Home.route,
-            route = Screen.MainGraph.route
+            route = Screen.MainGraph.route,
+            modifier = Modifier
+                .padding(bottom = innerPadding.calculateBottomPadding())
+                .consumeWindowInsets(PaddingValues(bottom = innerPadding.calculateBottomPadding()))
         ) {
             // 1. HOME TAB
             composable(Screen.Home.route) {
@@ -143,8 +150,7 @@ fun MainScreen(
                     },
                     onGoToChannel = {
                         navController.navigate(Screen.Channel.route)
-                    },
-                    bottomBarPadding = innerPadding.calculateBottomPadding()
+                    }
                 )
             }
 

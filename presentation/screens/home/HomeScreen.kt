@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
@@ -49,7 +48,6 @@ fun HomeScreen(
     onPostConfessionClick: () -> Unit,
     onChannelClick: (Int, String) -> Unit,
     onGoToChannel: () -> Unit,
-    bottomBarPadding: Dp = 0.dp,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -77,8 +75,7 @@ fun HomeScreen(
         onOpenDM = onOpenDM,
         onPostConfessionClick = onPostConfessionClick,
         onChannelClick = onChannelClick,
-        onGoToChannel = onGoToChannel,
-        bottomBarPadding = bottomBarPadding
+        onGoToChannel = onGoToChannel
     )
 }
 
@@ -91,8 +88,7 @@ fun HomeContent(
     onOpenDM: (Int) -> Unit,
     onPostConfessionClick: () -> Unit,
     onChannelClick: (Int, String) -> Unit,
-    onGoToChannel: () -> Unit,
-    bottomBarPadding: Dp = 0.dp
+    onGoToChannel: () -> Unit
 ) {
 
     val titles =
@@ -133,7 +129,7 @@ fun HomeContent(
                 },
                 containerColor = fabBackgroundColor,
                 shape = CircleShape,
-                modifier = Modifier.padding(bottom = bottomBarPadding)
+                modifier = Modifier
             ) {
                 Icon(
                     imageVector = Icons.Default.AddComment,
