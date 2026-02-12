@@ -13,11 +13,14 @@ data class SettingsState(
     val showThemeDialog: Boolean = false,
     val currentTheme: ThemeConfig = ThemeConfig.SYSTEM,
     val showLanguageDialog: Boolean = false,
-    val currentLanguage: LanguageConfig = LanguageConfig.SYSTEM
+    val currentLanguage: LanguageConfig = LanguageConfig.SYSTEM,
+    val showLogoutDialog: Boolean = false
 )
 
 sealed class SettingsEvent {
     object LogoutClicked : SettingsEvent()
+    object LogoutConfirmed : SettingsEvent()
+    object DismissLogoutDialog : SettingsEvent()
     object OnBackClicked : SettingsEvent()
     data class ItemClicked(val action: SettingActionType) : SettingsEvent()
     object DismissThemeDialog : SettingsEvent()

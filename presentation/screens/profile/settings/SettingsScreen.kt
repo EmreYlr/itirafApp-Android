@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
+import com.itirafapp.android.presentation.components.core.GenericAlertDialog
 import com.itirafapp.android.presentation.components.core.ItirafButton
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.profile.components.LanguageSelectionContent
@@ -155,6 +156,27 @@ fun SettingsContent(
                 )
             }
         }
+    }
+
+    if (state.showLogoutDialog) {
+        GenericAlertDialog(
+            onDismissRequest = { onEvent(SettingsEvent.DismissLogoutDialog) },
+            title = if (state.isAnonymous) {
+                stringResource(R.string.login_button)
+            } else {
+                stringResource(R.string.logout_confirmation_title)
+            },
+            text = if (state.isAnonymous) {
+                stringResource(R.string.login_confirmation_message)
+            } else {
+                stringResource(R.string.logout_confirmation_message)
+            },
+            confirmButtonText = stringResource(R.string.yes),
+            dismissButtonText = stringResource(R.string.cancel),
+            onConfirmClick = { onEvent(SettingsEvent.LogoutConfirmed) },
+            onDismissClick = { onEvent(SettingsEvent.DismissLogoutDialog) },
+            isDestructive = !state.isAnonymous
+        )
     }
 
     Scaffold(

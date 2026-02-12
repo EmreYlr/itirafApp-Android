@@ -92,7 +92,20 @@ class SettingsViewModel @Inject constructor(
             }
 
             is SettingsEvent.LogoutClicked -> {
+                if (state.isAnonymous) {
+                    logout()
+                } else {
+                    state = state.copy(showLogoutDialog = true)
+                }
+            }
+
+            is SettingsEvent.LogoutConfirmed -> {
+                state = state.copy(showLogoutDialog = false)
                 logout()
+            }
+
+            is SettingsEvent.DismissLogoutDialog -> {
+                state = state.copy(showLogoutDialog = false)
             }
 
             is SettingsEvent.DismissLanguageDialog -> {
