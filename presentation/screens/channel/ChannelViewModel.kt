@@ -14,7 +14,9 @@ import com.itirafapp.android.domain.usecase.follow.ToggleFollowChannelUseCase
 import com.itirafapp.android.presentation.model.ChannelUiModel
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -41,6 +43,8 @@ class ChannelViewModel @Inject constructor(
     private var rawChannelList = emptyList<ChannelData>()
     private var rawSearchResults = emptyList<ChannelData>()
     private var currentFollowedIds = emptySet<Int>()
+
+    private var searchDebounceJob: Job? = null
 
     init {
         observeFollowedChannels()
@@ -97,6 +101,9 @@ class ChannelViewModel @Inject constructor(
             is ChannelEvent.SearchQueryChanged -> {
                 state = state.copy(searchQuery = event.query)
 
+                // Cancel previous debounce job
+                searchDebounceJob?.cancel()
+
                 if (event.query.isEmpty()) {
                     currentPage = 1
                     isLastPage = false
@@ -105,6 +112,12 @@ class ChannelViewModel @Inject constructor(
 
                     if (rawChannelList.isEmpty()) {
                         loadChannel(isRefresh = false)
+                    }
+                } else {
+                    // Start new debounce job
+                    searchDebounceJob = viewModelScope.launch {
+                        delay(500L) // Wait 500ms after user stops typing
+                        executeSearch(event.query)
                     }
                 }
             }
