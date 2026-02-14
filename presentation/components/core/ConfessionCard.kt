@@ -36,7 +36,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -55,6 +54,7 @@ import com.itirafapp.android.presentation.model.ConfessionUiModel
 import com.itirafapp.android.presentation.model.OwnerUiModel
 import com.itirafapp.android.presentation.ui.theme.ItirafAppTheme
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
+import com.itirafapp.android.util.extension.compatibleBlur
 import com.itirafapp.android.util.extension.noRippleClickable
 import com.itirafapp.android.util.extension.toTruncatedAnnotatedString
 import com.itirafapp.android.util.state.UiText
@@ -75,7 +75,7 @@ fun ConfessionCard(
     val readMoreText = stringResource(id = R.string.confession_read_more)
 
     val blurRadius = 30.dp
-    val overlayColor = Color.Black.copy(alpha = 0.05f)
+    val overlayColor = Color.Black.copy(alpha = 0.2f)
     val blurShape = RoundedCornerShape(12.dp)
 
     var isRevealed by rememberSaveable(confession.id) {
@@ -131,7 +131,7 @@ fun ConfessionCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .then(
-                        if (!isRevealed) Modifier.blur(blurRadius) else Modifier
+                        if (!isRevealed) Modifier.compatibleBlur(blurRadius) else Modifier
                     )
             ) {
                 Row(
