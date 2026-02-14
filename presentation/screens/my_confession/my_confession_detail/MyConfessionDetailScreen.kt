@@ -231,7 +231,7 @@ fun MyConfessionDetailContent(
                         val isReplyMine = reply.owner.id == state.currentUserId
 
                         val replyUiModel = remember(reply, isReplyMine) {
-                            reply.toUiModel(isMine = isReplyMine)
+                            reply.toUiModel(state.currentUserId)
                         }
 
                         Box(modifier = Modifier.padding(horizontal = 16.dp)) {

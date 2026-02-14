@@ -43,6 +43,8 @@ fun SocialCard(
     onEditClick: (Link) -> Unit,
     onVisibilityChange: (Boolean) -> Unit
 ) {
+    val safePlatform = social.platform ?: SocialPlatform.OTHER
+
     val switchColors = SwitchDefaults.colors(
         checkedThumbColor = Color.White,
         checkedTrackColor = ItirafTheme.colors.brandPrimary,
@@ -66,8 +68,8 @@ fun SocialCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = social.platform.iconResId),
-                contentDescription = social.platform.displayName,
+                painter = painterResource(id = safePlatform.iconResId),
+                contentDescription = safePlatform.displayName,
                 modifier = Modifier
                     .size(24.dp)
             )

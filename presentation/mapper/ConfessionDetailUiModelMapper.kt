@@ -20,19 +20,20 @@ fun ConfessionDetail.toUiModel(currentUserId: String?): ConfessionDetailUiModel 
         createdAt = formatToRelativeTime(this.createdAt),
         owner = this.owner.toUiModel(isOwner),
         channel = this.channel,
-        replies = this.replies.map { it.toUiModel(isOwner) },
+        replies = this.replies.map { it.toUiModel(currentUserId) },
         isNsfw = this.isNsfw,
         isMine = isOwner,
         shortlink = this.shortlink
     )
 }
 
-fun Reply.toUiModel(isMine: Boolean): ReplyUiModel {
+fun Reply.toUiModel(currentUserId: String?): ReplyUiModel {
+    val isOwner = this.owner.id == currentUserId
     return ReplyUiModel(
         id = this.id,
         message = this.message,
-        owner = this.owner.toUiModel(isMine),
+        owner = this.owner.toUiModel(isOwner),
         createdAt = formatToRelativeTime(this.createdAt),
-        isMine = isMine
+        isMine = isOwner
     )
 }

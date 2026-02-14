@@ -9,6 +9,7 @@ import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.shouldShowToast
 import com.itirafapp.android.domain.usecase.room.RequestCreateRoomUseCase
+import com.itirafapp.android.util.extension.refinedForDmRequest
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -97,8 +98,12 @@ class DMRequestViewModel @Inject constructor(
                         isLoading = false,
                         error = result.error.message
                     )
+                    val originalError = result.error
+
+                    val refinedError = originalError.refinedForDmRequest()
+
                     if (result.error.shouldShowToast) {
-                        _uiEvent.send(DMRequestUiEvent.ShowMessage(result.error.message))
+                        _uiEvent.send(DMRequestUiEvent.ShowMessage(refinedError.message))
                     }
                 }
             }

@@ -48,3 +48,16 @@ fun AppError.refinedForBusiness(): AppError {
     }
     return this
 }
+
+fun AppError.refinedForDmRequest(): AppError {
+    if (this is AppError.ApiError) {
+        return when (code) {
+            1100 -> this.copy(
+                userMessage = UiText.StringResource(R.string.conflict_dm_request)
+            )
+
+            else -> this
+        }
+    }
+    return this
+}
