@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.time.Instant
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -179,11 +179,12 @@ class ChatViewModel @Inject constructor(
     private fun sendMessage() {
         val textToSend = state.messageInput.trim()
         if (textToSend.isBlank()) return
+        val currentLocalTime = LocalDateTime.now().toString()
 
         val tempMessage = MessageData(
             id = System.currentTimeMillis().toInt(),
             content = textToSend,
-            createdAt = Instant.now().toString(),
+            createdAt = currentLocalTime,
             isMyMessage = true,
             isSeen = false,
             seenAt = null
