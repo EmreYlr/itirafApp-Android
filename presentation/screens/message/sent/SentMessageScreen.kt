@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -128,14 +127,6 @@ fun SentMessageContent(
             }
             if (state.isLoading) {
                 CircularProgressIndicator(color = ItirafTheme.colors.brandPrimary)
-            }
-
-            if (state.error != null && !state.isLoading && state.sentMessage.isEmpty()) {
-                Text(
-                    text = state.error.asString(),
-                    color = ItirafTheme.colors.statusError,
-                    modifier = Modifier.padding(16.dp)
-                )
             }
         }
     }

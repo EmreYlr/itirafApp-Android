@@ -3,16 +3,20 @@ package com.itirafapp.android.util.extension
 import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Locale
 
 fun formatToRelativeTime(isoString: String?): String {
     if (isoString.isNullOrEmpty()) return ""
 
     return try {
-        val time = Instant.parse(isoString)
+        val localDateTime = LocalDateTime.parse(isoString.substringBefore("Z"))
+        val time = localDateTime.atZone(ZoneId.systemDefault()).toInstant()
         val now = Instant.now()
+
         val duration = Duration.between(time, now)
 
         val days = duration.toDays()
@@ -36,9 +40,7 @@ fun formatToRelativeTime(isoString: String?): String {
 fun parseToLocalDate(isoString: String?): LocalDate? {
     if (isoString.isNullOrEmpty()) return null
     return try {
-        Instant.parse(isoString)
-            .atZone(ZoneId.systemDefault())
-            .toLocalDate()
+        LocalDateTime.parse(isoString.substringBefore("Z")).toLocalDate()
     } catch (e: Exception) {
         null
     }
@@ -48,11 +50,11 @@ fun formatDateSeparator(isoString: String?): String {
     if (isoString.isNullOrEmpty()) return ""
 
     return try {
-        val time = Instant.parse(isoString)
-        val messageDate = time.atZone(ZoneId.systemDefault()).toLocalDate()
+        val localDateTime = LocalDateTime.parse(isoString.substringBefore("Z"))
+        val messageDate = localDateTime.toLocalDate()
         val today = LocalDate.now()
-        val daysDifference = java.time.temporal.ChronoUnit.DAYS.between(messageDate, today)
 
+        val daysDifference = ChronoUnit.DAYS.between(messageDate, today)
         val isTurkish = Locale.getDefault().language == "tr"
 
         when (daysDifference) {
@@ -74,10 +76,10 @@ fun formatToTime(isoString: String?): String {
     if (isoString.isNullOrEmpty()) return ""
 
     return try {
-        val time = Instant.parse(isoString)
-        val localTime = time.atZone(ZoneId.systemDefault()).toLocalTime()
+        val localDateTime = LocalDateTime.parse(isoString.substringBefore("Z"))
+
         val formatter = DateTimeFormatter.ofPattern("HH:mm")
-        localTime.format(formatter)
+        localDateTime.format(formatter)
     } catch (e: Exception) {
         ""
     }

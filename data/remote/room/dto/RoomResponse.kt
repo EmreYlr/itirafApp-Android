@@ -29,7 +29,7 @@ data class SentMessageResponse(
     val requestId: String,
     val confessionAuthorUsername: String,
     val initialMessage: String,
-    val confessionTitle: String,
+    val confessionTitle: String?,
     val confessionMessage: String,
     val channelMessageId: Int,
     val createdAt: String,

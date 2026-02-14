@@ -58,7 +58,7 @@ class SentMessageViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(
-                            sentMessage = result.data ?: emptyList(),
+                            sentMessage = result.data,
                             isLoading = false,
                             isRefreshing = false,
                             error = null

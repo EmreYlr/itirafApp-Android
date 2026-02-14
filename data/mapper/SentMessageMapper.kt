@@ -10,7 +10,7 @@ fun SentMessageResponse.toDomain(): SentMessage {
         requestId = this.requestId,
         confessionAuthorUsername = this.confessionAuthorUsername,
         initialMessage = this.initialMessage,
-        confessionTitle = this.confessionTitle,
+        confessionTitle = this.confessionTitle ?: "",
         confessionMessage = this.confessionMessage,
         channelMessageId = this.channelMessageId,
         createdAt = formatToRelativeTime(this.createdAt),
