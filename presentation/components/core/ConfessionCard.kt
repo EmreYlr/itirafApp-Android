@@ -203,8 +203,7 @@ fun ConfessionCard(
                         text = messageText,
                         style = MaterialTheme.typography.bodyMedium,
                         fontWeight = FontWeight.Normal,
-                        color = ItirafTheme.colors.textSecondary,
-                        textAlign = TextAlign.Justify
+                        color = ItirafTheme.colors.textSecondary
                     )
                 }
 

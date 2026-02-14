@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -169,8 +168,7 @@ fun DetailHeader(
                     text = confessionDetail.message,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Normal,
-                    color = ItirafTheme.colors.textSecondary,
-                    textAlign = TextAlign.Justify
+                    color = ItirafTheme.colors.textSecondary
                 )
             }
 
