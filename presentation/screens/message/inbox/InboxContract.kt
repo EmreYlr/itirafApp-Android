@@ -12,6 +12,7 @@ data class InboxState(
 
 sealed class InboxEvent {
     object Refresh : InboxEvent()
+    object LoadData : InboxEvent()
     data class InboxClicked(val id: String) : InboxEvent()
     data class RejectClicked(val id: String) : InboxEvent()
     data class ApproveClicked(val id: String) : InboxEvent()

@@ -23,9 +23,6 @@ class SentMessageViewModel @Inject constructor(
     var state by mutableStateOf(SentMessageState())
         private set
 
-    init {
-        loadSentMessage()
-    }
     private val _uiEvent = Channel<SentMessageUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
@@ -33,6 +30,10 @@ class SentMessageViewModel @Inject constructor(
         when (event) {
             is SentMessageEvent.Refresh -> {
                 loadSentMessage(isRefresh = true)
+            }
+
+            is SentMessageEvent.LoadData -> {
+                loadSentMessage(isRefresh = false)
             }
 
             is SentMessageEvent.ItemClicked -> {
@@ -44,13 +45,15 @@ class SentMessageViewModel @Inject constructor(
         }
     }
 
-    fun loadSentMessage(isRefresh: Boolean = false) {
+    private fun loadSentMessage(isRefresh: Boolean = false) {
         getSentMessagesUseCase()
             .onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
+                        val shouldShowFullscreenLoading = state.sentMessage.isEmpty() && !isRefresh
+
                         state = state.copy(
-                            isLoading = !isRefresh,
+                            isLoading = shouldShowFullscreenLoading,
                             isRefreshing = isRefresh,
                             error = null
                         )
@@ -58,7 +61,7 @@ class SentMessageViewModel @Inject constructor(
 
                     is Resource.Success -> {
                         state = state.copy(
-                            sentMessage = result.data,
+                            sentMessage = result.data ?: emptyList(),
                             isLoading = false,
                             isRefreshing = false,
                             error = null

@@ -12,6 +12,7 @@ data class SentMessageState(
 
 sealed class SentMessageEvent {
     object Refresh : SentMessageEvent()
+    object LoadData : SentMessageEvent()
     data class ItemClicked(val id: String) : SentMessageEvent()
 }
 

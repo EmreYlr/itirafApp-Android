@@ -14,6 +14,7 @@ data class DirectMessageState(
 
 sealed class DirectMessageEvent {
     object Refresh : DirectMessageEvent()
+    object LoadData : DirectMessageEvent()
     data class DirectMessageClicked(val id: String, val title: String) : DirectMessageEvent()
     data class OnLongClick(val id: String) : DirectMessageEvent()
     object DismissDeleteDialog : DirectMessageEvent()

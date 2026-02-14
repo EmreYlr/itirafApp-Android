@@ -38,6 +38,10 @@ fun SentMessageScreen(
     val state = viewModel.state
     val localContext = LocalContext.current
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.onEvent(SentMessageEvent.LoadData)
+    }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {

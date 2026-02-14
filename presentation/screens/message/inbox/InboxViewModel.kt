@@ -30,14 +30,14 @@ class InboxViewModel @Inject constructor(
     private val _uiEvent = Channel<InboxUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    init {
-        loadInbox()
-    }
-
     fun onEvent(event: InboxEvent) {
         when (event) {
             is InboxEvent.Refresh -> {
                 loadInbox(isRefresh = true)
+            }
+
+            is InboxEvent.LoadData -> {
+                loadInbox(isRefresh = false)
             }
 
             is InboxEvent.InboxClicked -> {
@@ -62,8 +62,10 @@ class InboxViewModel @Inject constructor(
             .onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
+                        val shouldShowFullscreenLoading = state.inboxMessage.isEmpty() && !isRefresh
+
                         state = state.copy(
-                            isLoading = !isRefresh,
+                            isLoading = shouldShowFullscreenLoading,
                             isRefreshing = isRefresh,
                             error = null
                         )

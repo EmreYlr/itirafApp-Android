@@ -30,14 +30,14 @@ class DirectMessageViewModel @Inject constructor(
     private val _uiEvent = Channel<DirectMessageUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    init {
-        loadMessages()
-    }
-
     fun onEvent(event: DirectMessageEvent) {
         when (event) {
             is DirectMessageEvent.Refresh -> {
                 loadMessages(isRefresh = true)
+            }
+
+            is DirectMessageEvent.LoadData -> {
+                loadMessages(isRefresh = false)
             }
 
             is DirectMessageEvent.DirectMessageClicked -> {
@@ -72,8 +72,12 @@ class DirectMessageViewModel @Inject constructor(
             .onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
+
+                        val shouldShowFullscreenLoading =
+                            state.directMessages.isEmpty() && !isRefresh
+
                         state = state.copy(
-                            isLoading = !isRefresh,
+                            isLoading = shouldShowFullscreenLoading,
                             isRefreshing = isRefresh,
                             error = null
                         )
