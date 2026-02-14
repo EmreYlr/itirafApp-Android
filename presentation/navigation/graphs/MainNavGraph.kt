@@ -41,6 +41,7 @@ import com.itirafapp.android.presentation.screens.message.direct_message.chat.Ch
 import com.itirafapp.android.presentation.screens.message.inbox.inbox_detail.InboxDetailScreen
 import com.itirafapp.android.presentation.screens.message.sent.SentMessageScreen
 import com.itirafapp.android.presentation.screens.message.sent.sent_detail.SentMessageDetailScreen
+import com.itirafapp.android.presentation.screens.moderation.ModerationScreen
 import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_detail.MyConfessionDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditConfessionScreen
@@ -218,6 +219,9 @@ fun MainScreen(
                     },
                     writeClicked = {
                         currentSheet = BottomSheetType.AddPost(-1)
+                    },
+                    onModerationClick = {
+                        navController.navigate(Screen.Moderation.route)
                     }
                 )
             }
@@ -492,6 +496,19 @@ fun MainScreen(
                     },
                     onOpenReport = { target ->
                         currentSheet = BottomSheetType.Report(target)
+                    }
+                )
+            }
+            //MODERATION SCREEN
+            animatedComposable(
+                route = Screen.Moderation.route
+            ) {
+                ModerationScreen(
+                    onBackClick = {
+                        navController.popBackStack()
+                    },
+                    onItemClick = {
+
                     }
                 )
             }

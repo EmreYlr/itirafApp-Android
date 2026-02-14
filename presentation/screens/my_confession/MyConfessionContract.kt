@@ -7,12 +7,14 @@ data class MyConfessionState(
     val isLoading: Boolean = false,
     val myConfession: List<MyConfessionData> = emptyList(),
     val isRefreshing: Boolean = false,
+    val isUserAdmin: Boolean = false,
     val error: UiText? = null
 )
 
 sealed class MyConfessionEvent {
     object Refresh : MyConfessionEvent()
     object LoadMore : MyConfessionEvent()
+    object ModerationClicked : MyConfessionEvent()
     data class ItemClicked(val id: Int) : MyConfessionEvent()
     data class EditClicked(val id: Int) : MyConfessionEvent()
 }
@@ -20,5 +22,6 @@ sealed class MyConfessionEvent {
 sealed class MyConfessionUiEvent {
     data class NavigateToDetail(val data: MyConfessionData) : MyConfessionUiEvent()
     data class NavigateToEdit(val data: MyConfessionData) : MyConfessionUiEvent()
+    object NavigateToModeration : MyConfessionUiEvent()
     data class ShowMessage(val message: UiText) : MyConfessionUiEvent()
 }

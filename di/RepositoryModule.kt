@@ -9,6 +9,7 @@ import com.itirafapp.android.data.repository.CrashReporterImpl
 import com.itirafapp.android.data.repository.DeviceRepositoryImpl
 import com.itirafapp.android.data.repository.FollowRepositoryImpl
 import com.itirafapp.android.data.repository.LanguageRepositoryImpl
+import com.itirafapp.android.data.repository.ModerationRepositoryImpl
 import com.itirafapp.android.data.repository.NotificationRepositoryImpl
 import com.itirafapp.android.data.repository.RoomRepositoryImpl
 import com.itirafapp.android.data.repository.SocialLinkRepositoryImpl
@@ -22,6 +23,7 @@ import com.itirafapp.android.domain.repository.CrashReporter
 import com.itirafapp.android.domain.repository.DeviceRepository
 import com.itirafapp.android.domain.repository.FollowRepository
 import com.itirafapp.android.domain.repository.LanguageRepository
+import com.itirafapp.android.domain.repository.ModerationRepository
 import com.itirafapp.android.domain.repository.NotificationRepository
 import com.itirafapp.android.domain.repository.RoomRepository
 import com.itirafapp.android.domain.repository.SessionTracker
@@ -121,4 +123,10 @@ abstract class RepositoryModule {
     abstract fun bindSessionTracker(
         clarityTracker: ClaritySessionTracker
     ): SessionTracker
+
+    @Binds
+    @Singleton
+    abstract fun moderationRepository(
+        moderationRepositoryImpl: ModerationRepositoryImpl
+    ): ModerationRepository
 }

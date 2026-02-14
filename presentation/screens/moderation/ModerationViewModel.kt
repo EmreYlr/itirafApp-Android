@@ -1,12 +1,11 @@
-package com.itirafapp.android.presentation.screens.my_confession
+package com.itirafapp.android.presentation.screens.moderation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.itirafapp.android.domain.usecase.user.GetMyConfessionsUseCase
-import com.itirafapp.android.domain.usecase.user.IsUserAdminUseCase
+import com.itirafapp.android.domain.usecase.moderation.GetPendingModerationRequests
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -17,66 +16,47 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MyConfessionViewModel @Inject constructor(
-    private val getMyConfessionsUseCase: GetMyConfessionsUseCase,
-    private val isUserAdminUseCase: IsUserAdminUseCase
+class ModerationViewModel @Inject constructor(
+    private val getPendingModerationRequests: GetPendingModerationRequests
 ) : ViewModel() {
-
-    var state by mutableStateOf(MyConfessionState())
+    var state by mutableStateOf(ModerationState())
         private set
 
-    private val _uiEvent = Channel<MyConfessionUiEvent>()
+    private val _uiEvent = Channel<ModerationUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     private var currentPage = 1
     private var isLastPage = false
 
     init {
-        checkAuthStatus()
-        loadConfessions()
+        loadModeration()
     }
 
-    private fun checkAuthStatus() {
-        val isUserAdmin = isUserAdminUseCase()
-        state = state.copy(isUserAdmin = isUserAdmin)
-    }
-
-    fun onEvent(event: MyConfessionEvent) {
+    fun onEvent(event: ModerationEvent) {
         when (event) {
-            is MyConfessionEvent.Refresh -> {
+            is ModerationEvent.Refresh -> {
                 currentPage = 1
                 isLastPage = false
-                loadConfessions(isPullToRefresh = true)
+                loadModeration(isPullToRefresh = true)
             }
 
-            is MyConfessionEvent.LoadMore -> {
+            is ModerationEvent.LoadMore -> {
                 if (!state.isLoading && !isLastPage) {
-                    loadConfessions()
+                    loadModeration()
                 }
             }
 
-            is MyConfessionEvent.ItemClicked -> {
-                val selectedItem = state.myConfession.find { it.id == event.id }
+            is ModerationEvent.ItemClicked -> {
+                val selectedItem = state.moderationData.find { it.id == event.id }
                 selectedItem?.let {
-                    sendUiEvent(MyConfessionUiEvent.NavigateToDetail(it))
+                    sendUiEvent(ModerationUiEvent.NavigateToDetail(it))
                 }
-            }
-
-            is MyConfessionEvent.EditClicked -> {
-                val selectedItem = state.myConfession.find { it.id == event.id }
-                selectedItem?.let {
-                    sendUiEvent(MyConfessionUiEvent.NavigateToEdit(it))
-                }
-            }
-
-            is MyConfessionEvent.ModerationClicked -> {
-                sendUiEvent(MyConfessionUiEvent.NavigateToModeration)
             }
         }
     }
 
-    private fun loadConfessions(isPullToRefresh: Boolean = false) {
-        getMyConfessionsUseCase(page = currentPage)
+    private fun loadModeration(isPullToRefresh: Boolean = false) {
+        getPendingModerationRequests(page = currentPage)
             .onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
@@ -88,7 +68,7 @@ class MyConfessionViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        result.data?.let { paginatedResult ->
+                        result.data.let { paginatedResult ->
                             isLastPage = !paginatedResult.hasNextPage
 
                             val newItems = paginatedResult.items
@@ -96,13 +76,13 @@ class MyConfessionViewModel @Inject constructor(
                             val currentList = if (currentPage == 1) {
                                 emptyList()
                             } else {
-                                state.myConfession
+                                state.moderationData
                             }
 
                             state = state.copy(
                                 isLoading = false,
                                 isRefreshing = false,
-                                myConfession = currentList + newItems
+                                moderationData = currentList + newItems
                             )
 
                             if (paginatedResult.hasNextPage) {
@@ -118,7 +98,7 @@ class MyConfessionViewModel @Inject constructor(
                             error = result.error.message
                         )
                         sendUiEvent(
-                            MyConfessionUiEvent.ShowMessage(
+                            ModerationUiEvent.ShowMessage(
                                 result.error.message
                             )
                         )
@@ -127,9 +107,11 @@ class MyConfessionViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
-    private fun sendUiEvent(event: MyConfessionUiEvent) {
+
+    private fun sendUiEvent(event: ModerationUiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
     }
+
 }

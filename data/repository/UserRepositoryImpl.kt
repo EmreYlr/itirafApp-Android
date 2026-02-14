@@ -8,6 +8,7 @@ import com.itirafapp.android.data.remote.user.dto.MyConfessionResponse
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.model.User
+import com.itirafapp.android.domain.model.enums.RoleType
 import com.itirafapp.android.domain.repository.UserRepository
 import com.itirafapp.android.util.manager.UserManager
 import com.itirafapp.android.util.state.Resource
@@ -72,6 +73,14 @@ class UserRepositoryImpl @Inject constructor(
         val user = getLocalUser()
         return user != null && !user.anonymous
     }
+
+    override fun isUserAdmin(): Boolean {
+        return getLocalUser()
+            ?.roles
+            ?.any { it.name == RoleType.ADMIN }
+            ?: false
+    }
+
 
     override fun isOnboardingCompleted(): Boolean {
         return userManager.isOnboardingCompleted()

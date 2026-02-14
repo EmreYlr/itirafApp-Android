@@ -17,6 +17,7 @@ interface UserRepository {
     fun getLocalUser(): User?
     fun clearUserData()
     fun isUserAuthenticated(): Boolean
+    fun isUserAdmin(): Boolean
     fun isOnboardingCompleted(): Boolean
     fun setOnboardingCompleted(completed: Boolean)
     fun isTermsCompleted(): Boolean

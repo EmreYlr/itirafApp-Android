@@ -30,6 +30,7 @@ import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.components.layout.TopBar
+import com.itirafapp.android.presentation.screens.my_confession.components.ModerationIcon
 import com.itirafapp.android.presentation.screens.my_confession.components.MyConfessionCard
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
@@ -38,6 +39,7 @@ fun MyConfessionScreen(
     onItemClick: (MyConfessionData) -> Unit,
     onEditClick: (MyConfessionData) -> Unit,
     writeClicked: () -> Unit,
+    onModerationClick: () -> Unit,
     viewModel: MyConfessionViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -52,6 +54,10 @@ fun MyConfessionScreen(
 
                 is MyConfessionUiEvent.NavigateToEdit -> {
                     onEditClick(event.data)
+                }
+
+                is MyConfessionUiEvent.NavigateToModeration -> {
+                    onModerationClick()
                 }
 
                 is MyConfessionUiEvent.ShowMessage -> {
@@ -81,6 +87,14 @@ fun MyConfessionContent(
         topBar = {
             TopBar(
                 title = stringResource(R.string.my_confessions),
+                actions = {
+                    ModerationIcon(
+                        isEnabled = state.isUserAdmin,
+                        onClick = {
+                            onEvent(MyConfessionEvent.ModerationClicked)
+                        }
+                    )
+                }
             )
         }
     ) { paddingValues ->

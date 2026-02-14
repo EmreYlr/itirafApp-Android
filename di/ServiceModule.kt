@@ -4,6 +4,7 @@ import com.itirafapp.android.data.remote.auth.AuthService
 import com.itirafapp.android.data.remote.channel.ChannelService
 import com.itirafapp.android.data.remote.confession.ConfessionService
 import com.itirafapp.android.data.remote.device.DeviceService
+import com.itirafapp.android.data.remote.moderation.ModerationService
 import com.itirafapp.android.data.remote.notification.NotificationService
 import com.itirafapp.android.data.remote.room.RoomService
 import com.itirafapp.android.data.remote.social_link.SocialLinkService
@@ -58,4 +59,9 @@ object ServiceModule {
     @Singleton
     fun provideSocialLinkService(retrofit: Retrofit): SocialLinkService =
         retrofit.create(SocialLinkService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideModerationService(retrofit: Retrofit): ModerationService =
+        retrofit.create(ModerationService::class.java)
 }
