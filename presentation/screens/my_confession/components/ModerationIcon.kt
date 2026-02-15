@@ -17,7 +17,7 @@ fun ModerationIcon(
             Icon(
                 imageVector = Icons.Filled.AdminPanelSettings,
                 contentDescription = "Moderation",
-                tint = ItirafTheme.colors.brandSecondary
+                tint = ItirafTheme.colors.brandPrimary
             )
         }
     }

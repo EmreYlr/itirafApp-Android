@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.domain.model.ModerationData
+import com.itirafapp.android.domain.model.enums.ModerationFilter
+import com.itirafapp.android.domain.model.enums.ModerationStatus
 import com.itirafapp.android.domain.usecase.moderation.GetPendingModerationRequests
 import com.itirafapp.android.util.state.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,11 +22,14 @@ import javax.inject.Inject
 class ModerationViewModel @Inject constructor(
     private val getPendingModerationRequests: GetPendingModerationRequests
 ) : ViewModel() {
+
     var state by mutableStateOf(ModerationState())
         private set
 
     private val _uiEvent = Channel<ModerationUiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
+
+    private val allFetchedData = mutableListOf<ModerationData>()
 
     private var currentPage = 1
     private var isLastPage = false
@@ -52,6 +58,13 @@ class ModerationViewModel @Inject constructor(
                     sendUiEvent(ModerationUiEvent.NavigateToDetail(it))
                 }
             }
+
+            is ModerationEvent.FilterChanged -> {
+                if (state.selectedFilter == event.filter) return
+                state = state.copy(selectedFilter = event.filter)
+
+                applyFilterToState()
+            }
         }
     }
 
@@ -71,23 +84,23 @@ class ModerationViewModel @Inject constructor(
                         result.data.let { paginatedResult ->
                             isLastPage = !paginatedResult.hasNextPage
 
-                            val newItems = paginatedResult.items
+                            if (currentPage == 1) {
+                                allFetchedData.clear()
+                            }
 
-                            val currentList = if (currentPage == 1) {
-                                emptyList()
-                            } else {
-                                state.moderationData
+                            allFetchedData.addAll(paginatedResult.items)
+
+                            if (paginatedResult.hasNextPage) {
+                                currentPage++
                             }
 
                             state = state.copy(
                                 isLoading = false,
                                 isRefreshing = false,
-                                moderationData = currentList + newItems
+                                error = null
                             )
 
-                            if (paginatedResult.hasNextPage) {
-                                currentPage++
-                            }
+                            applyFilterToState()
                         }
                     }
 
@@ -97,21 +110,29 @@ class ModerationViewModel @Inject constructor(
                             isRefreshing = false,
                             error = result.error.message
                         )
-                        sendUiEvent(
-                            ModerationUiEvent.ShowMessage(
-                                result.error.message
-                            )
-                        )
+                        sendUiEvent(ModerationUiEvent.ShowMessage(result.error.message))
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
+    private fun applyFilterToState() {
+        val filteredList = when (state.selectedFilter) {
+            ModerationFilter.ALL -> allFetchedData
+            ModerationFilter.PENDING -> allFetchedData.filter {
+                it.moderationStatus == ModerationStatus.PENDING_REVIEW ||
+                        it.moderationStatus == ModerationStatus.NEEDS_HUMAN_REVIEW
+            }
 
-    private fun sendUiEvent(event: ModerationUiEvent) {
-        viewModelScope.launch {
-            _uiEvent.send(event)
+            ModerationFilter.REJECTED -> allFetchedData.filter {
+                it.moderationStatus == ModerationStatus.HUMAN_REJECTED ||
+                        it.moderationStatus == ModerationStatus.AI_REJECTED
+            }
         }
+        state = state.copy(moderationData = filteredList)
     }
 
+    private fun sendUiEvent(event: ModerationUiEvent) {
+        viewModelScope.launch { _uiEvent.send(event) }
+    }
 }

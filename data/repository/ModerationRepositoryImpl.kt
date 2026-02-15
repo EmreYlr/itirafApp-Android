@@ -2,10 +2,13 @@ package com.itirafapp.android.data.repository
 
 import com.itirafapp.android.data.mapper.toDomain
 import com.itirafapp.android.data.remote.moderation.ModerationService
+import com.itirafapp.android.data.remote.moderation.dto.ModerationDecision
+import com.itirafapp.android.data.remote.moderation.dto.ModerationRequest
 import com.itirafapp.android.data.remote.moderation.dto.ModerationResponse
 import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.domain.model.ModerationData
 import com.itirafapp.android.domain.model.PaginatedResult
+import com.itirafapp.android.domain.model.enums.Violation
 import com.itirafapp.android.domain.repository.ModerationRepository
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.map
@@ -27,4 +30,17 @@ class ModerationRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun postModerationMessage(
+        id: Int,
+        decision: ModerationDecision,
+        violations: List<Violation>?,
+        rejectionReason: String?,
+        notes: String?,
+        isNsfw: Boolean?
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = ModerationRequest(decision, violations, rejectionReason, notes, isNsfw)
+            api.postModerationMessage(id, request)
+        }
+    }
 }

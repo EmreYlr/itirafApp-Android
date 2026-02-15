@@ -3,6 +3,7 @@ package com.itirafapp.android.presentation.screens.moderation
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Inbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
@@ -27,9 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.itirafapp.android.R
 import com.itirafapp.android.domain.model.ModerationData
+import com.itirafapp.android.domain.model.enums.ModerationFilter
 import com.itirafapp.android.presentation.components.core.EmptyStateView
 import com.itirafapp.android.presentation.components.layout.TopBar
 import com.itirafapp.android.presentation.screens.moderation.components.ModerationCard
+import com.itirafapp.android.presentation.screens.moderation.components.ModerationSegmentedControl
 import com.itirafapp.android.presentation.ui.theme.ItirafTheme
 
 @Composable
@@ -80,69 +82,102 @@ fun ModerationContent(
             )
         }
     ) { paddingValues ->
-
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            PullToRefreshBox(
-                isRefreshing = state.isRefreshing,
-                onRefresh = { onEvent(ModerationEvent.Refresh) },
-                modifier = Modifier.fillMaxSize()
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                if (state.moderationData.isNotEmpty()) {
+                ModerationSegmentedControl(
+                    selectedFilter = state.selectedFilter,
+                    onFilterSelected = { newFilter ->
+                        onEvent(ModerationEvent.FilterChanged(newFilter))
+                    }
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+            ) {
+                PullToRefreshBox(
+                    isRefreshing = state.isRefreshing,
+                    onRefresh = { onEvent(ModerationEvent.Refresh) },
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(16.dp)
+                        contentPadding = PaddingValues(
+                            bottom = 16.dp,
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = 4.dp
+                        )
                     ) {
-                        itemsIndexed(state.moderationData) { index, item ->
-                            if (index >= state.moderationData.lastIndex && !state.isLoading && !state.isRefreshing) {
-                                onEvent(ModerationEvent.LoadMore)
-                            }
-                            Box(modifier = Modifier.clickable {
-                                onEvent(ModerationEvent.ItemClicked(item.id))
-                            }) {
-                                ModerationCard(
-                                    data = item,
-                                    onApproveClick = { onEvent(ModerationEvent.ItemClicked(item.id)) },
-                                    onRejectClick = { onEvent(ModerationEvent.ItemClicked(item.id)) }
-                                )
-                            }
-                        }
+                        if (state.moderationData.isNotEmpty()) {
+                            itemsIndexed(state.moderationData) { index, item ->
+                                if (index >= state.moderationData.lastIndex && !state.isLoading && !state.isRefreshing) {
+                                    onEvent(ModerationEvent.LoadMore)
+                                }
 
-                        if (state.isLoading && state.moderationData.isNotEmpty()) {
+                                Box(modifier = Modifier.clickable {
+                                    onEvent(ModerationEvent.ItemClicked(item.id))
+                                }) {
+                                    ModerationCard(
+                                        data = item,
+                                        onApproveClick = { onEvent(ModerationEvent.ItemClicked(item.id)) },
+                                        onRejectClick = { onEvent(ModerationEvent.ItemClicked(item.id)) }
+                                    )
+                                }
+                            }
+
+                            if (state.isLoading) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(24.dp),
+                                            color = ItirafTheme.colors.brandPrimary,
+                                            strokeWidth = 2.dp
+                                        )
+                                    }
+                                }
+                            }
+                        } else if (!state.isLoading && state.error == null) {
                             item {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(16.dp),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(24.dp),
-                                        color = MaterialTheme.colorScheme.primary,
-                                        strokeWidth = 2.dp
+                                Box(modifier = Modifier.fillParentMaxSize()) {
+                                    EmptyStateView(
+                                        icon = Icons.Outlined.Inbox,
+                                        message = when (state.selectedFilter) {
+                                            ModerationFilter.ALL -> stringResource(R.string.moderation_empty_all)
+                                            ModerationFilter.PENDING -> stringResource(R.string.moderation_empty_pending)
+                                            ModerationFilter.REJECTED -> stringResource(R.string.moderation_empty_rejected)
+                                        },
+                                        modifier = Modifier.align(Alignment.Center)
                                     )
                                 }
                             }
                         }
                     }
-                } else if (!state.isLoading && state.error == null) {
-                    EmptyStateView(
-                        icon = Icons.Outlined.Inbox,
-                        message = "Henüz incelenecek bir istek yok.",
-                        modifier = Modifier.align(Alignment.Center)
+                }
+
+                if (state.isLoading && state.moderationData.isEmpty()) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = ItirafTheme.colors.brandPrimary
                     )
                 }
             }
-
-            if (state.isLoading && state.moderationData.isEmpty()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
         }
+
     }
 }

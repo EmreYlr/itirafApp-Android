@@ -24,6 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.itirafapp.android.domain.model.InboxMessage
 import com.itirafapp.android.domain.model.Link
+import com.itirafapp.android.domain.model.ModerationData
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.SentMessage
 import com.itirafapp.android.presentation.components.layout.BottomNavigation
@@ -42,6 +43,7 @@ import com.itirafapp.android.presentation.screens.message.inbox.inbox_detail.Inb
 import com.itirafapp.android.presentation.screens.message.sent.SentMessageScreen
 import com.itirafapp.android.presentation.screens.message.sent.sent_detail.SentMessageDetailScreen
 import com.itirafapp.android.presentation.screens.moderation.ModerationScreen
+import com.itirafapp.android.presentation.screens.moderation.moderation_detail.ModerationDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_detail.MyConfessionDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditConfessionScreen
@@ -507,10 +509,36 @@ fun MainScreen(
                     onBackClick = {
                         navController.popBackStack()
                     },
-                    onItemClick = {
+                    onItemClick = { moderationData ->
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "selected_moderation",
+                            value = moderationData
+                        )
 
+                        navController.navigate(Screen.ModerationDetail.route)
                     }
                 )
+            }
+
+            //MODERATION DETAIL SCREEN
+            animatedComposable(
+                route = Screen.ModerationDetail.route
+            ) {
+                val moderationData = remember {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.get<ModerationData>("selected_moderation")
+                }
+                if (moderationData != null) {
+                    ModerationDetailScreen(
+                        data = moderationData,
+                        onBackClick = {
+                            navController.popBackStack()
+                        }
+                    )
+                } else {
+                    LaunchedEffect(Unit) { navController.popBackStack() }
+                }
             }
         }
     }
