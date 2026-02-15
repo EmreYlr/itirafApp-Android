@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CommentsDisabled
 import androidx.compose.material3.CircularProgressIndicator
@@ -97,7 +95,6 @@ fun FeedContent(
     onEvent: (FeedEvent) -> Unit
 ) {
     val listState = rememberLazyListState()
-
     LaunchedEffect(listState) {
         snapshotFlow {
             listState.layoutInfo.visibleItemsInfo.mapNotNull { it.key as? Int }
@@ -119,13 +116,13 @@ fun FeedContent(
             onRefresh = { onEvent(FeedEvent.Refresh) },
             modifier = Modifier.fillMaxSize()
         ) {
-            if (state.confessions.isNotEmpty()) {
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 16.dp),
-                    verticalArrangement = Arrangement.Top
-                ) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 16.dp),
+                verticalArrangement = Arrangement.Top
+            ) {
+                if (state.confessions.isNotEmpty()) {
                     items(
                         items = state.confessions,
                         key = { it.id }
@@ -173,22 +170,22 @@ fun FeedContent(
                             }
                         }
                     }
-                }
-            } else if (!state.isLoading && state.error == null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
-                    contentAlignment = Alignment.Center
-                ) {
-                    EmptyStateView(
-                        icon = Icons.Default.CommentsDisabled,
-                        message = stringResource(R.string.empty_noConfession_title),
-                        buttonText = stringResource(R.string.refresh_screen),
-                        onButtonClick = {
-                            onEvent(FeedEvent.Refresh)
+                } else if (!state.isLoading && state.error == null) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillParentMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            EmptyStateView(
+                                icon = Icons.Default.CommentsDisabled,
+                                message = stringResource(R.string.empty_noConfession_title),
+                                buttonText = stringResource(R.string.refresh_screen),
+                                onButtonClick = {
+                                    onEvent(FeedEvent.Refresh)
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }

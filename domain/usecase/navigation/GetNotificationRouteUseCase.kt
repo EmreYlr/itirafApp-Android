@@ -76,6 +76,10 @@ class GetNotificationRouteUseCase @Inject constructor() {
                 Screen.Home.route
             }
 
+            NotificationApiEventType.ADMIN_REVIEW_REQUIRED -> {
+                Screen.Moderation.route
+            }
+
             else -> null
         }
     }
