@@ -19,6 +19,7 @@ import com.itirafapp.android.domain.usecase.confession.PostReplyUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.user.BlockUserUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
+import com.itirafapp.android.domain.usecase.user.IsUserAdminUseCase
 import com.itirafapp.android.presentation.mapper.toUiModel
 import com.itirafapp.android.presentation.model.OwnerUiModel
 import com.itirafapp.android.presentation.model.ReplyUiModel
@@ -44,6 +45,7 @@ class DetailViewModel @Inject constructor(
     private val blockUserUseCase: BlockUserUseCase,
     private val deleteConfessionUseCase: DeleteConfessionUseCase,
     private val deleteReplyUseCase: DeleteReplyUseCase,
+    private val isUserAdminUseCase: IsUserAdminUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -56,11 +58,18 @@ class DetailViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        checkAuthStatus()
+
         if (currentId != null) {
             loadConfessionDetail()
         } else {
             state = state.copy(error = AppError.BusinessError.InvalidConfessionData.message)
         }
+    }
+
+    private fun checkAuthStatus() {
+        val isUserAdmin = isUserAdminUseCase()
+        state = state.copy(isAdmin = isUserAdmin)
     }
 
     fun onEvent(event: DetailEvent) {
@@ -78,9 +87,7 @@ class DetailViewModel @Inject constructor(
             }
 
             is DetailEvent.DMRequestClicked -> {
-                viewModelScope.launch {
-                    _uiEvent.send(DetailUiEvent.OpenDMSheet(event.id))
-                }
+                sendUiEvent(DetailUiEvent.OpenDMSheet(event.id))
             }
 
             is DetailEvent.SendCommentClicked -> {
@@ -137,6 +144,10 @@ class DetailViewModel @Inject constructor(
 
             is DetailEvent.DismissDialog -> {
                 state = state.copy(activeDialog = null)
+            }
+
+            is DetailEvent.AdminClicked -> {
+                sendUiEvent(DetailUiEvent.OpenAdminSheet(event.id, event.isNsfw))
             }
         }
     }

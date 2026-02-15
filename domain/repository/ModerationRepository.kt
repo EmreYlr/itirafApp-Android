@@ -20,4 +20,9 @@ interface ModerationRepository {
         notes: String?,
         isNsfw: Boolean?
     ): Resource<Unit>
+
+    suspend fun patchModerationNsfw(
+        id: Int,
+        isNsfw: Boolean
+    ): Resource<Unit>
 }

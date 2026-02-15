@@ -48,6 +48,7 @@ import com.itirafapp.android.util.state.shareLink
 fun DetailScreen(
     onNavigationBack: () -> Unit,
     onOpenDM: (Int) -> Unit,
+    onOpenAdmin: (Int, Boolean) -> Unit,
     onOpenReport: (ReportTarget) -> Unit,
     viewModel: DetailViewModel = hiltViewModel(),
 ) {
@@ -71,6 +72,10 @@ fun DetailScreen(
 
                 is DetailUiEvent.OpenReportSheet -> {
                     onOpenReport(event.target)
+                }
+
+                is DetailUiEvent.OpenAdminSheet -> {
+                    onOpenAdmin(event.targetId, event.isNsfw)
                 }
 
                 is DetailUiEvent.ShowMessage -> {
@@ -152,6 +157,10 @@ fun DetailContent(
                             },
                             onBlockClick = { userId ->
                                 onEvent(DetailEvent.BlockUserClicked(userId, isReply = false))
+                            },
+                            isAdmin = state.isAdmin,
+                            onAdminClick = { id, isNsfw ->
+                                onEvent(DetailEvent.AdminClicked(id, isNsfw))
                             }
                         )
                     }

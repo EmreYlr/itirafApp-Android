@@ -3,6 +3,7 @@ package com.itirafapp.android.data.repository
 import com.itirafapp.android.data.mapper.toDomain
 import com.itirafapp.android.data.remote.moderation.ModerationService
 import com.itirafapp.android.data.remote.moderation.dto.ModerationDecision
+import com.itirafapp.android.data.remote.moderation.dto.ModerationNsfwRequest
 import com.itirafapp.android.data.remote.moderation.dto.ModerationRequest
 import com.itirafapp.android.data.remote.moderation.dto.ModerationResponse
 import com.itirafapp.android.data.remote.network.safeApiCall
@@ -41,6 +42,16 @@ class ModerationRepositoryImpl @Inject constructor(
         return safeApiCall {
             val request = ModerationRequest(decision, violations, rejectionReason, notes, isNsfw)
             api.postModerationMessage(id, request)
+        }
+    }
+
+    override suspend fun patchModerationNsfw(
+        id: Int,
+        isNsfw: Boolean
+    ): Resource<Unit> {
+        return safeApiCall {
+            val request = ModerationNsfwRequest(isNsfw)
+            api.patchModerationNsfw(id, request)
         }
     }
 }

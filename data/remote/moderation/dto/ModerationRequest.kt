@@ -11,6 +11,10 @@ data class ModerationRequest(
     val isNsfw: Boolean?
 )
 
+data class ModerationNsfwRequest(
+    val isNsfw: Boolean
+)
+
 enum class ModerationDecision {
     @SerializedName("APPROVE")
     APPROVE,

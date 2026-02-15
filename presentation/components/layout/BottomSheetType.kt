@@ -7,4 +7,5 @@ sealed class BottomSheetType {
     data class AddPost(val channelId: Int) : BottomSheetType()
     data class DMRequest(val targetId: Int) : BottomSheetType()
     data class Report(val target: ReportTarget) : BottomSheetType()
+    data class Moderation(val targetId: Int, val isNsfw: Boolean) : BottomSheetType()
 }

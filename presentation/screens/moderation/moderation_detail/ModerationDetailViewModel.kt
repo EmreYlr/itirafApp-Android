@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.itirafapp.android.R
 import com.itirafapp.android.data.remote.moderation.dto.ModerationDecision
 import com.itirafapp.android.domain.model.ModerationData
 import com.itirafapp.android.domain.usecase.moderation.PostModerationMessageUseCase
@@ -87,7 +88,9 @@ class ModerationDetailViewModel @Inject constructor(
         ) {
             sendUiEvent(
                 ModerationDetailUiEvent.ShowMessage(
-                    UiText.DynamicString("Lütfen bir ret sebebi yazın veya ihlal türü seçin.")
+                    UiText.StringResource(
+                        R.string.moderation_detail_not_select_error
+                    )
                 )
             )
             return
@@ -124,7 +127,6 @@ class ModerationDetailViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     state = state.copy(isLoading = false)
-                    sendUiEvent(ModerationDetailUiEvent.ShowMessage(UiText.DynamicString("İşlem Başarılı")))
                     sendUiEvent(ModerationDetailUiEvent.NavigateBack)
                 }
 

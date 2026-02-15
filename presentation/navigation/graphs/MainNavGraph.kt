@@ -44,6 +44,7 @@ import com.itirafapp.android.presentation.screens.message.sent.SentMessageScreen
 import com.itirafapp.android.presentation.screens.message.sent.sent_detail.SentMessageDetailScreen
 import com.itirafapp.android.presentation.screens.moderation.ModerationScreen
 import com.itirafapp.android.presentation.screens.moderation.moderation_detail.ModerationDetailScreen
+import com.itirafapp.android.presentation.screens.moderation.moderation_edit.ModerationEditScreen
 import com.itirafapp.android.presentation.screens.my_confession.MyConfessionScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_detail.MyConfessionDetailScreen
 import com.itirafapp.android.presentation.screens.my_confession.my_confession_edit.MyConfessionEditConfessionScreen
@@ -285,6 +286,9 @@ fun MainScreen(
                     },
                     onOpenReport = { target ->
                         currentSheet = BottomSheetType.Report(target)
+                    },
+                    onOpenAdmin = { targetId, isNsfw ->
+                        currentSheet = BottomSheetType.Moderation(targetId, isNsfw)
                     }
                 )
             }
@@ -578,6 +582,14 @@ fun MainScreen(
                             onDismiss = { closeSheet() }
                         )
                     }
+                }
+
+                is BottomSheetType.Moderation -> {
+                    ModerationEditScreen(
+                        targetId = type.targetId,
+                        isNsfw = type.isNsfw,
+                        onDismiss = { closeSheet() }
+                    )
                 }
 
                 else -> {}

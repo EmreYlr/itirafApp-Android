@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.outlined.AdminPanelSettings
 import androidx.compose.material.icons.outlined.ModeComment
 import androidx.compose.material.icons.outlined.QuestionAnswer
 import androidx.compose.material.icons.outlined.Share
@@ -52,13 +53,15 @@ import com.itirafapp.android.util.state.UiText
 @Composable
 fun DetailHeader(
     confessionDetail: ConfessionDetailUiModel,
+    isAdmin: Boolean = false,
     onLikeClick: (Int) -> Unit,
     onCommentClick: () -> Unit,
     onDMRequestClick: (Int) -> Unit,
     onShareClick: (Int) -> Unit,
     onDeleteClick: (Int) -> Unit,
     onReportClick: (Int) -> Unit,
-    onBlockClick: (String) -> Unit
+    onBlockClick: (String) -> Unit,
+    onAdminClick: (Int, Boolean) -> Unit
 ) {
     val displayName = confessionDetail.owner.username.asString()
     val hasTitle = confessionDetail.title.isNotEmpty()
@@ -230,6 +233,25 @@ fun DetailHeader(
                         )
                     }
 
+                    if (isAdmin) {
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Icon(
+                            imageVector = Icons.Outlined.AdminPanelSettings,
+                            contentDescription = "Admin",
+                            tint = ItirafTheme.colors.textSecondary,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .noRippleClickable {
+                                    onAdminClick(
+                                        confessionDetail.id,
+                                        confessionDetail.isNsfw
+                                    )
+                                }
+                        )
+                    }
+
+
                     Spacer(modifier = Modifier.weight(1f))
 
                     // 4. SHARE
@@ -294,7 +316,9 @@ fun DetailHeaderPreview() {
             onShareClick = {},
             onDeleteClick = {},
             onReportClick = {},
-            onBlockClick = {}
+            onBlockClick = {},
+            isAdmin = true,
+            onAdminClick = { _, _ -> }
         )
     }
 }
