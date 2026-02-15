@@ -38,14 +38,14 @@ fun ModerationDetailRow(
             imageVector = icon,
             contentDescription = null,
             tint = ItirafTheme.colors.textSecondary,
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(16.dp)
         )
 
         Spacer(modifier = Modifier.width(12.dp))
 
         Text(
             text = text,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = ItirafTheme.colors.textSecondary,
             fontWeight = FontWeight.Medium
         )

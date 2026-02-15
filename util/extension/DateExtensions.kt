@@ -84,3 +84,16 @@ fun formatToTime(isoString: String?): String {
         ""
     }
 }
+
+fun formatToDateTime(isoString: String?): String {
+    if (isoString.isNullOrEmpty()) return ""
+
+    return try {
+        val localDateTime = LocalDateTime.parse(isoString.substringBefore("Z"))
+
+        val formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy")
+        localDateTime.format(formatter)
+    } catch (e: Exception) {
+        ""
+    }
+}

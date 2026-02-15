@@ -4,7 +4,7 @@ import com.itirafapp.android.data.remote.moderation.dto.ModerationDataResponse
 import com.itirafapp.android.data.remote.moderation.dto.ModerationResponse
 import com.itirafapp.android.domain.model.ModerationData
 import com.itirafapp.android.domain.model.PaginatedResult
-import com.itirafapp.android.util.extension.formatToRelativeTime
+import com.itirafapp.android.util.extension.formatToDateTime
 
 fun ModerationResponse.toDomain(): PaginatedResult<ModerationData> {
     return PaginatedResult(
@@ -28,7 +28,7 @@ fun ModerationDataResponse.toDomain(): ModerationData {
         ownerUsername = this.ownerUsername,
         moderationStatus = this.moderationStatus,
         rejectionReason = this.rejectionReason ?: "",
-        createdAt = formatToRelativeTime(this.createdAt),
+        createdAt = formatToDateTime(this.createdAt),
         isNsfw = this.isNsfw
     )
 }

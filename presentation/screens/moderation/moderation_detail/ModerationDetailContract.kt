@@ -13,7 +13,7 @@ data class ModerationDetailState(
     val isNsfw: Boolean = false,
     val rejectionReason: String = "",
     val isViolationDropdownExpanded: Boolean = false,
-    val selectedViolation: Violation? = null,
+    val selectedViolations: List<Violation> = emptyList(),
     val availableViolations: List<Violation> = Violation.selectableCases
 )
 
@@ -24,9 +24,9 @@ sealed class ModerationDetailEvent {
     data class ToggleNsfw(val isNsfw: Boolean) : ModerationDetailEvent()
 
     data class EnteredRejectionReason(val value: String) : ModerationDetailEvent()
-    object ToggleViolationDropdown : ModerationDetailEvent()
-    data class SelectViolation(val violation: Violation) : ModerationDetailEvent()
+    data class ToggleViolation(val violation: Violation) : ModerationDetailEvent()
     object DismissViolationDropdown : ModerationDetailEvent()
+    object ToggleViolationDropdown : ModerationDetailEvent()
 
     object Submit : ModerationDetailEvent()
 }

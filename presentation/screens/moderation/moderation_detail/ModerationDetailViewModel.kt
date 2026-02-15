@@ -55,19 +55,22 @@ class ModerationDetailViewModel @Inject constructor(
                 state = state.copy(rejectionReason = event.value)
             }
 
+            is ModerationDetailEvent.ToggleViolation -> {
+                val currentList = state.selectedViolations.toMutableList()
+                if (currentList.contains(event.violation)) {
+                    currentList.remove(event.violation)
+                } else {
+                    currentList.add(event.violation)
+                }
+                state = state.copy(selectedViolations = currentList)
+            }
+
             is ModerationDetailEvent.ToggleViolationDropdown -> {
                 state = state.copy(isViolationDropdownExpanded = !state.isViolationDropdownExpanded)
             }
 
             is ModerationDetailEvent.DismissViolationDropdown -> {
                 state = state.copy(isViolationDropdownExpanded = false)
-            }
-
-            is ModerationDetailEvent.SelectViolation -> {
-                state = state.copy(
-                    selectedViolation = event.violation,
-                    isViolationDropdownExpanded = false
-                )
             }
 
             is ModerationDetailEvent.Submit -> {
@@ -78,14 +81,13 @@ class ModerationDetailViewModel @Inject constructor(
 
     private fun submitDecision() {
         val data = state.moderationData ?: return
-
         if (state.decisionMode == DecisionMode.REJECT
             && state.rejectionReason.isBlank()
-            && state.selectedViolation == null
+            && state.selectedViolations.isEmpty()
         ) {
             sendUiEvent(
                 ModerationDetailUiEvent.ShowMessage(
-                    UiText.DynamicString("Lütfen bir ret sebebi belirtin.")
+                    UiText.DynamicString("Lütfen bir ret sebebi yazın veya ihlal türü seçin.")
                 )
             )
             return
@@ -98,7 +100,7 @@ class ModerationDetailViewModel @Inject constructor(
         }
 
         val violationsList = if (state.decisionMode == DecisionMode.REJECT) {
-            state.selectedViolation?.let { listOf(it) }
+            state.selectedViolations.ifEmpty { null }
         } else {
             null
         }

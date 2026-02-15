@@ -29,7 +29,7 @@ fun ModerationDecisionSegmentedControl(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(40.dp)
+            .height(35.dp)
             .clip(RoundedCornerShape(50))
             .background(ItirafTheme.colors.backgroundCard)
             .padding(4.dp),
