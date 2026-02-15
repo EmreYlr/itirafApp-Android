@@ -148,7 +148,8 @@ fun DetailHeader(
                         isMine = confessionDetail.isMine,
                         onDelete = { onDeleteClick(confessionDetail.id) },
                         onReport = { onReportClick(confessionDetail.id) },
-                        onBlock = { onBlockClick(confessionDetail.owner.id) }
+                        onBlock = { onBlockClick(confessionDetail.owner.id) },
+                        isAdmin = isAdmin
                     )
                 }
 

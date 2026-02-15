@@ -44,6 +44,7 @@ import com.itirafapp.android.util.state.UiText
 @Composable
 fun ReplyCard(
     reply: ReplyUiModel,
+    isAdmin: Boolean,
     onDeleteClick: (Int) -> Unit,
     onReportClick: (Int) -> Unit,
     onBlockClick: (String) -> Unit
@@ -131,7 +132,8 @@ fun ReplyCard(
                             isMine = reply.isMine,
                             onDelete = { onDeleteClick(reply.id) },
                             onReport = { onReportClick(reply.id) },
-                            onBlock = { onBlockClick(reply.owner.id) }
+                            onBlock = { onBlockClick(reply.owner.id) },
+                            isAdmin = isAdmin
                         )
                     }
                 }
@@ -170,7 +172,8 @@ fun ReplyCardPreview() {
             ),
             onDeleteClick = {},
             onReportClick = {},
-            onBlockClick = {}
+            onBlockClick = {},
+            isAdmin = false
         )
     }
 }

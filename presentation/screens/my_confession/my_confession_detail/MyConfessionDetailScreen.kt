@@ -260,7 +260,8 @@ fun MyConfessionDetailContent(
                                             isReply = true
                                         )
                                     )
-                                }
+                                },
+                                isAdmin = state.isUserAdmin
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))

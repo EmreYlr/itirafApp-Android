@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.itirafapp.android.R
-import com.itirafapp.android.domain.model.AppError
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.Owner
 import com.itirafapp.android.domain.model.Reply
@@ -19,7 +18,7 @@ import com.itirafapp.android.domain.usecase.confession.PostReplyUseCase
 import com.itirafapp.android.domain.usecase.confession.UnlikeConfessionUseCase
 import com.itirafapp.android.domain.usecase.user.BlockUserUseCase
 import com.itirafapp.android.domain.usecase.user.GetCurrentUserUseCase
-import com.itirafapp.android.presentation.screens.home.detail.DetailUiEvent
+import com.itirafapp.android.domain.usecase.user.IsUserAdminUseCase
 import com.itirafapp.android.util.state.ActiveDialog
 import com.itirafapp.android.util.state.Resource
 import com.itirafapp.android.util.state.UiText
@@ -40,7 +39,8 @@ class MyConfessionDetailViewModel @Inject constructor(
     private val deleteConfessionUseCase: DeleteConfessionUseCase,
     private val deleteReplyUseCase: DeleteReplyUseCase,
     private val blockUserUseCase: BlockUserUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val isUserAdminUseCase: IsUserAdminUseCase
 ) : ViewModel() {
 
     var state by mutableStateOf(MyConfessionDetailState(confessions = null))
@@ -50,8 +50,15 @@ class MyConfessionDetailViewModel @Inject constructor(
     val uiEvent = _uiEvent.receiveAsFlow()
 
     init {
+        checkAuthStatus()
+
         val userId = getCurrentUserUseCase()?.id
         state = state.copy(currentUserId = userId)
+    }
+
+    private fun checkAuthStatus() {
+        val isUserAdmin = isUserAdminUseCase()
+        state = state.copy(isUserAdmin = isUserAdmin)
     }
 
     fun setInitialData(data: MyConfessionData) {

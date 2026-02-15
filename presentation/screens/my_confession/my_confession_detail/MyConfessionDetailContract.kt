@@ -8,6 +8,7 @@ import com.itirafapp.android.util.state.UiText
 data class MyConfessionDetailState(
     val isLoading: Boolean = false,
     val confessions: MyConfessionData? = null,
+    val isUserAdmin: Boolean = false,
     val commentText: String = "",
     val currentUserId: String? = null,
     val isRefreshing: Boolean = false,

@@ -191,7 +191,8 @@ fun DetailContent(
                                 },
                                 onBlockClick = { userId ->
                                     onEvent(DetailEvent.BlockUserClicked(userId, isReply = true))
-                                }
+                                },
+                                isAdmin = state.isAdmin
                             )
                         }
                         Spacer(modifier = Modifier.height(8.dp))
