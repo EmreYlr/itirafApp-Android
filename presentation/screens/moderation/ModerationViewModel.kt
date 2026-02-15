@@ -34,16 +34,16 @@ class ModerationViewModel @Inject constructor(
     private var currentPage = 1
     private var isLastPage = false
 
-    init {
-        loadModeration()
-    }
-
     fun onEvent(event: ModerationEvent) {
         when (event) {
             is ModerationEvent.Refresh -> {
                 currentPage = 1
                 isLastPage = false
                 loadModeration(isPullToRefresh = true)
+            }
+
+            is ModerationEvent.LoadData -> {
+                loadModeration(isPullToRefresh = false)
             }
 
             is ModerationEvent.LoadMore -> {
@@ -69,12 +69,16 @@ class ModerationViewModel @Inject constructor(
     }
 
     private fun loadModeration(isPullToRefresh: Boolean = false) {
+
         getPendingModerationRequests(page = currentPage)
             .onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
+                        val shouldShowFullscreenLoading =
+                            state.moderationData.isEmpty() && !isPullToRefresh
+
                         state = state.copy(
-                            isLoading = !isPullToRefresh,
+                            isLoading = shouldShowFullscreenLoading,
                             isRefreshing = isPullToRefresh,
                             error = null
                         )

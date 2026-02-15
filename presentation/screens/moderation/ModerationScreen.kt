@@ -43,6 +43,10 @@ fun ModerationScreen(
     val state = viewModel.state
     val context = LocalContext.current
 
+    LaunchedEffect(key1 = Unit) {
+        viewModel.onEvent(ModerationEvent.LoadData)
+    }
+
     LaunchedEffect(key1 = true) {
         viewModel.uiEvent.collect { event ->
             when (event) {

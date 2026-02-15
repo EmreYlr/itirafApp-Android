@@ -15,6 +15,7 @@ data class ModerationState(
 sealed class ModerationEvent {
     object Refresh : ModerationEvent()
     object LoadMore : ModerationEvent()
+    object LoadData : ModerationEvent()
     data class ItemClicked(val id: Int) : ModerationEvent()
     data class FilterChanged(val filter: ModerationFilter) : ModerationEvent()
 }
