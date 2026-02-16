@@ -52,6 +52,7 @@ import com.itirafapp.android.presentation.screens.post.PostScreen
 import com.itirafapp.android.presentation.screens.profile.ProfileScreen
 import com.itirafapp.android.presentation.screens.profile.follow_channel.FollowChannelScreen
 import com.itirafapp.android.presentation.screens.profile.settings.SettingsScreen
+import com.itirafapp.android.presentation.screens.profile.settings.blocked_user.BlockedUserScreen
 import com.itirafapp.android.presentation.screens.profile.settings.edit_profile.EditProfileScreen
 import com.itirafapp.android.presentation.screens.profile.settings.notification.NotificationPreferencesScreen
 import com.itirafapp.android.presentation.screens.profile.social.SocialScreen
@@ -270,6 +271,9 @@ fun MainScreen(
                     },
                     onNavigateToNotification = {
                         navController.navigate(Screen.NotificationPreferences.route)
+                    },
+                    onNavigateToBlockedUsers = {
+                        navController.navigate(Screen.BlockedUsers.route)
                     }
                 )
             }
@@ -406,6 +410,13 @@ fun MainScreen(
                     onDeleteClick = {
                         onLogOut()
                     }
+                )
+            }
+
+            //BLOCKED USERS SCREEN
+            animatedComposable(Screen.BlockedUsers.route) {
+                BlockedUserScreen(
+                    onBackClick = { navController.popBackStack() }
                 )
             }
 

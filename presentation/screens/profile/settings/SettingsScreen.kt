@@ -54,6 +54,7 @@ fun SettingsScreen(
     onNavigateToLogin: () -> Unit,
     onNavigateToEdit: () -> Unit,
     onNavigateToNotification: () -> Unit,
+    onNavigateToBlockedUsers: () -> Unit,
     onBackClick: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
@@ -75,6 +76,10 @@ fun SettingsScreen(
 
                 is SettingsUiEvent.NavigateToEdit -> {
                     onNavigateToEdit()
+                }
+
+                is SettingsUiEvent.NavigateToBlockedUsers -> {
+                    onNavigateToBlockedUsers()
                 }
 
                 is SettingsUiEvent.NavigateToNotification -> {

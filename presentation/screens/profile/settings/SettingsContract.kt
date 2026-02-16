@@ -33,6 +33,7 @@ sealed class SettingsUiEvent {
     object NavigateToLogin : SettingsUiEvent()
     object NavigateToBack : SettingsUiEvent()
     object NavigateToEdit : SettingsUiEvent()
+    object NavigateToBlockedUsers : SettingsUiEvent()
     object NavigateToNotification : SettingsUiEvent()
     data class CopyToClipboard(val text: String, val message: String) : SettingsUiEvent()
     data class NavigateToUrl(val url: String) : SettingsUiEvent()

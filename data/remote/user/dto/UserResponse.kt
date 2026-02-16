@@ -17,3 +17,9 @@ data class UserResponse(
 data class RoleDto(
     val name: String
 )
+
+data class UserBlockResponse(
+    val userId: String,
+    val username: String,
+    val blockedAt: String
+)

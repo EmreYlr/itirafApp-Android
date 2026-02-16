@@ -1,10 +1,13 @@
 package com.itirafapp.android.data.mapper
 
 import com.itirafapp.android.data.remote.user.dto.RoleDto
+import com.itirafapp.android.data.remote.user.dto.UserBlockResponse
 import com.itirafapp.android.data.remote.user.dto.UserResponse
+import com.itirafapp.android.domain.model.BlockedUsers
 import com.itirafapp.android.domain.model.Role
 import com.itirafapp.android.domain.model.User
 import com.itirafapp.android.domain.model.enums.RoleType
+import com.itirafapp.android.util.extension.formatToDateTime
 
 fun UserResponse.toDomain(): User {
     return User(
@@ -24,5 +27,13 @@ fun RoleDto.toDomain(): Role {
             "USER" -> RoleType.USER
             else -> RoleType.USER
         }
+    )
+}
+
+fun UserBlockResponse.toDomain(): BlockedUsers {
+    return BlockedUsers(
+        userId = userId,
+        username = username,
+        blockedAt = formatToDateTime(blockedAt)
     )
 }

@@ -5,6 +5,8 @@ import com.itirafapp.android.data.remote.network.safeApiCall
 import com.itirafapp.android.data.remote.user.UserService
 import com.itirafapp.android.data.remote.user.dto.BlockUserRequest
 import com.itirafapp.android.data.remote.user.dto.MyConfessionResponse
+import com.itirafapp.android.data.remote.user.dto.UnblockUserRequest
+import com.itirafapp.android.domain.model.BlockedUsers
 import com.itirafapp.android.domain.model.MyConfessionData
 import com.itirafapp.android.domain.model.PaginatedResult
 import com.itirafapp.android.domain.model.User
@@ -58,6 +60,23 @@ class UserRepositoryImpl @Inject constructor(
                 userId = targetUserId
             )
             userApi.blockUser(request)
+        }
+    }
+
+    override suspend fun getBlockedUsers(): Resource<List<BlockedUsers>> {
+        return safeApiCall {
+            userApi.getBlockUser()
+        }.map { response ->
+            response.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun unblockUser(targetUserId: String): Resource<Unit> {
+        return safeApiCall {
+            val request = UnblockUserRequest(
+                userId = targetUserId
+            )
+            userApi.unblockUser(request)
         }
     }
 

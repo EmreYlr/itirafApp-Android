@@ -3,6 +3,7 @@ package com.itirafapp.android.presentation.screens.profile.settings
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Help
 import androidx.compose.material.icons.automirrored.outlined.List
+import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Email
@@ -29,6 +30,12 @@ class SettingsMenuProvider @Inject constructor() {
                 title = UiText.StringResource(R.string.edit_profile),
                 icon = Icons.Outlined.Person,
                 type = SettingActionType.EDIT_PROFILE,
+                isEnabled = !isAnonymous
+            ),
+            SettingItemUiModel(
+                title = UiText.StringResource(R.string.blocked_users),
+                icon = Icons.Outlined.Block,
+                type = SettingActionType.BLOCKED_USERS,
                 isEnabled = !isAnonymous
             )
         )

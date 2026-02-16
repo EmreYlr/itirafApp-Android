@@ -56,6 +56,7 @@ sealed class Screen(val route: String) {
     object InboxDetail : Screen("inbox_detail")
     object Moderation : Screen("moderation")
     object ModerationDetail : Screen("moderation_detail")
+    object BlockedUsers : Screen("blocked_users")
 
     object Notifications : Screen("notifications_screen")
     object Settings : Screen("settings_screen")

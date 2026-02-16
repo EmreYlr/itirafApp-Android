@@ -2,10 +2,13 @@ package com.itirafapp.android.data.remote.user
 
 import com.itirafapp.android.data.remote.user.dto.BlockUserRequest
 import com.itirafapp.android.data.remote.user.dto.MyConfessionResponse
+import com.itirafapp.android.data.remote.user.dto.UnblockUserRequest
+import com.itirafapp.android.data.remote.user.dto.UserBlockResponse
 import com.itirafapp.android.data.remote.user.dto.UserResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.HTTP
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -18,6 +21,16 @@ interface UserService {
     @POST("users/me/blocks")
     suspend fun blockUser(
         @Body request: BlockUserRequest
+    ): Unit
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @GET("users/me/blocks")
+    suspend fun getBlockUser(): List<UserBlockResponse>
+
+    @Headers("X-Auth-Restriction: NonAnonymous")
+    @HTTP(method = "DELETE", path = "users/me/blocks", hasBody = true)
+    suspend fun unblockUser(
+        @Body request: UnblockUserRequest
     ): Unit
 
     @Headers("X-Auth-Restriction: NonAnonymous")

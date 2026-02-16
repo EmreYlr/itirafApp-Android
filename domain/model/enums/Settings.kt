@@ -5,6 +5,7 @@ import com.itirafapp.android.R
 
 enum class SettingActionType {
     EDIT_PROFILE,
+    BLOCKED_USERS,
     THEME,
     NOTIFICATIONS,
     LANGUAGE,

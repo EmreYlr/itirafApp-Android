@@ -144,6 +144,10 @@ class SettingsViewModel @Inject constructor(
                 sendUiEvent(SettingsUiEvent.NavigateToEdit)
             }
 
+            SettingActionType.BLOCKED_USERS -> {
+                sendUiEvent(SettingsUiEvent.NavigateToBlockedUsers)
+            }
+
             SettingActionType.NOTIFICATIONS -> {
                 sendUiEvent(SettingsUiEvent.NavigateToNotification)
             }

@@ -3,3 +3,7 @@ package com.itirafapp.android.data.remote.user.dto
 data class BlockUserRequest(
     val userId: String
 )
+
+data class UnblockUserRequest(
+    val userId: String
+)
